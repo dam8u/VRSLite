@@ -1,0 +1,19 @@
+Driver,Variant,"Net liability increase, FY2029-FY2038 cohort",Aggregate rate impact (bp),Change from central case (bp)
+Central case,"phi=0.50, moderate take-up, central population, 6.75% discount, 3.50% salary growth, 0.75% mortality improvement, position refilled",$7.15M,0.19,—
+Behavioural mix (ASM-22),phi=0.25 (more purchasers leaving anyway),$12.44M,0.33,+0.14
+Behavioural mix (ASM-22),phi=0.75 (more purchasers would have worked on),$1.86M,0.05,-0.14
+Veteran / purchasability funnel (ASM-15 to ASM-18),low case,$2.70M,0.07,-0.12
+Veteran / purchasability funnel (ASM-15 to ASM-18),high case,$16.78M,0.44,+0.25
+Take-up (ASM-19),10% low,$3.58M,0.09,-0.09
+Take-up (ASM-19),30% high,$10.73M,0.28,+0.09
+DECISION 4 purchase rule,"D4b, deficit must be fully coverable",$4.91M,0.13,-0.06
+Discount rate (SRC-01),5.75%,$8.10M,0.21,+0.03
+Discount rate (SRC-01),7.75%,$6.37M,0.17,-0.02
+Salary growth (ASM-07),2.50%,$8.03M,0.21,+0.02
+Salary growth (ASM-07),4.50%,$6.09M,0.16,-0.03
+Mortality improvement (ASM-05),0.00% (no improvement),$6.89M,0.18,-0.01
+Mortality improvement (ASM-05),1.25%,$7.33M,0.19,+0.00
+Other decrements (ASM-13),2.00%,$7.72M,0.20,+0.01
+Other decrements (ASM-13),5.00%,$6.14M,0.16,-0.03
+Position refilled (ASM-21),position NOT refilled; plan also loses contributions,$9.27M,0.24,+0.06
+Hybrid inclusion (DECISION 2),hybrid participants included,$7.06M,0.19,-0.00

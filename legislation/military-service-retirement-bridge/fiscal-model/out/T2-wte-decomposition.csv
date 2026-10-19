@@ -1,0 +1,8 @@
+Scenario,Member payment received,Increase in PV of benefit stream,Member overpayment (payment less liability increase),PV of payroll forgone during acceleration,PV of total normal cost forgone (employer + member),  of which member contributions,  PV of employer DB contributions forgone,Net charge to the plan if the position is NOT refilled,Direction
+P1-B2-A-ST-WTE,"$42,500","$21,000","$21,500","$324,786","$28,354","$14,258","$35,954","$6,853",net cost to the plan
+P1-B2-B-TC-WTE,"$20,000","$13,994","$6,006","$157,564","$14,527","$7,059","$19,223","$8,521",net cost to the plan
+P1-B2-C-PS-WTE,"$27,000","$21,273","$5,727","$209,491","$26,501","$10,475","$22,185","$20,774",net cost to the plan
+P2-B3-D-ST-WTE,"$38,664","$14,111","$24,553","$177,260","$15,475","$7,782","$19,623","$-9,078",net gain to the plan
+P2-B3-E-TC-WTE,"$25,132","$10,583","$14,549","$115,813","$10,678","$5,188","$14,129","$-3,871",net gain to the plan
+P2-B3-F-PS-WTE,"$32,650","$9,821","$22,829","$149,686","$18,935","$7,484","$15,852","$-3,893",net gain to the plan
+HY-B3-G-ST-WTE,"$22,712","$2,035","$20,677","$85,000","$7,420","$3,732","$9,410","$-13,257",net gain to the plan

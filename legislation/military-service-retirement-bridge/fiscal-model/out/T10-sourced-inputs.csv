@@ -1,0 +1,25 @@
+ID,Input,Value,Source
+SRC-01,Investment return / discount rate,6.75%,EXP2024 p. C-1
+SRC-02,Price inflation,2.50%,EXP2024 p. C-1
+SRC-03,Wage inflation,3.50%,EXP2024 p. C-1
+SRC-04,Payroll growth (amortization),3.00%,EXP2024 p. C-1
+SRC-05,COLA,Plan 1 2.50%; Plan 2 and Hybrid 2.25%,EXP2024 p. B-29; ACFR2025 Fig. 4.2
+SRC-06,Interest on member contributions,4.00%,EXP2024 p. B-29
+SRC-07,Deferred benefit commencement,Normal retirement,EXP2024 p. B-29
+SRC-08,"Approximate normal cost, Plan 1 non-hazardous",12.50% of salary,PPS2025 p. 2
+SRC-08,"Approximate normal cost, Plan 2 non-hazardous",10.74% of salary,PPS2025 p. 3
+SRC-08,"Approximate normal cost, Hybrid non-judicial",6.68% of salary,PPS2025 p. 1
+SRC-09,Benefit multiplier,1.70% / 1.65%,Va. Code § 51.1-155 A 1
+SRC-10,Hybrid DB multiplier,1.00%,ACFR2025 plan comparison
+SRC-11,AFC averaging period,Plan 1 36 months; Plan 2 and Hybrid 60,Va. Code § 51.1-124.3; ACFR2025
+SRC-12,"Early-retirement reduction, Plan 1","0.5%/month for 60 months, then 0.4%/month; plus 0.6%/month under age 55 on the 50/10 route",ERMSR2026 p. 4
+SRC-13,Unreduced eligibility,Plan 1 age 65+5 or age 50+30; Plan 2/Hybrid SSA NRA+5 or age+service=90,"Va. Code § 51.1-153 A, B 2, B 3"
+SRC-14,Social Security normal retirement age,67 for births 1960+,ERMSR2026 p. 3
+SRC-15,"State plan: 81,274 actives, $6.276bn payroll, 11.07% employer DB rate, 20-year amortization",,"VAL2025 pp. 12, 18"
+SRC-15,"Teacher plan: 160,949 actives, $11.732bn payroll, 12.20% employer DB rate",,"VAL2025 pp. 13, 18"
+SRC-15,"Political subdivisions: 124,066 actives, $8.041bn payroll, 10.59% average employer DB rate",,VAL2025 p. 17
+SRC-16,Active members by benefit structure,"Plan 1 110,474; Plan 2 67,333; Hybrid 200,253; total 378,060",ACFR2025
+SRC-18,Active members by attained age and completed total service,state and teacher grids,VAL2025 pp. 50-51
+SRC-20,Healthy post-retirement mortality,"Pub-2010 amount-weighted with per-plan adjustments applied, 75% MP-2021 generational",APPX2025 pp. 49-50
+SRC-23,Retirement rates,"Plan 1 state, age 50 with 30 years: 12.5% M / 7.5% F. Plan 2 and Hybrid: 11.5% when age plus service equals 90",ACFR2025 Fig. 4.3
+SRC-24,Veteran share of the Virginia classified state workforce,"6% (self-identified, June 30, 2024)",DHRM2025 slide 8
