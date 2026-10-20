@@ -123,7 +123,7 @@ Recording these matters because the package proposes to amend and reenact each s
 
 ## E. Corrections log — version 1.1, October 19, 2026
 
-All corrections below come from the independent verification pass recorded in `06-red-team-review.docx` (MOO-260), in which every Code citation in this package was re-read in the official text at law.lis.virginia.gov. The corrections are applied in place above and listed here so the evidence record shows what changed.
+All corrections below come from the red-team verification pass recorded in `06-red-team-review.docx` (MOO-260), in which every Code citation in this package was re-read in the official text at law.lis.virginia.gov. The corrections are applied in place above and listed here so the evidence record shows what changed.
 
 | Ref | Entry | What was wrong |
 |---|---|---|

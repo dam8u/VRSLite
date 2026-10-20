@@ -27,7 +27,7 @@ The definition alone was **not enough.** Several provisions key off the **date**
 
 **The PLOP trade-off, disclosed as directed.** PLOP eligibility turns on creditable service *after* first unreduced eligibility, and the bill freezes that date as though the bridge did not exist. **A member who buys bridge years and retires at the accelerated date will generally have no PLOP at all**; one who works through to normal retirement date keeps full PLOP under B 1(i). That is the deliberate price of leaving PLOP untouched; the bill makes VRS disclose it in writing before purchase.
 
-### The three blockers from independent review — resolved October 20, 2026
+### The three blockers from red-team adversarial review — resolved October 20, 2026
 
 **1. Buy, resign, defer, collect unreduced at 50 — closed.** § 51.1-153 C lets a member who terminates with five or more years retire under subsection B with no in-service requirement, and a deferred member's service is frozen. Buying four years at 44 with 26 years, then resigning, would have bought an unreduced allowance at 50 reachable otherwise only at **65** — roughly **15 years** of acceleration for $35,000, the bill's largest unpriced exposure. **Decision: credit counts only if the member is still in service at retirement** (new E 3, plus an amendment to § 51.1-153 C itself, necessary because that subsection otherwise waives in-service requirements outright). A member who leaves early gets her money back with interest, disclosed in writing before purchase.
 
@@ -49,7 +49,7 @@ Approximate normal cost prices a year of *accrual*; the bridge sells removal of 
 
 ## 5. Status and next steps
 
-Bill text is at **version 1.2. Every policy question is settled** — the four decisions of October 19 and the three blockers of October 20 — and all are drafted. Legal analysis, source appendix, adversarial review, precedent scan and cost model are **complete**. What is outstanding is no longer JLCVSO's to decide: the **VRS Board statement under § 30-19.1:7**, not yet requested and not substituted for by our model, and the federal tax questions on IRC § 415(n) and 10 U.S.C. § 12736. One caveat: the adversarial review was run by the drafting attorney, so an independent re-read is advisable.
+Bill text is at **version 1.2. Every policy question is settled** — the four decisions of October 19 and the three blockers of October 20 — and all are drafted. Legal analysis, source appendix, red-team adversarial review, precedent scan and cost model are **complete**. What is outstanding is no longer JLCVSO's to decide: the **VRS Board statement under § 30-19.1:7**, not yet requested and not substituted for by our model, and the federal tax questions on IRC § 415(n) and 10 U.S.C. § 12736. One caveat: the red-team adversarial review was run by the drafting team, so an independent re-read is advisable.
 
 **Recommended sequence:** re-run the cost model against version 1.2 — both October 20 decisions move it **downward** → tax questions to counsel → patron → DLS → VRS pre-filing briefing, so the § 30-19.1:7 statement is informed rather than adversarial. Two verifications close first: the enactment clauses of 2026 c. 563, and an LIS search confirming no comparable bill exists.
 

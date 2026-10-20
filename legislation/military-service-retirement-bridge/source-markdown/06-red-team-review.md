@@ -1,6 +1,6 @@
 # Red Team / Counsel Review — Military Service Retirement Bridge
 
-**Issue:** MOO-260 (adversarial pass on the MOO-257 package)
+**Issue:** MOO-260 (red-team adversarial review of the MOO-257 package)
 **Prepared by Policy Development Team using legal, policy, and financial analysis tools, pending review by veterans' legal counsel.**
 **Date:** October 19, 2026
 **Materials reviewed:** `01-bill-draft.md`, `02-legal-analysis-memo.md`, `03-jlc-one-page-brief.md`, `04-jlc-two-page-brief.md`, `05-source-appendix.md`
