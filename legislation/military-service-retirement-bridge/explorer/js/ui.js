@@ -192,7 +192,7 @@
     var rows = plans.map(function (k) {
       var s = a.byPlan[k];
       return { cells: [
-        '<span class="swatch" style="background:' + planColor(k) + '"></span>' + planName(k),
+        '<span class="swatch" style="background:' + planColor(k) + '"></span>' + planNameHtml(k),
         num(s.purchasablePool, 0), num(s.participants, 1), s.meanYears.toFixed(2),
         num(s.years, 0), s.meanAcceleration.toFixed(2), usd(s.pricePerParticipant),
         usdM(s.price)] };
@@ -218,6 +218,12 @@
     return k === 'P1' ? 'Plan 1 (§ 51.1-153 B 2)'
       : k === 'P2' ? 'Plan 2 (Rule of 90)' : 'Hybrid (not the bill)';
   }
+  /* planName() is also used inside esc() for chart tooltips, where markup
+     would be shown literally, so the glossary link lives in a separate
+     HTML-only variant used in the table cells. */
+  function planNameHtml(k) {
+    return k === 'P2' ? 'Plan 2 (' + g('rule of 90', 'Rule of 90') + ')' : planName(k);
+  }
 
   /* ==================================================================== */
   /*  PANEL B — pension-system impact                                     */
@@ -226,13 +232,15 @@
     var C = R.panelB.combined, p = R.params;
     $('b-hero').innerHTML = [
       ['accent-1', 'Value of accelerated unreduced retirement',
-       usdM(C.valueBlended), 'blended at φ = ' + p.phi.toFixed(2) +
+       usdM(C.valueBlended), 'blended at ' + g('behavioural assumption', 'φ') +
+       ' = ' + p.phi.toFixed(2) +
        ' &mdash; ' + usdM(C.valueSub) + ' frozen-service / ' + usdM(C.valueWte) +
        ' work-to-eligibility'],
       ['accent-2', 'Member ANC payments received', usdM(C.price),
        C.costRecovery !== null ? 'recovers ' + C.costRecovery.toFixed(0) +
        '% of the value conferred' : ''],
-      ['accent-3', L.pension + ' (net liability change)', usdM(C.netLiability),
+      ['accent-3', L.pension + ' (' + g('pension liability', 'net liability change') +
+       ')', usdM(C.netLiability),
        'value conferred less member payments'],
       ['accent-mute', 'Employer contribution-rate impact', bp(C.bp),
        g('employer contribution-rate basis points', 'basis points') +
@@ -294,7 +302,7 @@
     var rows = plans.map(function (k) {
       var s = R.panelB.byPlan[k];
       return { cells: [
-        '<span class="swatch" style="background:' + planColor(k) + '"></span>' + planName(k),
+        '<span class="swatch" style="background:' + planColor(k) + '"></span>' + planNameHtml(k),
         num(s.participants, 1), usdM(s.price), usdM(s.valueSub), usdM(s.valueWte),
         usdM(s.valueBlended), usdM(s.netLiability), bp(s.bpContribution)] };
     });
@@ -364,7 +372,7 @@
        p.vacancyMonths + ' month(s) &mdash; one-off, not a recurring saving'],
       ['accent-mute', 'Employer retirement contribution difference',
        usdM(w.erContribDiff), 'at the published employer DB rates'],
-      ['accent-mute', L.payroll + ' — total', usdM(w.total),
+      ['accent-mute', g('payroll effect', L.payroll) + ' — total', usdM(w.total),
        '<strong>not a pension saving</strong>']
     ].map(function (t) {
       return '<div class="tile ' + t[0] + '"><span class="k">' + t[1] +
@@ -737,6 +745,10 @@
   /* ==================================================================== */
   /*  Official VRS data mode                                              */
   /* ==================================================================== */
+  function syncOfficialSpec() {
+    $('official-spec').hidden = !$('i-official').checked;
+  }
+
   function renderOfficialSpec() {
     $('official-spec').innerHTML = '<div class="table-wrap">' + table(
       'Supplying any field replaces the corresponding estimate and re-tags it a ' +
@@ -787,22 +799,32 @@
   ];
   var vetSliders = [['i-vst', 'v-vst', 'ST'], ['i-vtc', 'v-vtc', 'TC'], ['i-vps', 'v-vps', 'PS']];
 
+  /* A range input SNAPS whatever value it is handed onto its own min/step
+     grid. If a preset asks for a setting off that grid, the control ends up
+     holding a different number from the one the label prints and the model
+     computed with — and the next touch of any other control silently adopts
+     the snapped value instead. So read every control back after writing it
+     and keep `state` equal to what the interface can actually express. The
+     display, the control and the model then cannot disagree. */
   function pushStateToControls() {
     sliders.forEach(function (s) {
       $(s[0]).value = state[s[2]] * s[3];
+      state[s[2]] = parseFloat($(s[0]).value) / s[3];
       $(s[1]).innerHTML = s[4](state[s[2]]);
     });
+    var vs = {};
     vetSliders.forEach(function (s) {
       $(s[0]).value = state.veteranShare[s[2]] * 100;
-      $(s[1]).innerHTML = pct(state.veteranShare[s[2]], 1);
+      vs[s[2]] = parseFloat($(s[0]).value) / 100;
+      $(s[1]).innerHTML = pct(vs[s[2]], 1);
     });
+    state.veteranShare = vs;
     setSeg('seg-participant-mode', state.participantMode);
     setSeg('seg-bridge-mode', state.bridgeYearsMode);
     setSeg('seg-salary-mode', state.salaryMode);
     $('i-rule').value = state.rule;
     $('i-hybrid').checked = state.includeHybrid;
     $('i-amort').checked = state.amortizeAtScenarioDiscount;
-    $('i-official').checked = state.officialData;
     $('phi-sub').textContent = pct(1 - state.phi, 0);
     $('phi-wte').textContent = pct(state.phi, 0);
     syncConditionalVisibility();
@@ -816,7 +838,6 @@
     state.rule = $('i-rule').value;
     state.includeHybrid = $('i-hybrid').checked;
     state.amortizeAtScenarioDiscount = $('i-amort').checked;
-    state.officialData = $('i-official').checked;
     var p1 = parseFloat($('i-p1n').value), p2 = parseFloat($('i-p2n').value);
     state.p1Participants = isNaN(p1) ? null : p1;
     state.p2Participants = isNaN(p2) ? null : p2;
@@ -838,6 +859,12 @@
     renderG(R); renderAncillary(R);
     updateNotes(R);
     $('scenario-chip').textContent = presetLabel();
+    /* Highlight the preset actually in force, not a fixed one. */
+    $('presets').querySelectorAll('[data-preset]').forEach(function (b) {
+      b.classList.toggle('btn-primary', b.getAttribute('data-preset') === activePreset);
+      b.setAttribute('aria-pressed', b.getAttribute('data-preset') === activePreset
+        ? 'true' : 'false');
+    });
 
     /* the tornado needs 16 recomputes; debounce it behind the main render so
        dragging a slider never waits on it */
@@ -901,8 +928,8 @@
   function buildPresets() {
     var pr = E.presets();
     $('presets').innerHTML = Object.keys(pr).map(function (k) {
-      return '<button class="btn' + (k === 'central' ? ' btn-primary' : '') +
-        '" type="button" data-preset="' + k + '">' + esc(pr[k].name) + '</button>' +
+      return '<button class="btn" type="button" data-preset="' + k + '">' +
+        esc(pr[k].name) + '</button>' +
         '<p class="preset-desc">' + esc(pr[k].description) + '</p>';
     }).join('');
     $('presets').querySelectorAll('[data-preset]').forEach(function (b) {
@@ -1092,9 +1119,15 @@
     ['i-p1n', 'i-p2n', 'i-p1sal', 'i-p2sal'].forEach(function (id) {
       $(id).addEventListener('input', function () { onInput(false); });
     });
-    ['i-rule', 'i-hybrid', 'i-amort', 'i-official'].forEach(function (id) {
+    ['i-rule', 'i-hybrid', 'i-amort'].forEach(function (id) {
       $(id).addEventListener('change', function () { onInput(true); });
     });
+    /* "Official VRS data mode" discloses the data contract; it is not a
+       scenario parameter. It used to be written into `state`, which flipped
+       the scenario chip to "Custom scenario" while changing no figure and
+       revealing nothing — a control that read as a mode which had taken
+       effect. It now does exactly what its label offers. */
+    $('i-official').addEventListener('change', syncOfficialSpec);
     [['seg-participant-mode', 'participantMode'], ['seg-bridge-mode', 'bridgeYearsMode'],
      ['seg-salary-mode', 'salaryMode']].forEach(function (pair) {
       $(pair[0]).querySelectorAll('button').forEach(function (b) {
@@ -1111,6 +1144,8 @@
       activePreset = 'central';
       ['i-p1n', 'i-p2n', 'i-p1sal', 'i-p2sal'].forEach(function (id) { $(id).value = ''; });
       $('adv-panel').open = false;
+      $('i-official').checked = false;
+      syncOfficialSpec();
       pushStateToControls();
       renderAll(true);
     });
@@ -1160,6 +1195,7 @@
   buildPresets();
   renderRegistry();
   renderOfficialSpec();
+  syncOfficialSpec();
   pushStateToControls();
   wire();
   renderAll(true);

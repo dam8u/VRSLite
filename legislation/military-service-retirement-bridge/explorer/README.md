@@ -39,7 +39,9 @@ standalone files are generated; edit the sources, not `dist/`.
 | `css/explorer.css` | Light and dark, each defined explicitly |
 | `data/baseline.js` | Published inputs, actuarial tables, profiles. **Generated** |
 | `data/cells.js` | The age × service × fiscal-year exposure grid. **Generated** |
-| `test/reconcile.js` | 98-check regression harness against the Python model |
+| `test/reconcile.js` | 98-check regression harness: the **engine** against the Python model |
+| `test/standalone.js` | 1,928-check output-accuracy harness: the **shipped single file**, driven through every control in a real browser |
+| `test/chrome.js`, `test/inpage.js` | DevTools-protocol driver and the probe it injects. No npm dependency |
 | `build_standalone.py` | Packaging only — inlines everything into `dist/` |
 
 The engine is a port of the committed Python fiscal model (`../fiscal-model/actuarial.py`,
@@ -60,16 +62,41 @@ node test/reconcile.js             # 98 checks in 8 groups
 
 # 3. Rebuild the single-file copies
 python3 build_standalone.py        # writes dist/
+
+# 4. Test the file that actually ships (needs a local Chrome; CHROME_PATH to override)
+node test/standalone.js            # 1,928 checks in 19 groups
+node test/standalone.js --quick    # fewer settings per slider
 ```
 
 The two generated data files carry a "do not edit by hand" header for a reason: the only
 way to change a number in this tool is to change the Python model and regenerate. That is
 what keeps the dashboard and the committed fiscal model from drifting apart.
 
+## Two harnesses, because they answer different questions
+
+`test/reconcile.js` proves the **engine** reproduces the committed Python fiscal model. It
+imports `js/engine.js` directly, so it says nothing about the file a legislator is
+actually sent. A control can be wired to the wrong parameter, display one value and feed
+the model another, or leave a panel holding a stale number, and that harness would pass
+throughout.
+
+`test/standalone.js` tests `dist/explorer-standalone.html` **as a document**. It opens the
+shipped file in a real headless browser and, for every slider, numeric entry, checkbox,
+select, mode segment and preset, checks that
+
+1. the control's **displayed value matches the value it holds**;
+2. **every figure on every panel** is the one the model returns for the parameters the
+   *visible controls* describe — reconstructed independently of the interface's own
+   internal state;
+3. the fiscal guardrails and dimensional sanity checks hold, whatever the engine says.
+
+It also asserts the inlined payloads are byte-identical to the current sources, so a stale
+`dist/` fails loudly instead of being tested in place of the real application.
+
 ## Guardrails, enforced by test rather than by convention
 
-Group 5 of `test/reconcile.js` asserts each of these, so they cannot be lost in a later
-edit:
+Group 5 of `test/reconcile.js` and groups 9–11 of `test/standalone.js` assert each of
+these, so they cannot be lost in a later edit:
 
 - **A refilled position never produces a full-salary saving.** Only the compensation
   differential counts. At 100% replacement the payroll effect is **zero by
@@ -86,7 +113,13 @@ edit:
   funded trusts. HIC and COLA follow the retirement date, so preventing earlier
   commencement would require separate statutory changes outside the bridge; the proposal
   deliberately accepts and discloses the earlier commencement.
-- **Plan 1 and Plan 2 stay separate** until the final aggregation.
+- **Plan 1 and Plan 2 stay separate** until the final aggregation, and moving one plan's
+  bridge-amount slider leaves the other untouched.
+- **A vacancy of *n* months costs *n* months of pay**, not *n*/12 of the whole
+  acceleration window — the window averages about 1.9 years, so the two differ by roughly
+  a factor of two.
+- **The population funnel never widens.** Each step is a true subset of the one above it
+  at any setting of the three veteran-share sliders.
 - **Nothing is ever labelled "Savings."** The permitted labels are *Modeled pension
   impact*, *Modeled payroll effect*, *Modeled workforce effect* and *Combined scenario
   effect*.

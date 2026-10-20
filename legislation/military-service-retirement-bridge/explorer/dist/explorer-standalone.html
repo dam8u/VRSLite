@@ -761,21 +761,21 @@ abbr.tipped { text-decoration: none; }
         </span>
         <span class="val" id="v-vst">6.0%</span>
       </div>
-      <input type="range" id="i-vst" min="1" max="16" step="0.5" value="6">
+      <input type="range" id="i-vst" min="1" max="16" step="0.1" value="6">
     </div>
     <div class="ctrl">
       <div class="ctrl-label">
         <span>Veteran share &mdash; teachers <span class="muted">(assumed)</span></span>
         <span class="val" id="v-vtc">2.5%</span>
       </div>
-      <input type="range" id="i-vtc" min="0.5" max="12" step="0.5" value="2.5">
+      <input type="range" id="i-vtc" min="0.5" max="12" step="0.1" value="2.5">
     </div>
     <div class="ctrl">
       <div class="ctrl-label">
         <span>Veteran share &mdash; political subdivisions <span class="muted">(assumed)</span></span>
         <span class="val" id="v-vps">7.0%</span>
       </div>
-      <input type="range" id="i-vps" min="1" max="18" step="0.5" value="7">
+      <input type="range" id="i-vps" min="1" max="18" step="0.1" value="7">
     </div>
     <div class="ctrl">
       <div class="ctrl-label">
@@ -832,7 +832,7 @@ abbr.tipped { text-decoration: none; }
           rewriting the model.</span>
       </label>
     </div>
-    <div id="official-spec"></div>
+    <div id="official-spec" hidden></div>
   </details>
 </aside>
 
@@ -2791,6 +2791,12 @@ window.VRS_REGISTRY = {
     }
     /* per benefit structure, and per benefit structure x employer plan */
     var byPlan = {}, byPlanEmp = {}, byEmp = {}, inBand = { total: 0 };
+    /* Headcount exposed to a purchase opportunity, by employer plan, over
+       every cell in scope — INCLUDING cells where nobody ends up buying.
+       The funnel needs the denominator the per-employer veteran shares are
+       actually applied to; weighting them by total active headcount instead
+       let the funnel widen between its last two steps. */
+    var exposedByEmp = { ST: 0, TC: 0, PS: 0 };
     plansWanted.forEach(function (pl) {
       byPlan[pl] = blankAcc();
       byPlanEmp[pl] = {};
@@ -2805,6 +2811,7 @@ window.VRS_REGISTRY = {
       path = cell.plan === 'P1' ? 'B2' : 'B3';
       d = eligibilityDeficit(path, cell.age, cell.service);
       inBand.total += cell.exposed;
+      exposedByEmp[cell.emp] += cell.exposed;
 
       share = purchasableShare(cell.emp, p);
       pool = cell.exposed * share;
@@ -2988,8 +2995,19 @@ window.VRS_REGISTRY = {
       /* A temporary vacancy on a position that IS refilled: the post is
          unfilled for `vacancyMonths` before the replacement starts. Valued on
          the replacement's own compensation, and reported separately from the
-         permanent effects because it is a one-off, not a recurring saving. */
-      var vacancy = refilledBase * p.replacementPct * (p.vacancyMonths / 12.0);
+         permanent effects because it is a one-off, not a recurring saving.
+
+         `departing` is a PRESENT VALUE OVER THE WHOLE ACCELERATION WINDOW,
+         which averages more than a year, so months/12 has to be applied to an
+         ANNUAL rate rather than to the window total. Dividing by the mean
+         window length first is what makes the slider mean months. Applying
+         months/12 to the window PV directly valued a 12-month vacancy as the
+         entire window — roughly twice the pay actually avoided at the modeled
+         mean acceleration, and it drove replacement payroll to zero as though
+         the post were never filled at all. */
+      var meanWindow = acc.participants > 1e-9 ? acc.accelYears / acc.participants : 0;
+      var annualRefilled = meanWindow > 1e-9 ? refilledBase / meanWindow : 0;
+      var vacancy = annualRefilled * p.replacementPct * (p.vacancyMonths / 12.0);
       vacancy = Math.min(vacancy, replacement);
       var erDep = departing * acc.erDbRate;
       var erRep = (replacement - vacancy) * acc.erDbRate;
@@ -3013,7 +3031,10 @@ window.VRS_REGISTRY = {
         var acc = pension.byEmployer[e];
         var refilled = acc.pvPayrollForgone * (1 - p.notReplacedPct);
         var rep = refilled * pct;
-        var vac = Math.min(rep * (p.vacancyMonths / 12.0), rep);
+        /* same annualization as above — months, not fractions of the window */
+        var mw = acc.participants > 1e-9 ? acc.accelYears / acc.participants : 0;
+        var vac = Math.min(mw > 1e-9 ? (refilled / mw) * pct * (p.vacancyMonths / 12.0) : 0,
+                           rep);
         lower += refilled - rep;
         er += acc.pvPayrollForgone * acc.erDbRate - (rep - vac) * acc.erDbRate;
       });
@@ -3062,7 +3083,8 @@ window.VRS_REGISTRY = {
     };
 
     /* ---- Panel G: the population funnel, with provenance -------------- */
-    var funnel = buildFunnel(p, inBand, byPlan, plansWanted, participants, scale);
+    var funnel = buildFunnel(p, inBand, byPlan, plansWanted, participants, scale,
+                             exposedByEmp);
 
     return {
       params: p,
@@ -3083,27 +3105,34 @@ window.VRS_REGISTRY = {
   }
 
   /* ------------------------------------------------------- Panel G funnel */
-  function buildFunnel(p, inBand, byPlan, plansWanted, participants, scale) {
+  function buildFunnel(p, inBand, byPlan, plansWanted, participants, scale,
+                       exposedByEmp) {
     var pub = B.published;
     var activeThree = pub.active_total_three_plans;
     var exposedTotal = 0, purchasableTotal = 0, participantsTotal = 0;
-    plansWanted.forEach(function (pl) {
-      exposedTotal += byPlan[pl].exposed > 0 ? 0 : 0;   // recomputed below
-    });
     /* exposed headcount is a property of the cell mix, not of the funnel */
-    var exposedByPlan = B.exposed_headcount_by_plan;
     plansWanted.forEach(function (pl) {
-      exposedTotal += exposedByPlan[pl] || 0;
       purchasableTotal += byPlan[pl].purchasable;
       participantsTotal += participants[pl];
     });
+    EMPLOYERS.forEach(function (e) { exposedTotal += exposedByEmp[e] || 0; });
 
+    /* The veteran share is applied PER EMPLOYER PLAN to the exposed
+       near-threshold population, cell by cell, in the aggregation above. The
+       funnel's single blended share must therefore be weighted by the same
+       exposed headcount, not by total active headcount — the two mixes
+       differ, and weighting by active headcount made steps 3 to 6 describe a
+       different population from step 7, so the funnel could WIDEN at its
+       last step (visible with the three veteran-share sliders set
+       unevenly). Weighted this way, afterVet is identically the sum over
+       employers of exposed x share, so each step is a true subset of the
+       one above it. */
     var vetWeighted = 0, wsum = 0;
     EMPLOYERS.forEach(function (e) {
-      var w = pub.active_by_employer[e];
+      var w = exposedByEmp[e] || 0;
       vetWeighted += p.veteranShare[e] * w; wsum += w;
     });
-    var vetAvg = vetWeighted / wsum;
+    var vetAvg = wsum > 1e-9 ? vetWeighted / wsum : 0;
 
     var afterVet = exposedTotal * vetAvg;
     var afterQual = afterVet * p.qualifyingShare;
@@ -3523,7 +3552,7 @@ window.VRS_REGISTRY = {
     var rows = plans.map(function (k) {
       var s = a.byPlan[k];
       return { cells: [
-        '<span class="swatch" style="background:' + planColor(k) + '"></span>' + planName(k),
+        '<span class="swatch" style="background:' + planColor(k) + '"></span>' + planNameHtml(k),
         num(s.purchasablePool, 0), num(s.participants, 1), s.meanYears.toFixed(2),
         num(s.years, 0), s.meanAcceleration.toFixed(2), usd(s.pricePerParticipant),
         usdM(s.price)] };
@@ -3549,6 +3578,12 @@ window.VRS_REGISTRY = {
     return k === 'P1' ? 'Plan 1 (§ 51.1-153 B 2)'
       : k === 'P2' ? 'Plan 2 (Rule of 90)' : 'Hybrid (not the bill)';
   }
+  /* planName() is also used inside esc() for chart tooltips, where markup
+     would be shown literally, so the glossary link lives in a separate
+     HTML-only variant used in the table cells. */
+  function planNameHtml(k) {
+    return k === 'P2' ? 'Plan 2 (' + g('rule of 90', 'Rule of 90') + ')' : planName(k);
+  }
 
   /* ==================================================================== */
   /*  PANEL B — pension-system impact                                     */
@@ -3557,13 +3592,15 @@ window.VRS_REGISTRY = {
     var C = R.panelB.combined, p = R.params;
     $('b-hero').innerHTML = [
       ['accent-1', 'Value of accelerated unreduced retirement',
-       usdM(C.valueBlended), 'blended at φ = ' + p.phi.toFixed(2) +
+       usdM(C.valueBlended), 'blended at ' + g('behavioural assumption', 'φ') +
+       ' = ' + p.phi.toFixed(2) +
        ' &mdash; ' + usdM(C.valueSub) + ' frozen-service / ' + usdM(C.valueWte) +
        ' work-to-eligibility'],
       ['accent-2', 'Member ANC payments received', usdM(C.price),
        C.costRecovery !== null ? 'recovers ' + C.costRecovery.toFixed(0) +
        '% of the value conferred' : ''],
-      ['accent-3', L.pension + ' (net liability change)', usdM(C.netLiability),
+      ['accent-3', L.pension + ' (' + g('pension liability', 'net liability change') +
+       ')', usdM(C.netLiability),
        'value conferred less member payments'],
       ['accent-mute', 'Employer contribution-rate impact', bp(C.bp),
        g('employer contribution-rate basis points', 'basis points') +
@@ -3625,7 +3662,7 @@ window.VRS_REGISTRY = {
     var rows = plans.map(function (k) {
       var s = R.panelB.byPlan[k];
       return { cells: [
-        '<span class="swatch" style="background:' + planColor(k) + '"></span>' + planName(k),
+        '<span class="swatch" style="background:' + planColor(k) + '"></span>' + planNameHtml(k),
         num(s.participants, 1), usdM(s.price), usdM(s.valueSub), usdM(s.valueWte),
         usdM(s.valueBlended), usdM(s.netLiability), bp(s.bpContribution)] };
     });
@@ -3695,7 +3732,7 @@ window.VRS_REGISTRY = {
        p.vacancyMonths + ' month(s) &mdash; one-off, not a recurring saving'],
       ['accent-mute', 'Employer retirement contribution difference',
        usdM(w.erContribDiff), 'at the published employer DB rates'],
-      ['accent-mute', L.payroll + ' — total', usdM(w.total),
+      ['accent-mute', g('payroll effect', L.payroll) + ' — total', usdM(w.total),
        '<strong>not a pension saving</strong>']
     ].map(function (t) {
       return '<div class="tile ' + t[0] + '"><span class="k">' + t[1] +
@@ -4068,6 +4105,10 @@ window.VRS_REGISTRY = {
   /* ==================================================================== */
   /*  Official VRS data mode                                              */
   /* ==================================================================== */
+  function syncOfficialSpec() {
+    $('official-spec').hidden = !$('i-official').checked;
+  }
+
   function renderOfficialSpec() {
     $('official-spec').innerHTML = '<div class="table-wrap">' + table(
       'Supplying any field replaces the corresponding estimate and re-tags it a ' +
@@ -4118,22 +4159,32 @@ window.VRS_REGISTRY = {
   ];
   var vetSliders = [['i-vst', 'v-vst', 'ST'], ['i-vtc', 'v-vtc', 'TC'], ['i-vps', 'v-vps', 'PS']];
 
+  /* A range input SNAPS whatever value it is handed onto its own min/step
+     grid. If a preset asks for a setting off that grid, the control ends up
+     holding a different number from the one the label prints and the model
+     computed with — and the next touch of any other control silently adopts
+     the snapped value instead. So read every control back after writing it
+     and keep `state` equal to what the interface can actually express. The
+     display, the control and the model then cannot disagree. */
   function pushStateToControls() {
     sliders.forEach(function (s) {
       $(s[0]).value = state[s[2]] * s[3];
+      state[s[2]] = parseFloat($(s[0]).value) / s[3];
       $(s[1]).innerHTML = s[4](state[s[2]]);
     });
+    var vs = {};
     vetSliders.forEach(function (s) {
       $(s[0]).value = state.veteranShare[s[2]] * 100;
-      $(s[1]).innerHTML = pct(state.veteranShare[s[2]], 1);
+      vs[s[2]] = parseFloat($(s[0]).value) / 100;
+      $(s[1]).innerHTML = pct(vs[s[2]], 1);
     });
+    state.veteranShare = vs;
     setSeg('seg-participant-mode', state.participantMode);
     setSeg('seg-bridge-mode', state.bridgeYearsMode);
     setSeg('seg-salary-mode', state.salaryMode);
     $('i-rule').value = state.rule;
     $('i-hybrid').checked = state.includeHybrid;
     $('i-amort').checked = state.amortizeAtScenarioDiscount;
-    $('i-official').checked = state.officialData;
     $('phi-sub').textContent = pct(1 - state.phi, 0);
     $('phi-wte').textContent = pct(state.phi, 0);
     syncConditionalVisibility();
@@ -4147,7 +4198,6 @@ window.VRS_REGISTRY = {
     state.rule = $('i-rule').value;
     state.includeHybrid = $('i-hybrid').checked;
     state.amortizeAtScenarioDiscount = $('i-amort').checked;
-    state.officialData = $('i-official').checked;
     var p1 = parseFloat($('i-p1n').value), p2 = parseFloat($('i-p2n').value);
     state.p1Participants = isNaN(p1) ? null : p1;
     state.p2Participants = isNaN(p2) ? null : p2;
@@ -4169,6 +4219,12 @@ window.VRS_REGISTRY = {
     renderG(R); renderAncillary(R);
     updateNotes(R);
     $('scenario-chip').textContent = presetLabel();
+    /* Highlight the preset actually in force, not a fixed one. */
+    $('presets').querySelectorAll('[data-preset]').forEach(function (b) {
+      b.classList.toggle('btn-primary', b.getAttribute('data-preset') === activePreset);
+      b.setAttribute('aria-pressed', b.getAttribute('data-preset') === activePreset
+        ? 'true' : 'false');
+    });
 
     /* the tornado needs 16 recomputes; debounce it behind the main render so
        dragging a slider never waits on it */
@@ -4232,8 +4288,8 @@ window.VRS_REGISTRY = {
   function buildPresets() {
     var pr = E.presets();
     $('presets').innerHTML = Object.keys(pr).map(function (k) {
-      return '<button class="btn' + (k === 'central' ? ' btn-primary' : '') +
-        '" type="button" data-preset="' + k + '">' + esc(pr[k].name) + '</button>' +
+      return '<button class="btn" type="button" data-preset="' + k + '">' +
+        esc(pr[k].name) + '</button>' +
         '<p class="preset-desc">' + esc(pr[k].description) + '</p>';
     }).join('');
     $('presets').querySelectorAll('[data-preset]').forEach(function (b) {
@@ -4423,9 +4479,15 @@ window.VRS_REGISTRY = {
     ['i-p1n', 'i-p2n', 'i-p1sal', 'i-p2sal'].forEach(function (id) {
       $(id).addEventListener('input', function () { onInput(false); });
     });
-    ['i-rule', 'i-hybrid', 'i-amort', 'i-official'].forEach(function (id) {
+    ['i-rule', 'i-hybrid', 'i-amort'].forEach(function (id) {
       $(id).addEventListener('change', function () { onInput(true); });
     });
+    /* "Official VRS data mode" discloses the data contract; it is not a
+       scenario parameter. It used to be written into `state`, which flipped
+       the scenario chip to "Custom scenario" while changing no figure and
+       revealing nothing — a control that read as a mode which had taken
+       effect. It now does exactly what its label offers. */
+    $('i-official').addEventListener('change', syncOfficialSpec);
     [['seg-participant-mode', 'participantMode'], ['seg-bridge-mode', 'bridgeYearsMode'],
      ['seg-salary-mode', 'salaryMode']].forEach(function (pair) {
       $(pair[0]).querySelectorAll('button').forEach(function (b) {
@@ -4442,6 +4504,8 @@ window.VRS_REGISTRY = {
       activePreset = 'central';
       ['i-p1n', 'i-p2n', 'i-p1sal', 'i-p2sal'].forEach(function (id) { $(id).value = ''; });
       $('adv-panel').open = false;
+      $('i-official').checked = false;
+      syncOfficialSpec();
       pushStateToControls();
       renderAll(true);
     });
@@ -4491,6 +4555,7 @@ window.VRS_REGISTRY = {
   buildPresets();
   renderRegistry();
   renderOfficialSpec();
+  syncOfficialSpec();
   pushStateToControls();
   wire();
   renderAll(true);

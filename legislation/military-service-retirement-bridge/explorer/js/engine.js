@@ -569,6 +569,12 @@
     }
     /* per benefit structure, and per benefit structure x employer plan */
     var byPlan = {}, byPlanEmp = {}, byEmp = {}, inBand = { total: 0 };
+    /* Headcount exposed to a purchase opportunity, by employer plan, over
+       every cell in scope — INCLUDING cells where nobody ends up buying.
+       The funnel needs the denominator the per-employer veteran shares are
+       actually applied to; weighting them by total active headcount instead
+       let the funnel widen between its last two steps. */
+    var exposedByEmp = { ST: 0, TC: 0, PS: 0 };
     plansWanted.forEach(function (pl) {
       byPlan[pl] = blankAcc();
       byPlanEmp[pl] = {};
@@ -583,6 +589,7 @@
       path = cell.plan === 'P1' ? 'B2' : 'B3';
       d = eligibilityDeficit(path, cell.age, cell.service);
       inBand.total += cell.exposed;
+      exposedByEmp[cell.emp] += cell.exposed;
 
       share = purchasableShare(cell.emp, p);
       pool = cell.exposed * share;
@@ -766,8 +773,19 @@
       /* A temporary vacancy on a position that IS refilled: the post is
          unfilled for `vacancyMonths` before the replacement starts. Valued on
          the replacement's own compensation, and reported separately from the
-         permanent effects because it is a one-off, not a recurring saving. */
-      var vacancy = refilledBase * p.replacementPct * (p.vacancyMonths / 12.0);
+         permanent effects because it is a one-off, not a recurring saving.
+
+         `departing` is a PRESENT VALUE OVER THE WHOLE ACCELERATION WINDOW,
+         which averages more than a year, so months/12 has to be applied to an
+         ANNUAL rate rather than to the window total. Dividing by the mean
+         window length first is what makes the slider mean months. Applying
+         months/12 to the window PV directly valued a 12-month vacancy as the
+         entire window — roughly twice the pay actually avoided at the modeled
+         mean acceleration, and it drove replacement payroll to zero as though
+         the post were never filled at all. */
+      var meanWindow = acc.participants > 1e-9 ? acc.accelYears / acc.participants : 0;
+      var annualRefilled = meanWindow > 1e-9 ? refilledBase / meanWindow : 0;
+      var vacancy = annualRefilled * p.replacementPct * (p.vacancyMonths / 12.0);
       vacancy = Math.min(vacancy, replacement);
       var erDep = departing * acc.erDbRate;
       var erRep = (replacement - vacancy) * acc.erDbRate;
@@ -791,7 +809,10 @@
         var acc = pension.byEmployer[e];
         var refilled = acc.pvPayrollForgone * (1 - p.notReplacedPct);
         var rep = refilled * pct;
-        var vac = Math.min(rep * (p.vacancyMonths / 12.0), rep);
+        /* same annualization as above — months, not fractions of the window */
+        var mw = acc.participants > 1e-9 ? acc.accelYears / acc.participants : 0;
+        var vac = Math.min(mw > 1e-9 ? (refilled / mw) * pct * (p.vacancyMonths / 12.0) : 0,
+                           rep);
         lower += refilled - rep;
         er += acc.pvPayrollForgone * acc.erDbRate - (rep - vac) * acc.erDbRate;
       });
@@ -840,7 +861,8 @@
     };
 
     /* ---- Panel G: the population funnel, with provenance -------------- */
-    var funnel = buildFunnel(p, inBand, byPlan, plansWanted, participants, scale);
+    var funnel = buildFunnel(p, inBand, byPlan, plansWanted, participants, scale,
+                             exposedByEmp);
 
     return {
       params: p,
@@ -861,27 +883,34 @@
   }
 
   /* ------------------------------------------------------- Panel G funnel */
-  function buildFunnel(p, inBand, byPlan, plansWanted, participants, scale) {
+  function buildFunnel(p, inBand, byPlan, plansWanted, participants, scale,
+                       exposedByEmp) {
     var pub = B.published;
     var activeThree = pub.active_total_three_plans;
     var exposedTotal = 0, purchasableTotal = 0, participantsTotal = 0;
-    plansWanted.forEach(function (pl) {
-      exposedTotal += byPlan[pl].exposed > 0 ? 0 : 0;   // recomputed below
-    });
     /* exposed headcount is a property of the cell mix, not of the funnel */
-    var exposedByPlan = B.exposed_headcount_by_plan;
     plansWanted.forEach(function (pl) {
-      exposedTotal += exposedByPlan[pl] || 0;
       purchasableTotal += byPlan[pl].purchasable;
       participantsTotal += participants[pl];
     });
+    EMPLOYERS.forEach(function (e) { exposedTotal += exposedByEmp[e] || 0; });
 
+    /* The veteran share is applied PER EMPLOYER PLAN to the exposed
+       near-threshold population, cell by cell, in the aggregation above. The
+       funnel's single blended share must therefore be weighted by the same
+       exposed headcount, not by total active headcount — the two mixes
+       differ, and weighting by active headcount made steps 3 to 6 describe a
+       different population from step 7, so the funnel could WIDEN at its
+       last step (visible with the three veteran-share sliders set
+       unevenly). Weighted this way, afterVet is identically the sum over
+       employers of exposed x share, so each step is a true subset of the
+       one above it. */
     var vetWeighted = 0, wsum = 0;
     EMPLOYERS.forEach(function (e) {
-      var w = pub.active_by_employer[e];
+      var w = exposedByEmp[e] || 0;
       vetWeighted += p.veteranShare[e] * w; wsum += w;
     });
-    var vetAvg = vetWeighted / wsum;
+    var vetAvg = wsum > 1e-9 ? vetWeighted / wsum : 0;
 
     var afterVet = exposedTotal * vetAvg;
     var afterQual = afterVet * p.qualifyingShare;

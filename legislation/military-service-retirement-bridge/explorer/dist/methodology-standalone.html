@@ -717,6 +717,12 @@ abbr.tipped { text-decoration: none; }
       <tr><td><code>test/reconcile.js</code></td><td style="text-align:left">The regression
         harness. Loads the engine under Node and checks it against the Python
         model&rsquo;s published tables.</td><td>~220</td></tr>
+      <tr><td><code>test/standalone.js</code></td><td style="text-align:left">The
+        output-accuracy harness. Drives the <em>shipped single file</em> through every
+        control in a real browser and checks each panel against the model.</td><td>~640</td></tr>
+      <tr><td><code>test/chrome.js</code>, <code>test/inpage.js</code></td>
+        <td style="text-align:left">DevTools-protocol driver and the in-page probe it
+        injects. No npm dependency.</td><td>~370</td></tr>
     </tbody>
   </table>
   </div>
@@ -760,6 +766,33 @@ abbr.tipped { text-decoration: none; }
     </tbody>
   </table>
   </div>
+
+  <h3>And the shipped file is tested as a document, not as a module</h3>
+  <p>Reconciling the engine says nothing about the file a legislator is actually sent. A
+  control can be wired to the wrong parameter, display one value and feed the model
+  another, or leave a panel holding a stale number, and a test that imports
+  <code>js/engine.js</code> directly would pass throughout. So
+  <code>node test/standalone.js</code> opens <code>dist/explorer-standalone.html</code> in
+  a real headless browser, drives every slider, numeric entry, checkbox, select, mode
+  segment and preset the way a user does, and for each resulting state:</p>
+  <ol>
+    <li>checks the control&rsquo;s own <strong>displayed value</strong> against the value
+      it holds &mdash; which is what catches a preset asking for a setting that its slider
+      cannot express;</li>
+    <li>reconstructs the engine parameters <strong>from the visible controls alone</strong>,
+      independently of the interface&rsquo;s internal state, runs the model on them, and
+      checks that <em>every</em> figure on every panel is the one the model returned;</li>
+    <li>asserts the fiscal guardrails and the dimensional sanity checks &mdash; a vacancy
+      of <var>n</var> months must cost <var>n</var> months of pay, the population funnel
+      must never widen, no Panel C control may move any pension figure &mdash; which hold
+      regardless of what the engine says.</li>
+  </ol>
+  <p>It runs <strong>1,928 checks</strong> in nineteen groups and currently passes all of
+  them, including an assertion that the inlined payloads are byte-identical to the current
+  sources, so a stale <code>dist/</code> fails loudly rather than being tested in place of
+  the real application. The one dependency is a locally installed Chrome or Chromium,
+  reached over the DevTools protocol with Node&rsquo;s built-in WebSocket; no npm package
+  is added.</p>
 
   <p>Two implementation details exist only to make that reconciliation exact. Python&rsquo;s
   <code>round()</code> is banker&rsquo;s rounding and JavaScript&rsquo;s
@@ -882,6 +915,19 @@ curve[PS]            = curve[ST] &times; 0.8394
     </tbody>
   </table>
   </div>
+
+  <p>The four screens are applied <strong>per employer plan, cell by cell</strong>, inside
+  the aggregation &mdash; a teacher cell is screened at the teacher veteran share, not at a
+  system-wide average. Panel G has to show a single blended veteran share at its third
+  step, and that blend is therefore weighted by the <strong>exposed near-threshold
+  headcount</strong> of each employer plan, which is the population the screens are
+  actually applied to. Weighting it by total active headcount instead described a
+  different population from the one reaching the later steps, and with the three veteran
+  sliders set unevenly the funnel could <em>widen</em> between its last two steps.
+  <code>test/standalone.js</code> group&nbsp;11 asserts the funnel never widens, at six
+  settings of the shares. Weighted this way the third step is identically
+  &Sigma;<sub>emp</sub> exposed &times; share, so every step is a true subset of the one
+  above it.</p>
 
   <p>Moving the funnel screens alone takes the combined aggregate impact from
   <strong>0.07 to 0.44 basis points</strong>. That spread is the honest measure of how much
@@ -1347,7 +1393,9 @@ not replaced     = departing &times; &nu;
 refilled base    = departing &times; (1 &minus; &nu;)
 replacement      = refilled base &times; &rho;
 lower-paid diff  = refilled base &minus; replacement  =  refilled base &times; (1 &minus; &rho;)
-vacancy          = min( refilled base &times; &rho; &times; months/12,  replacement )
+mean window      = accelerated years / participants      (&sect; 9.5)
+annual refilled  = refilled base / mean window
+vacancy          = min( annual refilled &times; &rho; &times; months/12,  replacement )
 
 employer DB on departing    = departing &times; employer DB rate
 employer DB on replacement  = (replacement &minus; vacancy) &times; employer DB rate
@@ -1372,7 +1420,15 @@ payroll / workforce effect  = lower-paid diff + not replaced + vacancy
       behind it &mdash; and it is still not pension savings.</li>
     <li><strong>A vacancy is a one-off timing effect</strong>, valued on the
       replacement&rsquo;s own compensation and capped at it, and reported separately from
-      permanent reductions.</li>
+      permanent reductions. The <strong>annualization step matters</strong>:
+      <code>departing</code> is a present value over the <em>whole</em> acceleration
+      window, which averages about 1.9 years, so <code>months/12</code> has to be applied
+      to an annual rate. Applying it to the window total instead valued a 12-month
+      vacancy as the entire window &mdash; roughly twice the compensation actually
+      avoided &mdash; and drove replacement payroll to zero as though the post were never
+      filled. <code>test/standalone.js</code> group&nbsp;10 asserts that a vacancy of
+      <var>n</var> months never exceeds <var>n</var> months of modeled pay, and that a
+      refilled post still draws pay whenever the vacancy is shorter than the window.</li>
     <li><strong>Nothing is included that is not supported by data.</strong> Recruiting
       cost, onboarding cost, productivity ramp-up, institutional-knowledge loss and
       service-delivery effects are <em>not</em> modeled. Their absence does not mean they
@@ -1669,7 +1725,11 @@ python3 calibrate_explorer.py        # writes out/explorer-baseline.json,
 cd ../explorer
 node test/reconcile.js               # 98 checks, 8 groups
 
-# 3. Open the dashboard
+# 3. Rebuild the single-file copies and test the one that actually ships
+python3 build_standalone.py          # writes dist/
+node test/standalone.js              # 1,928 checks through a real browser
+
+# 4. Open the dashboard
 open index.html                      # no server, no build, no dependencies</code></pre>
   <p>The two generated files carry a &ldquo;do not edit by hand&rdquo; header for a reason:
   the only way to change a number in this tool is to change the Python model and
