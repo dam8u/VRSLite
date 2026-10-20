@@ -149,6 +149,10 @@ def apply_brief_layout(doc):
 def convert(src, dst, brief=False):
     lines = open(src, encoding="utf-8").read().replace("\r\n", "\n").split("\n")
     doc = Document()
+    # Word shows these in File > Info; without them python-docx writes itself
+    # in as the author of every document in the package.
+    doc.core_properties.author = "Policy Development Team"
+    doc.core_properties.last_modified_by = "Policy Development Team"
     style = doc.styles["Normal"]
     style.font.name = "Calibri"
     style.font.size = Pt(10.5)

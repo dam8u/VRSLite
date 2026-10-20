@@ -1,7 +1,7 @@
 # Red Team / Counsel Review — Military Service Retirement Bridge
 
 **Issue:** MOO-260 (adversarial pass on the MOO-257 package)
-**Reviewer:** VRS2 — Virginia Public Pension Benefits Attorney
+**Prepared by Policy Development Team using legal, policy, and financial analysis tools, pending review by veterans' legal counsel.**
 **Date:** October 19, 2026
 **Materials reviewed:** `01-bill-draft.md`, `02-legal-analysis-memo.md`, `03-jlc-one-page-brief.md`, `04-jlc-two-page-brief.md`, `05-source-appendix.md`
 **Authority:** every Code citation below was read in the official text at law.lis.virginia.gov on October 19, 2026 (per-section pages and `vacodefull` chapter text). Full Title 51.1 Chapters 1, 4, 5, 11, 11.1 and 14 were retrieved and searched programmatically for "unreduced," for creditable-service thresholds, and for retirement-eligibility triggers. Titles 2.2 and 30 cross-references were read directly.
@@ -21,7 +21,7 @@
 >
 > **Two of this review's own conclusions were later shown to be incomplete**, and both are recorded rather than quietly fixed. The § 51.1-153 C paraphrase at F-01 omitted the subsection's second disjunct (five or more years of employer-paid non-withdrawable contributions); the verbatim text is now at S-42 in the source appendix. And the review did not notice that "member in service," the term F-01's own recommended fix depends on, is **not defined** in § 51.1-124.3 (S-46, drafting note 10).
 >
-> **Independence caveat, restated because it matters more than the findings.** This pass was run by the attorney who drafted the package, the independent Red Team / Counsel Reviewer being unavailable. The October 19 sign-off pass then found three stale cross-document statements that this review had missed. **Version 1.2 should be read by someone else before it reaches a patron.**
+> **Independence caveat, restated because it matters more than the findings.** This pass was run by the same team that drafted the package, no independent reviewer being available. The October 19 sign-off pass then found three stale cross-document statements that this review had missed. **Version 1.2 should be read by someone else before it reaches a patron.**
 
 ---
 

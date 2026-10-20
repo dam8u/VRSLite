@@ -1,5 +1,7 @@
 # Source Appendix — Military Service Retirement Bridge
 
+**Prepared by Policy Development Team using legal, policy, and financial analysis tools, pending review by veterans' legal counsel.**
+
 **Sources retrieved October 19, 2026; entries S-42 through S-47 added October 20, 2026 for bill version 1.2.** Primary authority is the official Code of Virginia published by the Virginia Law Library at law.lis.virginia.gov. Full-chapter text was retrieved from the `vacodefull` endpoints for programmatic searching of whole chapters. **Correction (October 19, 2026):** an earlier version of this line said the per-section pages render their text client-side and do not return it in the page body. That is not correct — the per-section pages (e.g. `.../section51.1-153/`) do return full section text in the response body, and independent verification of this package was performed that way. The reliance on `vacodefull` was a convenience for chapter-wide searching, not a necessity.
 
 ---

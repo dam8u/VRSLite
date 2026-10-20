@@ -1,7 +1,7 @@
 # Precedent and Stakeholder Scan — Military Service Retirement Bridge
 
 **Task:** MOO-261 (dependency of MOO-257)
-**Prepared by:** VRS2 — Virginia Public Pension Benefits Attorney
+**Prepared by Policy Development Team using legal, policy, and financial analysis tools, pending review by veterans' legal counsel.**
 **All sources retrieved October 19, 2026.**
 
 ## Method and retrieval note

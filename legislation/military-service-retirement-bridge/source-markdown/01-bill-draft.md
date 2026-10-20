@@ -2,7 +2,7 @@
 
 **Status:** Working draft. **All three blocking policy items are now resolved by recorded JLCVSO decisions (October 20, 2026) and are implemented in the text below.** Two pre-introduction items remain, neither of which is a drafting question: the VRS Board impact statement under § 30-19.1:7 has not been requested, and the federal tax questions in note 8 have not been put to counsel.
 **Prepared for:** Joint Leadership Council of Veterans Service Organizations (JLCVSO)
-**Prepared by:** VRS2 — Virginia Public Pension Benefits Attorney
+**Prepared by Policy Development Team using legal, policy, and financial analysis tools, pending review by veterans' legal counsel.**
 **Version:** 1.2 | **Date:** October 20, 2026 | **Source law current through:** Code of Virginia as published at law.lis.virginia.gov, retrieved October 19–20, 2026 (includes 2026 Acts, c. 563)
 
 **Reading convention in this draft:** **bold text** = language proposed to be added; ~~strikethrough~~ = language proposed to be struck. DLS will convert to the underscore/strikethrough convention used in introduced bills.

@@ -1,7 +1,7 @@
 # MILITARY SERVICE RETIREMENT BRIDGE
 ### Two-page brief for the Joint Leadership Council of Veterans Service Organizations
 
-**VRS2 — Virginia Public Pension Benefits Attorney** | October 20, 2026 | 2027 General Assembly | Bill version 1.2 | Amends § 2.2-3204 and seven Title 51.1 sections; adds new § 51.1-142.4
+**Prepared by Policy Development Team using legal, policy, and financial analysis tools, pending review by veterans' legal counsel.** | October 20, 2026 | 2027 General Assembly | Bill version 1.2 | Amends § 2.2-3204 and seven Title 51.1 sections; adds new § 51.1-142.4
 
 ## 1. The problem
 
@@ -25,7 +25,7 @@ The definition alone was **not enough.** Several provisions key off the **date**
 
 **Decided by JLCVSO, October 19, 2026**, and implemented in the draft: hybrid plan members are **not** covered — Plan 1 and Plan 2 only (B 1, J); career military retirees are **not** excepted from the retired-pay bar, which the bill inherits (H 5), so the realistic beneficiaries are veterans who separated **without** retirement-eligible service, plus reservists and Guard members protected by 10 U.S.C. § 12736 — **the most important expectation to manage with members**; the **PLOP eligibility date is frozen** (§ 51.1-165.01; F 6); and a **partial purchase capped at the shortfall** is allowed (C 2).
 
-**The PLOP trade-off, disclosed as directed.** PLOP eligibility turns on creditable service performed *after* first unreduced eligibility, and the bill freezes that date as though the bridge did not exist. **A member who buys bridge years and retires at the accelerated date will generally have no PLOP at all**; one who works through to normal retirement date keeps full PLOP under clause B 1(i). That is the deliberate price of leaving PLOP untouched, and the bill makes VRS disclose it in writing before purchase.
+**The PLOP trade-off, disclosed as directed.** PLOP eligibility turns on creditable service *after* first unreduced eligibility, and the bill freezes that date as though the bridge did not exist. **A member who buys bridge years and retires at the accelerated date will generally have no PLOP at all**; one who works through to normal retirement date keeps full PLOP under B 1(i). That is the deliberate price of leaving PLOP untouched; the bill makes VRS disclose it in writing before purchase.
 
 ### The three blockers from independent review — resolved October 20, 2026
 

@@ -1,7 +1,7 @@
 # Legal Analysis Memorandum — Military Service Retirement Bridge
 
 **To:** Joint Leadership Council of Veterans Service Organizations (JLCVSO); prospective patron; Division of Legislative Services
-**From:** VRS2 — Virginia Public Pension Benefits Attorney
+**Prepared by Policy Development Team using legal, policy, and financial analysis tools, pending review by veterans' legal counsel.**
 **Date:** October 19, 2026
 **Re:** Statutory architecture, defined terms, conflicts, unintended-effects review, and open questions for the proposed Military Service Retirement Bridge
 **Companion documents:** `01-bill-draft.md`, `03-jlc-one-page-brief.md`, `04-jlc-two-page-brief.md`, `05-source-appendix.md`

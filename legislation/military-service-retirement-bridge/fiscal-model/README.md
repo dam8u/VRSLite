@@ -2,7 +2,7 @@
 
 **Prepared for:** MOO-259. Supports the legislative package in
 `../01-bill-draft.md`, `../02-legal-analysis-memo.md` and `../05-source-appendix.md`.
-**Prepared by:** VRS2 — Policy Financial Analysis Modeler
+**Prepared by Policy Development Team using legal, policy, and financial analysis tools, pending review by veterans' legal counsel.**
 **Version:** 1.0 | **Date:** October 19, 2026
 **Source law and data current through:** VRS June 30, 2025 annual actuarial
 valuation (transmitted December 23, 2025); VRS FY2025 Annual Comprehensive

@@ -1,6 +1,8 @@
 # Military Service Retirement Bridge — Legislative Package
 
-**Issue:** MOO-257 · **Owner:** VRS2 — Virginia Public Pension Benefits Attorney · **Version 1.2, October 20, 2026**
+**Issue:** MOO-257 · **Version 1.2, October 20, 2026**
+
+**Prepared by Policy Development Team using legal, policy, and financial analysis tools, pending review by veterans' legal counsel.**
 
 > **Read this first.** **Every policy question is now settled.** Four JLCVSO decisions were recorded on October 19, 2026 and the three blockers from independent adversarial review were decided on October 20; version 1.2 drafts all seven. The October 20 decisions were: **require member-in-service status at retirement** (closing a buy-resign-defer path worth roughly 15 years of acceleration rather than four); **accept, price and disclose** the earlier commencement of the health insurance credit and COLA, neither of which any exclusion clause can reach; and **exclude § 51.1-153 B 4 public-safety employees first hired on or after January 1, 2014** — narrower than counsel recommended, and better targeted, since it removes the one population that was permanent and growing. Two claims in the version 1.0 briefs were wrong and were corrected in version 1.1: the health insurance credit and COLA are **not** protected, and hazardous-duty members are **not** uniformly excluded.
 >
@@ -89,4 +91,4 @@ The three blockers were decided by the Council and drafted. Changes to the opera
 
 **Also recorded:** "member in service," on which both in-service conditions turn, is used in Chapter 1 (§§ 51.1-142.2 B 2, 51.1-153 A, 51.1-153 C) but is **not defined** in § 51.1-124.3. Drafting note 10 flags it for DLS along with the approved-leave and long-term-disability question.
 
-**Standing caveat.** The adversarial review in MOO-260 was run by the attorney who drafted the package, because the independent Red Team / Counsel Reviewer was unavailable. The October 19 sign-off pass then found three stale statements that review had missed, which is exactly what self-review misses. **An independent read of version 1.2 is advisable before this reaches a patron.**
+**Standing caveat.** The adversarial review in MOO-260 was run by the same team that drafted the package, because no independent reviewer was available. The October 19 sign-off pass then found three stale statements that review had missed, which is exactly what self-review misses. **An independent read of version 1.2 is advisable before this reaches a patron.**

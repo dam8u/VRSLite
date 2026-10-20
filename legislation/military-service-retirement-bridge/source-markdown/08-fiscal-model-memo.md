@@ -3,7 +3,7 @@
 ### Price versus value of accelerated unreduced retirement under draft Va. Code § 51.1-142.4
 
 **Prepared for:** Joint Leadership Council of Veterans Service Organizations; prospective patron; VRS and Commonwealth budget reviewers
-**Prepared by:** VRS2 — Policy Financial Analysis Modeler
+**Prepared by Policy Development Team using legal, policy, and financial analysis tools, pending review by veterans' legal counsel.**
 **Issue:** MOO-259 (parent: MOO-257)
 **Version:** 1.0 | **Date:** October 19, 2026
 **Model, tables and reproducible code:** `fiscal-model/` (methodology and reconciliation in `fiscal-model/README.md`; every table in `fiscal-model/out/`)
