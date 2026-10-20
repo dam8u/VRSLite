@@ -27,8 +27,8 @@ The bridge is an **eligibility benefit, not a pension-accrual benefit**. It lets
 ## The three moves that make it work
 
 1. **New § 51.1-142.4**, not an amendment inside § 51.1-142.2 — because "creditable service" is defined as "prior service as set forth in § 51.1-142.2 plus membership service," so anything added there becomes creditable service automatically.
-2. **Express carve-out from the "creditable service" definition** in § 51.1-124.3, which protects the benefit formula, AFC, the health insurance credit, group life thresholds, disability allowances, and the five-year vesting analogue in one stroke.
-3. **Five conforming amendments** — to §§ 51.1-162, 51.1-165.01 and 51.1-166, which key off the *date of unreduced-retirement eligibility* rather than off creditable service, and (added in version 1.1) to **§ 2.2-3204 in Title 2.2**, under which Workforce Transition Act severance years convert from *age* into *creditable service* once an employee is eligible for unreduced retirement. Without these, the credit leaks into PLOP, the death-in-service benefit, and an employer-funded increase in the allowance itself, even though it is not creditable service.
+2. **Express carve-out from the "creditable service" definition** in § 51.1-124.3, which protects the benefit formula, AFC, the health insurance credit's **threshold and amount** (not its commencement date — see blocker 2 below), group life thresholds, disability allowances, and the five-year vesting analogue in one stroke.
+3. **Five conforming amendments across four sections** — to §§ 51.1-162, 51.1-165.01 and 51.1-166, which key off the *date of unreduced-retirement eligibility* rather than off creditable service, and (added in version 1.1) to **§ 2.2-3204 in Title 2.2**, under which Workforce Transition Act severance years convert from *age* into *creditable service* once an employee is eligible for unreduced retirement. Without these, the credit leaks into PLOP, the death-in-service benefit, and an employer-funded increase in the allowance itself, even though it is not creditable service.
 
 **What the three moves do not reach.** They control what the credit *is*. They do not control what an **earlier retirement date** does. The health insurance credit and ordinary COLA both commence at retirement, so both start up to four years earlier and neither is reachable by exclusion drafting. That is open blocker 2.
 
@@ -54,3 +54,13 @@ Three things that follow. The § 51.1-124.3 carve-out is worth a **5.7×** diffe
 ## Verification note
 
 All statutory text was read in the official Code of Virginia at law.lis.virginia.gov on October 19, 2026, including the 2026 amendments to § 51.1-142.2. § 51.1-142.4 was confirmed unoccupied. No Code section was inferred. "Plan 1," "Plan 2," "vesting," "earned service," and "benefit-calculation service" are not operative terms in Title 51.1 and are not used in the bill.
+
+## Final sign-off record (version 1.1, October 19, 2026)
+
+Title 51.1 sign-off review of the integrated package found no defect in the operative bill text and three cross-document inconsistencies, all corrected:
+
+1. **Drafting note 4 of the bill** still described "four express conforming amendments to §§ 51.1-162, 51.1-165.01, and 51.1-166," omitting the § 2.2-3204 amendment that version 1.1 added. Corrected to five amendments across four sections, with the Workforce Transition Act leak named and the "what these moves do not reach" caveat carried into the note DLS will read.
+2. **This README's three-moves list** said the § 51.1-124.3 carve-out protects "the health insurance credit," contradicting the correction recorded above it. Narrowed to the credit's threshold and amount, which is all the carve-out reaches.
+3. **The comparison table in the fiscal model memorandum** (§ 4) listed the health insurance credit and post-retirement supplement commencement among items "all expressly excluded or frozen." Split into its own row stating that neither is reached by the bill and that both sit outside the 0.19 bp figure.
+
+Sign-off is limited to internal consistency and Title 51.1 correctness of the text as drafted. **It is not an authorization to introduce.** The three blockers in "Open items that change the bill" remain open, and the VRS Board statement under § 30-19.1:7 has not been requested.

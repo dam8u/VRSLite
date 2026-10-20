@@ -53,7 +53,8 @@ Those two statements are both true, and the brief has to carry both. A committee
 | Benefit formula | 1.70% / 1.65% × AFC × creditable service, including purchased service | Unchanged. Credit excluded by § 51.1-124.3 as amended and § 51.1-142.4 F 3 |
 | Four-year military cap | Four years under § 51.1-142.2 B 2 | Combined four-year cap (§ 51.1-142.4 H 2); no period purchased twice (H 3) |
 | Attained age | — | Credit never increases attained age (§ 51.1-142.4 C 4), so the age-50 condition in B 2 still has to be met by waiting |
-| PLOP, health insurance credit, group life, disability, death-in-service, COLA commencement | Keyed to creditable service or the unreduced-eligibility date | All expressly excluded or frozen (§ 51.1-142.4 F; conforming amendments to §§ 51.1-162, 51.1-165.01, 51.1-166) |
+| PLOP, group life, disability, death-in-service, Workforce Transition Act severance conversion | Keyed to creditable service or to the unreduced-eligibility date | Expressly excluded or frozen (§ 51.1-142.4 F; conforming amendments to §§ 51.1-162, 51.1-165.01, 51.1-166 and § 2.2-3204 A, C) |
+| Health insurance credit and post-retirement supplement **commencement** | Keyed to the **date of retirement** | **Not reached by the bill.** Both begin up to four years earlier. The § 51.1-166 D 4 amendment does not cure it (see § 10 below), and the § 51.1-142.4 F 8 bar reaches eligibility and amount but not duration. Costs sit on separately funded trusts and are **outside** the 0.19 bp figure — open blocker F-02 |
 | Hybrid, SPORS, VaLORS, JRS, § 51.1-138 | n/a | Excluded (§ 51.1-142.4 B 1, J) — **DECISION 2** |
 
 ---
