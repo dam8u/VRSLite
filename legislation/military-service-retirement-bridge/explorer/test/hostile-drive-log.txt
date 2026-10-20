@@ -1,0 +1,361 @@
+# MOO-266 hostile-driving log — 2026-10-20T09:27:22.434Z
+# Document: file:///Users/davidmoody/.paperclip/instances/default/projects/73723db3-6591-4410-8da2-1f684e9148e4/4451a9b4-bbff-4b29-b963-15a32be874a4/VRSLite/legislation/military-service-retirement-bridge/explorer/dist/explorer-standalone.html
+
+## 1. Every preset, as the page renders it
+
+### Central  [central]
+    description : The committed fiscal model’s own central case. Reproduces the published tables exactly.
+    chip        : Central case
+    combined bp : 0.1888
+    net liab    : $7.152M
+    purchasers  : 222
+    ANC paid in : $7.289M
+    value (sub) : $25.027M
+    value (wte) : $3.855M
+    value (phi) : $14.441M
+    payroll eff : $4.555M
+    COMBINED    : ($2.597M)
+
+### Conservative / Low Participation  [conservative]
+    description : Low take-up, positions refilled at full salary, no workforce reduction, and a high share of purchasers who would have worked on to eligibility anyway.
+    chip        : Conservative / Low Participation case
+    combined bp : 0.0245
+    net liab    : $929,409
+    purchasers  : 111
+    ANC paid in : $3.645M
+    value (sub) : $12.513M
+    value (wte) : $1.928M
+    value (phi) : $4.574M
+    payroll eff : $0
+    COMBINED    : ($929,409)
+
+### High Participation  [high]
+    description : High take-up on the high population funnel, with central workforce assumptions.
+    chip        : High Participation case
+    combined bp : 0.6642
+    net liab    : $25.163M
+    purchasers  : 781
+    ANC paid in : $25.647M
+    value (sub) : $88.056M
+    value (wte) : $13.564M
+    value (phi) : $50.810M
+    payroll eff : $16.026M
+    COMBINED    : ($9.138M)
+
+### Workforce Turnover Scenario  [turnover]
+    description : Central participation with replacement compensation in the 80–90% range and a modest non-replacement rate.
+    chip        : Workforce Turnover Scenario case
+    combined bp : 0.1888
+    net liab    : $7.152M
+    purchasers  : 222
+    ANC paid in : $7.289M
+    value (sub) : $25.027M
+    value (wte) : $3.855M
+    value (phi) : $14.441M
+    payroll eff : $13.562M
+    COMBINED    : $6.410M
+
+### No Workforce Savings  [noWorkforce]
+    description : Positions refilled at 100% of departing compensation, nothing eliminated, no vacancy effect. Shows the pension impact standing alone, with no workforce offset at all. This is the scenario to read first.
+    chip        : No Workforce Savings case
+    combined bp : 0.1888
+    net liab    : $7.152M
+    purchasers  : 222
+    ANC paid in : $7.289M
+    value (sub) : $25.027M
+    value (wte) : $3.855M
+    value (phi) : $14.441M
+    payroll eff : $0
+    COMBINED    : ($7.152M)
+
+### Hybrid Variant (not the bill)  [hybrid]
+    description : DECISION 2 is to EXCLUDE hybrid participants. This scenario includes them, to show the fiscal consequence of the alternative — which is close to nothing before FY2038.
+    chip        : Hybrid Variant (not the bill) case
+    combined bp : 0.1864
+    net liab    : $7.062M
+    purchasers  : 227
+    ANC paid in : $7.404M
+    value (sub) : $25.069M
+    value (wte) : $3.862M
+    value (phi) : $14.466M
+    payroll eff : $4.586M
+    COMBINED    : ($2.476M)
+
+## 2. Driving it cheap — can a reader reach "free"?
+
+baseline (Reset to Baseline): combined bp = 0.1888, combined fiscal = ($2.597M)
+
+  move 1: Take-up rate to its floor  [i-takeup range 5..50]
+           -> combined bp = 0.0472   combined fiscal = ($649,263)   chip = Custom scenario
+  move 2: Behavioural assumption phi to 100% (everyone would have worked on)  [i-phi range 0..100]
+           -> combined bp = -0.0227   combined fiscal = $1.997M   chip = Custom scenario
+  move 3: Replacement salary to its floor  [i-repl range 75..100]
+           -> combined bp = -0.0227   combined fiscal = $3.705M   chip = Custom scenario
+  move 4: Positions not replaced to its ceiling  [i-notrepl range 0..10]
+           -> combined bp = -0.0227   combined fiscal = $4.559M   chip = Custom scenario
+  move 5: Vacancy months to its ceiling  [i-vac range 0..12]
+           -> combined bp = -0.0227   combined fiscal = $8.567M   chip = Custom scenario
+
+cheapest hand-driven screen: combined bp = -0.0227 | combined fiscal = $8.567M | purchasers = 55
+
+--- Panel B as it reads on that screen ---
+PANEL B · MODELED PENSION IMPACT
+
+Payroll and workforce effects are never folded into the contribution-rate calculation. Nothing in Panel C moves any number here — a claim you can test with the replacement slider.
+
+Value of accelerated unreduced retirement
+$964,000
+blended at φ = 1.00 — $6.26M frozen-service / $964,000 work-to-eligibility
+Member ANC payments received
+$1.82M
+recovers 189% of the value conferred
+Modeled pension impact (net liability change)
+−$859,000
+value conferred less member payments
+Employer contribution-rate impact
+-0.02 bp
+basis points on $26048.74M of covered payroll
+BY BENEFIT STRUCTURE
+Member ANC payments in
+Value of acceleration conferred
+Modeled pension impact
+$0
+$500,000
+$1.00M
+$1.50M
+$2.00M
+$1.32M
+$840,000
+−$484,000
+Plan 1
+$498,000
+$124,000
+−$375,000
+Plan 2
+$1.82M
+$964,000
+−$859,000
+Combined
+The benefit-structure basis-point figures are each structure’s additive contribution to the combined rate (its liability over combined covered payroll), so they sum to the combined figure.
+BENEFIT STRUCTURE	PARTICIPANTS	MEMBER PAYMENTS IN	VALUE (FROZEN-SERVICE)	VALUE (WORK-TO-ELIGIBILITY)	VALUE (BLENDED)	MODELED PENSION IMPACT	RATE CONTRIBUTION
+Plan 1 (§ 51.1-153 B 2)	41.1	$1.32M	$5.67M	$840,000	$840,000	−$484,000	-0.01 bp
+Plan 2 (Rule of 90)	14.4	$498,000	$586,000	$124,000	$124,000	−$375,000	-0.01 bp
+Combined	55.5	$1.82M	$6.26M	$964,000	$964,000	−$859,000	-0.02 bp
+BY EMPLOYER PLAN — WHERE A CONTRIBUTION RATE IS ACTUALLY CERTIFIED
+Employer DB rates are the FY2027–FY2028 certified rates (SRC-15). The liability layer is amortized as a level percent of payroll over the published 20-year period (ASM-20) — VRS’s method, not VRS’s calculation.
+EMPLOYER PLAN	PARTICIPANTS	COVERED PAYROLL	MEMBER PAYMENTS IN	MODELED PENSION IMPACT	RATE IMPACT	PUBLISHED RATE	RATE INCL. IMPACT
+VRS State Employees	14.9	$6275.60M	$533,000	−$255,000	-0.03 bp	11.07%	11.07%
+VRS Teachers	18.7	$11732.11M	$589,000	−$285,000	-0.02 bp	12.20%	12.20%
+Participating Political Subdivisions (aggregate)	21.9	$8041.03M	$701,000	−$319,000	-0.03 bp	10.59%	10.59%
+Combined	55.5	$26048.74M	$1.82M	−$859,000	-0.02 bp	—	—
+
+Every basis-point figure on this panel is the modeled retirement-plan employer contribution impact. It excludes the separately funded health insurance credit and COLA effects, including unquantified COLA exposure. The fiscal model is complete for bill version 1.1; a version 1.2 refresh is required before external use.
+
+At these assumptions, to the nearest basis point no plan’s employer contribution rate changes — about 55 purchasers against $26048.74M of covered payroll.
+
+The sign of the per-member result depends on φ, on which no published data bears. At φ = 0 every purchaser is treated as leaving anyway and is subsidised; at φ = 1 every purchaser is treated as having worked on, and purchasers overpay.
+
+--- Panel D as it reads on that screen ---
+PANEL D · COMBINED FISCAL VIEW
+
+Three totals, kept separate. The combined figure is shown last and smallest on purpose: it is the least reliable of the three, because it adds a pension measurement to a workforce assumption.
+
+1. Modeled pension impact
+−$859,000
+-0.02 bp on employer contribution rates — a cost to the plan
+2. Modeled payroll effect / Modeled workforce effect
+$7.71M
+an employer compensation effect — not a pension saving
+3. Combined scenario effect
+$8.57M
+payroll effect less pension impact — the least reliable of the three
+
+Combined fiscal effect is a scenario result, not an actuarial certification or VRS fiscal impact statement.
+
+The three totals are different kinds of claim and are deliberately not merged into one headline. The pension figure is a modeled liability change on the plan. The payroll figure depends entirely on a hiring assumption the Commonwealth controls and which this model cannot observe. Adding them produces a number with the weaker component’s reliability, so read it last. Setting replacement to 100% with nothing eliminated — the No Workforce Savings preset — shows the pension impact standing alone, which is the figure a money committee should start from.
+
+## 3. Exports taken from that same cheapest screen
+
+handout bytes: 5855 | csv bytes: 5098
+  handout contains "0.19": false
+      csv contains "0.19": false
+  handout contains "341,065": false
+      csv contains "341,065": false
+  handout contains "basis-point": true
+      csv contains "basis-point": true
+  handout contains "basis point": false
+      csv contains "basis point": false
+  handout contains "30-19.1:7": true
+      csv contains "30-19.1:7": true
+  handout contains "Sec. 30-19.1:7": false
+      csv contains "Sec. 30-19.1:7": true
+  handout contains "not an actuarial certification": true
+      csv contains "not an actuarial certification": false
+  handout contains "health insurance credit": true
+      csv contains "health insurance credit": true
+  handout contains "COLA": true
+      csv contains "COLA": true
+  handout contains "version 1.1": true
+      csv contains "version 1.1": true
+  handout contains "behavioural": true
+      csv contains "behavioural": false
+  handout contains "φ": true
+      csv contains "φ": true
+  handout contains "phi": false
+      csv contains "phi": false
+  handout contains "Published Fact": false
+      csv contains "Published Fact": true
+  handout contains "Derived Estimate": false
+      csv contains "Derived Estimate": true
+  handout contains "Scenario Assumption": false
+      csv contains "Scenario Assumption": true
+
+--- handout, text only ---
+ Military Service Retirement Bridge — scenario summary body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;max-width:7.2in;margin:0.5in auto;color:#111;line-height:1.5;font-size:11pt}h1{font-size:15pt;margin:0 0 2px}h2{font-size:12pt;margin:20px 0 6px;border-bottom:1px solid #bbb;padding-bottom:3px}.sub{color:#555;font-size:9.5pt;margin:0 0 12px}table{width:100%;border-collapse:collapse;font-size:9.5pt;margin:0 0 8px}th,td{text-align:left;padding:3px 7px;border-bottom:1px solid #e3e3e3;vertical-align:top}th{font-weight:600;width:62%}td{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}.warn{border:1px solid #b23;border-left:4px solid #b23;background:#fdf4f4;padding:8px 10px;font-size:9.5pt;margin:10px 0}.note{background:#f4f4f1;border-left:3px solid #999;padding:8px 10px;font-size:9.5pt;margin:10px 0}@page{margin:0.6in} Military Service Retirement Bridge — scenario summary Proposed new Va. Code § 51.1-142.4 &middot; bill version 1.2, package version 1.3 &middot; Custom scenario &middot; generated 2026-10-20 This is an illustrative policy-analysis model. It is not an actuarial certification, the VRS Board impact statement required under § 30-19.1:7, or a General Assembly fiscal impact statement. Combined fiscal effect is a scenario result. Payroll and workforce effects are employer compensation effects, not pension savings, and are never included in any contribution-rate figure. Assumptions selected Participant basis participation rate Take-up rate 5% Plan 1 participants 41 Plan 2 participants 14 Bridge amount basis model distribution (ASM-25) Mean bridge credit purchased (Plan 1 / Plan 2) 2.66 / 2.95 Behavioural assumption φ (share who would have worked on) 100% Replacement salary percentage 75% Positions not replaced 10.0% Average vacancy before refill 12 months Mean departing salary (Plan 1 / Plan 2) $96,322 / $109,198 Salary growth 3.50% Discount rate 6.75% (published Board assumption) Mortality improvement 0.75% Veteran share (state / teacher / pol. sub.) 6.0% / 2.5% / 7.0% Qualifying service share 80% Excluded by the military retired pay bar 18% Did not already purchase in the 24-month window 70% Purchase rule D4a — partial purchase capped at the deficit (the bill as drafted) Hybrid participants excluded (the bill) Modeled results Total participants, FY2029–FY2038 cohort 55 Total years / points purchased 152 Member ANC payments received $1,822,294 Value of acceleration — frozen-service baseline $6,256,713 Value of acceleration — work-to-eligibility baseline $963,761 Value of acceleration — blended at φ $963,761 Modeled pension impact (net liability change) −$858,533 Employer contribution-rate impact — combined -0.02 bp Employer contribution-rate impact — state plan -0.03 bp Employer contribution-rate impact — teacher plan -0.02 bp Employer contribution-rate impact — political subdivisions -0.03 bp Modeled pension impact — Plan 1 rate contribution -0.01 bp Modeled pension impact — Plan 2 rate contribution -0.01 bp Departing member payroll (PV) $10,233,718 Payroll difference from lower-paid replacements $2,302,587 Payroll on positions not replaced $1,023,372 Temporary vacancy effect $3,601,802 Employer retirement contribution difference $780,472 Modeled payroll effect — total $7,708,233 Combined scenario effect $8,566,766 Health insurance credit — earlier commencement (illustrative, outside the bp figures) $140,193 COLA — earlier commencement NOT QUANTIFIED Required qualifier. Every basis-point figure is the modeled retirement-plan employer contribution impact and excludes the separately funded health insurance credit and COLA effects, including unquantified COLA exposure. The fiscal model is complete for bill version 1.1; a version 1.2 refresh is required before external use. The population inputs are estimated from one published anchor — veterans are 6% of the Virginia classified state workforce (June 30, 2024) — plus four assumed filters. No published veteran share exists for teachers or political subdivisions. The behavioural assumption φ decides whether a purchaser is subsidised or overpays, and no published data bears on it. Reserve and Guard service: federal law protects qualifying service associated with non-regular Reserve-component retired pay under 10 U.S.C. ch. 1223, with § 12736 application to the bridge subject to counsel confirmation. Prepared by Policy Development Team using legal, policy, and financial analysis tools, pending review by veterans’ legal counsel. 
+
+--- csv ---
+Section,Item,Value
+"Header","Scenario","Custom scenario"
+"Header","Generated","2026-10-20T09:27:25.755Z"
+"Header","Bill / package version","bill 1.2 / package 1.3"
+"Header","Status","Illustrative policy-analysis model. Not an actuarial certification, not the VRS Board statement under Sec. 30-19.1:7, not a General Assembly fiscal impact statement."
+"Header","Required qualifier","Every basis-point figure is the modeled retirement-plan employer contribution impact and excludes the separately funded health insurance credit and COLA effects, including unquantified COLA exposure. The fiscal model is complete for bill version 1.1; a version 1.2 refresh is required before external use."
+"Input","Participant basis","participation rate"
+"Input","Take-up rate","5%"
+"Input","Plan 1 participants","41"
+"Input","Plan 2 participants","14"
+"Input","Bridge amount basis","model distribution (ASM-25)"
+"Input","Mean bridge credit purchased (Plan 1 / Plan 2)","2.66 / 2.95"
+"Input","Behavioural assumption φ (share who would have worked on)","100%"
+"Input","Replacement salary percentage","75%"
+"Input","Positions not replaced","10.0%"
+"Input","Average vacancy before refill","12 months"
+"Input","Mean departing salary (Plan 1 / Plan 2)","$96,322 / $109,198"
+"Input","Salary growth","3.50%"
+"Input","Discount rate","6.75% (published Board assumption)"
+"Input","Mortality improvement","0.75%"
+"Input","Veteran share (state / teacher / pol. sub.)","6.0% / 2.5% / 7.0%"
+"Input","Qualifying service share","80%"
+"Input","Excluded by the military retired pay bar","18%"
+"Input","Did not already purchase in the 24-month window","70%"
+"Input","Purchase rule","D4a — partial purchase capped at the deficit (the bill as drafted)"
+"Input","Hybrid participants","excluded (the bill)"
+"Output","Total participants, FY2029–FY2038 cohort","55"
+"Output","Total years / points purchased","152"
+"Output","Member ANC payments received","$1,822,294"
+"Output","Value of acceleration — frozen-service baseline","$6,256,713"
+"Output","Value of acceleration — work-to-eligibility baseline","$963,761"
+"Output","Value of acceleration — blended at φ","$963,761"
+"Output","Modeled pension impact (net liability change)","−$858,533"
+"Output","Employer contribution-rate impact — combined","-0.02 bp"
+"Output","Employer contribution-rate impact — state plan","-0.03 bp"
+"Output","Employer contribution-rate impact — teacher plan","-0.02 bp"
+"Output","Employer contribution-rate impact — political subdivisions","-0.03 bp"
+"Output","Modeled pension impact — Plan 1 rate contribution","-0.01 bp"
+"Output","Modeled pension impact — Plan 2 rate contribution","-0.01 bp"
+"Output","Departing member payroll (PV)","$10,233,718"
+"Output","Payroll difference from lower-paid replacements","$2,302,587"
+"Output","Payroll on positions not replaced","$1,023,372"
+"Output","Temporary vacancy effect","$3,601,802"
+"Output","Employer retirement contribution difference","$780,472"
+"Output","Modeled payroll effect — total","$7,708,233"
+"Output","Combined scenario effect","$8,566,766"
+"Output","Health insurance credit — earlier commencement (illustrative, outside the bp figures)","$140,193"
+"Output","COLA — earlier commencement","NOT QUANTIFIED"
+"Population funnel","Active members, three VRS plans (June 30, 2025) [Published Fact]","366,289.0"
+"Population funnel","Exposed to a purchase opportunity, FY2029–FY2038 — within four years/points of an unreduced threshold and not already eligible (§ 51.1-142.4 B 5, C) [Derived Estimate]","57,018.1"
+"Population funnel","Estimated veterans [Derived Estimate]","2,416.6"
+"Population funnel","With qualifying active duty service (≥ 180 consecutive days, not dishonorably discharged) [Scenario Assumption]","1,933.3"
+"Population funnel","Not barred by the military retired pay rule (§ 51.1-142.2 B, inherited by § 51.1-142.4 B 4, H 5) [Scenario Assumption]","1,585.3"
+"Population funnel","Did not already purchase in the § 51.1-142.2 B 3 24-month window [Scenario Assumption]","1,109.7"
+"Population funnel","Able and willing to purchase (probability-weighted over available qualifying service, ASM-25) [Scenario Assumption]","1,109.7"
+"Population funnel","Expected participants at the selected take-up rate [Scenario Assumption]","55.5"
+"Sensitivity","Participant count (take-up) — 5% take-up / 50% take-up","-0.023 bp / -0.227 bp"
+"Sensitivity","Behavioural assumption (φ, ASM-22) — φ = 0.75 (more work on) / φ = 0.25 (more leaving anyway)","0.012 bp / 0.082 bp"
+"Sensitivity","Veteran / purchasability funnel (ASM-15–18) — low case / high case","-0.009 bp / -0.053 bp"
+"Sensitivity","Salary growth (ASM-07) — 4.50% / 2.50%","-0.044 bp / -0.004 bp"
+"Sensitivity","Average bridge amount — 1.0 year/point / 4.0 years/points","-0.008 bp / -0.027 bp"
+"Sensitivity","Actuarial discount rate (SRC-01) — 7.75% / 5.75%","-0.014 bp / -0.034 bp"
+"Sensitivity","Replacement salary percentage — 100% replacement / 75% replacement","-0.023 bp / -0.023 bp"
+"Sensitivity","Positions not replaced — 0% eliminated / 10% eliminated","-0.023 bp / -0.023 bp"
+
+## 4. Provenance badges, every one on the page
+
+  [●Published Fact] 
+  [◑Derived Estimate] 
+  [○Scenario Assumption] 
+  [●Published Fact] PANEL G · POPULATION FUNNEL From every active member in the three VRS plans down to expected participants. Each step carries its provenance, because the credibility of the whole model rests on the weakest step. 1. Active
+  [◑Derived Estimate] PANEL G · POPULATION FUNNEL From every active member in the three VRS plans down to expected participants. Each step carries its provenance, because the credibility of the whole model rests on the weakest step. 1. Active
+  [○Scenario Assumption] PANEL G · POPULATION FUNNEL From every active member in the three VRS plans down to expected participants. Each step carries its provenance, because the credibility of the whole model rests on the weakest step. 1. Active
+
+badge count: 11 | distinct: 6
+
+## 5. Registry rows by provenance class
+
+SOURCE & ASSUMPTION REGISTRY
+
+Exported from the fiscal model's own inputs.py, so what is shown here cannot drift from what produced the numbers.
+
+PUBLISHED SOURCES
+Every published document the model draws on.
+KEY	DOCUMENT
+ACFR2025	VRS, 'Annual Comprehensive Financial Report for the Fiscal Year Ended June 30, 2025'. https://www.varetire.org/media/shared/pdf/publications/2025-annual-report.pdf
+APPX2025	GRS, 'Appendix to the June 30, 2025 Annual Actuarial Valuation Reports' (bound with the 2020-2024 Experience Study PDF), Appendix A. https://employers.varetire.org/media/shared/pdf/publications/vrs-experience-study.pdf
+CODE	Code of Virginia, Title 51.1, as published at law.lis.virginia.gov.
+DHRM2025	Virginia Department of Human Resource Management, 'State Employee Workforce, Compensation, Health Benefits', presentation to the Senate Finance and Appropriations Committee, January 21, 2025 (data as of June 30, 2024), slide 8. https://sfac.virginia.gov/pdf/General%20Gov/2025/01212025_No1_DHRM.pdf
+ERMSR2026	VRS Employer Manual, 'Service Retirement' chapter, July 2026. https://employers.varetire.org/media/shared/pdf/er-manual-service-retirement.pdf
+EXP2024	GRS, 'Virginia Retirement System Four-Year Experience Study, July 1, 2020 - June 30, 2024'. Assumptions adopted by the VRS Board April 16, 2025. https://employers.varetire.org/media/shared/pdf/publications/vrs-experience-study.pdf
+PPS2025	VRS, 'Purchase of Prior Service Cost Rates', effective July 1, 2025 (Plan 1 / Plan 2 charts updated July 1, 2025; Hybrid chart updated July 1, 2026). https://www.varetire.org/am/media/shared/pdf/publications/pps-rate-charts.pdf
+VAL2025	Gabriel, Roeder, Smith & Co., 'Virginia Retirement System Annual Actuarial Valuation, June 30, 2025' (State Pension Plans), transmitted December 23, 2025. https://employers.varetire.org/media/employers/pdf/financial-reporting/valuations/valuation-report-vrs.pdf
+ANALYTICAL ASSUMPTIONS
+Chosen by the modeler and not published. Each is labelled wherever it is used.
+KEY	ASSUMPTION
+ASM-01	Mortality interpolation. SRC-20/SRC-21 publish rates at quinquennial ages only. Rates at intervening ages are interpolated log-linearly in q_x. Direction of error: negligible (<0.1% on annuity factors).
+ASM-02	Mortality extrapolation above age 90. The log-linear slope of q_x between ages 85 and 90 is continued, with q_x capped at 0.60 and a terminal age of 115. Pub-2010 actually decelerates at the oldest ages, so this slightly UNDERSTATES annuity values and therefore UNDERSTATES the measured subsidy. Effect on an annuity commencing at age 50-66: under 0.5%.
+ASM-03	Unisex blend. SRC-20 publishes sex-distinct rates. Representative profiles are valued on a 50/50 male/female blend of annuity factors unless a sex is specified. Sex-distinct results are reported alongside.
+ASM-04	Annuity form. The service retirement allowance is valued as a single-life annuity payable monthly, approximated as an annuity-due with a half-year timing adjustment. VRS's valuation assumes a modified cash refund annuity (return of any unrecovered member contributions). The modified cash refund floor is worth slightly more under the ACCELERATED case (a younger retiree with a smaller allowance recovers contributions more slowly), so ignoring it slightly UNDERSTATES the measured subsidy.
+ASM-05	Generational mortality improvement. VRS projects generationally with 75% of the MP-2021 scale (SRC-20). The MP-2021 rates are not reproduced in the published appendix. The central case applies a flat 0.75% per annum improvement to q_x from a 2010 base year to the year in which each age is attained, as a proxy. Sensitivity: 0.00% (no improvement) and 1.25%. Omitting improvement entirely understates annuity values by roughly 4-6%.
+ASM-06	COLA timing. The statutory COLA is granted on July 1 of the second calendar year after retirement (ACFR2025, Note 2). The model applies the first COLA at the start of annuity year 3 and compounds annually thereafter, at SRC-05 rates. Va. Code § 51.1-166 D 4 delays commencement for a retiree with fewer than 20 years of creditable service until one full calendar year after the date the member would otherwise have been eligible for an unreduced allowance, and the bill freezes that date without regard to bridge credit; the model applies that delay where a profile has fewer than 20 years.
+ASM-07	Salary growth for AFC projection. 3.50% per annum, equal to VRS's published wage inflation assumption (SRC-03). This is the across-the-board component only; VRS adds a service-based merit and longevity component which is not reproduced in the published appendix in machine-readable form. For members with 20+ years of service the merit component is small. Direction of error: understates AFC growth, which understates the forgone accrual in the work-to-eligibility baseline and therefore OVERSTATES the measured subsidy on that baseline. Sensitivity: 2.50% and 4.50%.
+ASM-08	AFC construction. AFC at a given age equals the average of the SRC-11 number of months of highest consecutive creditable compensation ending at that age, computed from the stated current salary growing at ASM-07.
+ASM-09	Plan 2 / Hybrid 60-5 early-retirement reduction factor. VRS's numeric 60/5 factor table is not published in machine-readable form (SRC-12). Where the model needs a Plan 2 reduced-benefit comparator at age 60 or above, it applies the published Plan 1 55/5 construction (0.5% per month for the first 60 months to unreduced eligibility, 0.4% per month thereafter), measured to the earlier of Social Security NRA and the Rule-of-90 date. Labelled a proxy wherever used. Below age 60 a Plan 2 or Hybrid member cannot retire at all under current law, so no factor is needed and no proxy is used -- which is where the frozen-service baseline for Plan 2 is actually computed.
+ASM-10	Plan assignment from published service bands. The published age x service grid (SRC-18) does not identify benefit structure. Benefit structure is inferred from completed total service at June 30, 2025 as a proxy for membership date: Hybrid if service < 11.5 years (membership date on or after January 1, 2014); Plan 2 if 11.5 <= service < 17.5 years (membership date July 1, 2010 - December 31, 2013, plus the January 2008 - June 2010 cohort that lacked 60 months of creditable service at January 1, 2013); Plan 1 if service >= 17.5 years. Members are assumed uniformly distributed within each published band. This proxy FAILS for members with purchased prior service, prior non-contiguous VRS service, part-time service, or a hybrid opt-in; those members carry total service that does not match tenure. The derived split is therefore calibrated to SRC-16 (see ASM-11). This is the largest single source of uncertainty in the population estimate.
+ASM-11	Plan split calibration. The derived system-wide Plan 1 / Plan 2 / Hybrid split from ASM-10 is scaled by a single multiplicative factor per benefit structure so that the system total reconciles to SRC-16, with the residual absorbed by Hybrid. Reported in the reconciliation note.
+ASM-12	Political subdivision age x service distribution. VRS does not publish an age x service grid for the aggregate political subdivision plan (VAL2025 tabulates state, teacher, SPORS, VaLORS and judicial only). The political subdivision grid is constructed from the state-employee grid shape scaled to the published political subdivision active count (SRC-15), then adjusted by the ratio of published average service (8.3 years for political subdivisions, 10.1 for state) so that the mean of the constructed distribution matches the published political subdivision mean. Direction of error: unquantified. This number should be replaced with VRS data.
+ASM-13	Decrements in the population projection. The published grid is rolled forward deterministically (age + 1, service + 1 per year). Members who reach an unreduced threshold are removed at the published retirement rates (SRC-23). All other exits (termination, death, disability) are applied at a flat 3.00% per annum for the 25-to-30-year-service population. Sensitivity: 2.00% and 5.00%. No new entrants are added to Plan 1 or Plan 2 because both benefit structures are closed to new members (Plan 1 closed July 1, 2010; Plan 2 closed January 1, 2014).
+ASM-14	Political subdivision member contribution rate taken as the statutory 5% of creditable compensation. VAL2025 does not publish an aggregate political subdivision total normal cost rate, so the political subdivision normal-cost offset is approximated from the published employer normal cost rate plus 5%.
+ASM-15	Veteran share of covered membership. SRC-24 gives 6% for the Virginia classified state workforce as of June 30, 2024 (self-identified). No published figure exists for VRS teachers or political subdivision employees. The model uses 6.0% for state employees (published anchor), 2.5% for teachers, and 7.0% for political subdivision non-hazardous employees, with a low/high band of 0.6x / 1.6x on each. Self-identification undercounts, which pushes the central estimate down.
+ASM-16	Share of veterans with qualifying active duty service. Va. Code § 51.1-142.2 B requires at least 180 consecutive days of full-time active duty and a discharge that was not dishonorable. Assumed 80% of self-identified veterans satisfy both (low 70%, high 90%).
+ASM-17	Share excluded by the military retired pay bar. Va. Code § 51.1-142.2 B bars purchase of service counted in any retirement allowance received or to be received, except as required by 10 U.S.C. ch. 1223 (reserve-component non-regular retired pay). The bill inherits that bar (§ 51.1-142.4 B 4, H 5). Assumed 18% of qualifying veterans are excluded because their service is counted in regular military retired pay (low 12%, high 25%). Federal data: approximately 2.4 million of roughly 18 million U.S. veterans receive military retired pay, but the share is higher among veterans in career government employment.
+ASM-18	Share that did not already purchase in the 24-month window. Members who purchased prior active duty service at approximate normal cost within the § 51.1-142.2 B 3 window already hold it as creditable service and gain nothing from the bridge. VRS does not publish purchase-of-prior-service take-up. Assumed 70% did not purchase (low 55%, high 85%).
+ASM-19	Behavioural take-up of the bridge among eligible members. Low 10%, Moderate 20%, High 30% (default scenarios where no better data exists). Cross-checked against SRC-23: VRS assumes 12.5% / 7.5% of Plan 1 state employees retire at age 50 once they hold 30 years, and 11.5% of Plan 2 members retire in the year age plus service reaches 90, so a 20% take-up of a purchase that costs several months of salary is not implausible but is not evidence-based.
+ASM-20	Amortization of the liability increase into an employer contribution rate. The increase in unfunded accrued liability is amortized as a level percent of payroll over the published amortization period (SRC-15; 20 years for state, teacher and the political subdivision aggregate) at SRC-01 interest and SRC-04 payroll growth. This mirrors VRS's own layered amortization method but is not VRS's calculation.
+ASM-21	Replacement-employee cost. Where a workforce effect is shown, the departing member's position is assumed refilled at 100%, 90% and 80% of the departing member's creditable compensation, with employer retirement contributions at the published employer DB rate for the plan. No dollar value is assigned to recruiting, onboarding, vacancy duration, productivity ramp or loss of institutional knowledge.
+ASM-22	Behavioural mix. Share of purchasers who, under current law, would have worked on to first unreduced eligibility and then retired (baseline WTE); the remainder would have separated or retired at the purchase date anyway (baseline SUB). Low 0.25, central 0.50, high 0.75. This is the single most consequential assumption in the model and no published data bears on it.
+ASM-23	Service / tenure dispersion. Benefit structure is set by membership date, i.e. by tenure, while the published grid tabulates total service. The model treats tenure = total service + mu + sigma*Z over a fixed five-point discrete kernel and fits (mu, sigma) so the derived system-wide plan split reproduces the published split (SRC-16).
+ASM-24	Share of service performed before January 1, 2013 for a Plan 2 cell, which sets the 1.70%/1.65% multiplier blend (SRC-09). Plan 2 membership dates run January 1, 2008 to December 31, 2013, so pre-2013 service is 0 to 5 years; the midpoint of 2.5 years is used.
+ASM-25	Distribution of purchasable qualifying active duty service among veterans who have any. The statutory cap is four years. No Virginia or VRS data is published on this distribution; the shape used (1 yr 10%, 2 yrs 15%, 3 yrs 20%, 4 yrs 55%) reflects that most non-career separations follow a single enlistment term.
+PLAIN-LANGUAGE GLOSSARY
+The terms used throughout the dashboard, as they are explained in the tooltips.
+TERM	PLAIN MEANING
+approximate normal cost	The statutory purchase price. The rate VRS charges a member to buy a year of service, set by the Board and published in the Purchase of Prior Service rate charts. It is 12.50% of pay for Plan 1 and 10.74% for Plan 2 — for ORDINARY NON-HAZARDOUS members, effective July 1, 2025. The rate applicable to eligible pre-2014 § 51.1-153 B 4 public-safety members requires VRS confirmation. Important: this is the price of a year of benefit ACCRUAL. The bridge sells something different — an earlier eligibility date — so there is no reason to expect the price to cover the value.
+actuarial equivalent cost	A price that fully covers what the member receives. The price at which the plan is left no worse off: the full present value of the extra benefit. Current law already charges this for military service bought outside the 24-month window where the member wants it to count toward the benefit formula. For the acceleration the bridge sells, an actuarially equivalent price would be roughly 112.8% of salary per year purchased in the maximum Plan 1 case — against the 12.50% the bill charges.
+unreduced retirement	Retiring with no early-retirement cut to the pension. A member who retires before reaching an unreduced threshold has the allowance permanently reduced. Plan 1 reaches unreduced retirement at age 65 with 5 years, or age 50 with 30 years (§ 51.1-153 B 2). Plan 2 reaches it at Social Security normal retirement age with 5 years, or when age plus creditable service equals 90 (§ 51.1-153 B 3). The bridge moves that DATE earlier. It does not increase the pension at any given date.
+rule of 90	Age + creditable service = 90. The Plan 2 and hybrid unreduced-retirement test in § 51.1-153 B 3. Because age and service each advance a year for each year worked, the sum grows TWO points a year — so one purchased point buys only half a year of acceleration. This is why four bridge years accelerate a Plan 1 member by up to four years but a Plan 2 member by only two.
+employer contribution-rate basis points	One basis point = 0.01% of covered payroll. Employer pension contributions are set as a percentage of payroll. The modeled impact is expressed as the change in that percentage, in hundredths of a percentage point. The state employer rate is 11.07%; an impact of 0.19 basis points would take it to 11.0719%. To the nearest basis point, it does not move. That 0.19 figure is the modeled retirement-plan employer contribution impact and excludes the separately funded health insurance credit and COLA effects, including unquantified COLA exposure; the fiscal model is complete for bill version 1.1 and a version 1.2 refresh is required before external use.
+pension liability	What the plan owes, measured today. The present value of benefits the plan has promised. An increase in liability that is not matched by money coming in has to be funded, which is what turns into an employer contribution rate. The figure shown here is the increase net of the member payments received.
+payroll effect	A change in what the employer spends on salaries. NOT a pension saving, and shown separately for that reason. If an accelerated retirement is refilled at the same compensation the payroll effect is zero. If refilled at lower compensation, only the differential counts. If the position is not refilled at all, the avoided payroll is real but is a workforce-reduction decision, not a consequence of the pension change.
+present value	A stream of future payments expressed as one amount today. Future payments are discounted — at the VRS Board's published 6.75% investment return assumption — and weighted by the probability the retiree is alive to receive them, using the Board's published mortality tables. A pension of $35,000 a year for life from age 50 has a present value of roughly $639,000.
+creditable service	The service that drives the pension formula. Defined in § 51.1-124.3 as prior service under § 51.1-142.2 plus membership service. It sets the benefit amount, vesting, the health insurance credit and more. The bridge credit is EXPRESSLY EXCLUDED from this definition by the bill's § 51.1-124.3 amendment — which is the single provision that keeps the bridge from becoming a benefit increase.
+frozen-service baseline	Same retirement date, same service — only the reduction removed. Compares the member against retiring on the SAME date with the SAME service but taking the current-law early-retirement reduction. It isolates the value of exactly what the bridge sells. Members in this group — who were leaving anyway — receive a substantial subsidy. Labelled SUB in the fiscal model.
+work-to-eligibility baseline	The member works on under current law, then retires. Compares the member against working until first unreduced eligibility under current law. This nets off the extra benefit accrual, salary growth and contributions the member gives up by leaving early. Members in this group OVERPAY — they pay the purchase price for less than its actuarial value. Labelled WTE.
+behavioural assumption	φ — the share who would have worked on anyway. The single most consequential assumption in the model, and no published data bears on it. It decides whether a purchaser is subsidised or overpays, so it decides the sign of the per-member result. Central 0.50; the model tests 0.25 and 0.75. Self-selection is not modeled, and it runs toward the subsidised end: the members who buy will disproportionately be those who intend to leave.
+plop	Partial Lump-Sum Option Payment. A lump sum at retirement in exchange for a reduced allowance, under § 51.1-165.01. Eligibility depends on creditable service performed AFTER the date the member first became eligible for an unreduced allowance. The bill freezes that date without regard to bridge credit, so a member who retires at the accelerated date will usually have no PLOP. That is a deliberate, disclosed trade-off.
+health insurance credit	A monthly payment toward retiree health premiums. $4.25 per month per year of creditable service for a state retiree (§ 51.1-1400). The bridge does not increase the amount or create eligibility, but an earlier retirement starts it earlier — roughly $5,300 more for a state retiree with 26 years over a four-year acceleration. It runs on a separately funded trust and is OUTSIDE every contribution-rate figure in this tool.
+cola	The annual post-retirement supplement. Granted under § 51.1-166 and compounding for life. Like the health insurance credit it follows the RETIREMENT DATE, so an accelerated retirement starts it earlier. The exposure is NOT quantified by this model or by the fiscal model it is built on, and that gap is disclosed rather than papered over.
+eligibility deficit	How far the member is from an unreduced threshold. For Plan 1, 30 minus creditable service. For Plan 2, 90 minus (age + creditable service). Under § 51.1-142.4 C the member may purchase no more than this, capped at four years combined with any earlier § 51.1-142.2 purchase. The modeled mean deficit in the affected population is about 2.2 years — not four.
+
+This registry is exported from the fiscal model’s own inputs.py at build time by fiscal-model/calibrate_explorer.py. It cannot drift from the model that produced the numbers. The browser engine is verified against the model’s committed CSV tables by explorer/test/reconcile.js — 98 assertions, including the per-member $341,065 and the 0.19 bp aggregate.
+
+## 6. Console errors during the whole drive
+  none

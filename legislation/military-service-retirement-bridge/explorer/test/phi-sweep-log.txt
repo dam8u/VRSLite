@@ -1,0 +1,25 @@
+phi    combined_bp      net_liability   price/value
+0.00      0.4682       17,737,676   29%
+0.05      0.4403       16,679,085   30%
+0.10      0.4123       15,620,495   32%
+0.15      0.3844       14,561,904   33%
+0.20      0.3564       13,503,314   35%
+0.25      0.3285       12,444,723   37%
+0.30      0.3005       11,386,133   39%
+0.35      0.2726       10,327,542   41%
+0.40      0.2447        9,268,952   44%
+0.45      0.2167        8,210,362   47%
+0.50      0.1888        7,151,771   50%
+0.55      0.1608        6,093,181   54%
+0.60      0.1329        5,034,590   59%
+0.65      0.1049        3,976,000   65%
+0.70      0.0770        2,917,409   71%
+0.75      0.0491        1,858,819   80%
+0.80      0.0211          800,228   90%
+0.85     -0.0068         -258,362   104%
+0.90     -0.0348       -1,316,952   122%
+0.95     -0.0627       -2,375,543   148%
+1.00     -0.0906       -3,434,133   189%
+
+ONE CLICK on "Conservative / Low Participation", Panel B top:
+  PANEL B · MODELED PENSION IMPACT |  | Payroll and workforce effects are never folded into the contribution-rate calculation. Nothing in Panel C moves any number here — a claim you can test with the replacement slider. |  | Value of accelerated unreduced retirement | $4.57M | blended at φ = 0.75 — $12.51M frozen-service / $1.93M work-to-eligibility | Member ANC payments received | $3.64M | recovers 80% of the value conferred | Modeled pension impact (net liability change) | $929,000 | value conferred less member payments | Employer contribution-rate impact
