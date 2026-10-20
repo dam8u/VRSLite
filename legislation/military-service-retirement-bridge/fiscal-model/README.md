@@ -3,7 +3,7 @@
 **Prepared for:** MOO-259. Supports the legislative package in
 `../01-bill-draft.md`, `../02-legal-analysis-memo.md` and `../05-source-appendix.md`.
 **Prepared by Policy Development Team using legal, policy, and financial analysis tools, pending review by veterans' legal counsel.**
-**Version:** 1.0 | **Date:** October 19, 2026
+**Model version:** 1.0 — **complete for bill version 1.1; a bill version 1.2 refresh is required before external use** | **Date:** October 19, 2026 | **Package version:** 1.3 — External-Review Cleanup
 **Source law and data current through:** VRS June 30, 2025 annual actuarial
 valuation (transmitted December 23, 2025); VRS FY2025 Annual Comprehensive
 Financial Report; VRS purchase-of-prior-service cost rates effective July 1, 2025.

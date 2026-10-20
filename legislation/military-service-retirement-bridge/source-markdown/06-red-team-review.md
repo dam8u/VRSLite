@@ -1,6 +1,6 @@
-# Red Team / Counsel Review — Military Service Retirement Bridge
+# Internal Adversarial Review — Military Service Retirement Bridge
 
-**Issue:** MOO-260 (red-team adversarial review of the MOO-257 package)
+**Issue:** MOO-260 (internal adversarial review of the MOO-257 package) · reviewed against bill version 1.1; package now at version 1.3 — External-Review Cleanup
 **Prepared by Policy Development Team using legal, policy, and financial analysis tools, pending review by veterans' legal counsel.**
 **Date:** October 19, 2026
 **Materials reviewed:** `01-bill-draft.md`, `02-legal-analysis-memo.md`, `03-jlc-one-page-brief.md`, `04-jlc-two-page-brief.md`, `05-source-appendix.md`
@@ -13,15 +13,15 @@
 > | Finding | Disposition |
 > |---|---|
 > | **F-01** deferred-member acceleration | **Closed by policy decision.** DECISION 8: member-in-service status required at retirement. New § 51.1-142.4 E 3 plus a conforming amendment to § 51.1-153 C — the second was necessary because that subsection's general in-service waiver would otherwise have consumed the condition, a point this review correctly anticipated |
-> | **F-02** health insurance credit and COLA commencement | **Closed by acceptance, not cure.** DECISION 9: accepted, priced and disclosed. This review was right that no exclusion clause can reach either, and the bill now says so affirmatively in a savings paragraph rather than leaving subdivision F 8 to be misread |
+> | **F-02** health insurance credit and COLA commencement | **Closed by acceptance, not cure.** DECISION 9: accepted, priced and disclosed. This review was right that neither is addressed by the bill's exclusion architecture: **HIC and COLA follow the retirement date, so preventing earlier commencement would require separate statutory changes outside the bridge** — to Chapter 14 and to § 51.1-166 — and the proposal deliberately accepts and discloses that earlier commencement rather than adding separate delay provisions, which the bill now states affirmatively in a savings paragraph rather than leaving subdivision F 8 to be misread |
 > | **F-03** § 2.2-3204 Title 2.2 leak | **Closed in version 1.1** by amending § 2.2-3204 A and C and extending subdivision F 15 to Title 2.2 |
-> | **F-04** § 51.1-153 B 4 public-safety scope | **Closed, in narrower form than this review recommended.** DECISION 10 excludes only those whose first VRS membership began on or after January 1, 2014 (new clause B 1(iv)) |
+> | **F-04** § 51.1-153 B 4 public-safety scope | **Closed, in narrower form than this review recommended.** DECISION 10 excludes only those qualifying B 4 employees who first entered the VRS-administered retirement system on or after the January 1, 2014 Hybrid transition (new clause B 1(iv)) |
 > | **F-05** purchases that provably buy nothing, with no refund path | **Closed in version 1.1** by the achievable-acceleration cap in subdivision C 2 d, the mandatory pre-purchase written estimate in subdivision I 2, and the cancellation-and-refund right in subsection K |
 > | **F-06 – F-12** (bare "service" in § 51.1-155 A 2; the F 10 / G contradiction; stranded money; unreachable provisions; the B 4 deficit formula; free military credit; federal tax) | **Closed in version 1.1 or 1.2**, except **F-12**, which is not a drafting defect and stays open as a pre-introduction item for counsel. **F-10**'s B 4 deficit-formula half is closed by new subdivision **C 1 c** in version 1.2 |
 >
 > **Two of this review's own conclusions were later shown to be incomplete**, and both are recorded rather than quietly fixed. The § 51.1-153 C paraphrase at F-01 omitted the subsection's second disjunct (five or more years of employer-paid non-withdrawable contributions); the verbatim text is now at S-42 in the source appendix. And the review did not notice that "member in service," the term F-01's own recommended fix depends on, is **not defined** in § 51.1-124.3 (S-46, drafting note 10).
 >
-> **Independence caveat, restated because it matters more than the findings.** This pass was run by the same team that drafted the package, no independent reviewer being available. The October 19 sign-off pass then found three stale cross-document statements that this review had missed. **Version 1.2 should be read by someone else before it reaches a patron.**
+> **Independence caveat, restated because it matters more than the findings. This was an internal adversarial review, not an independent one.** It was run by the policy-development team that drafted the package, no independent reviewer being available. The October 19 sign-off pass then found three stale cross-document statements that this review had missed. **Version 1.2 should be read by someone else before it reaches a patron.**
 
 ---
 
@@ -47,7 +47,7 @@ Counterfactual without the credit: her creditable service is frozen at 26, so §
 
 ---
 
-### F-02 — BLOCKER. Health insurance credit and COLA both commence up to four years earlier. Neither is addressed, neither is fixable by exclusion drafting, and the briefs tell JLCVSO the opposite.
+### F-02 — BLOCKER. Health insurance credit and COLA both commence up to four years earlier. Neither is addressed by exclusion drafting — both follow the retirement date, so preventing earlier commencement would require separate statutory changes outside the bridge — and the briefs tell JLCVSO the opposite.
 
 **Cites.** Va. Code §§ 51.1-1400 A, 51.1-1401 A, 51.1-1402 A, 51.1-1403 A; § 51.1-166 C and D; § 51.1-1400 D (HIC funded through the employer contribution rate under § 51.1-145); draft § 51.1-142.4 F 7, F 8; `04-jlc-two-page-brief.md` line 51; `03-jlc-one-page-brief.md` line 36.
 
