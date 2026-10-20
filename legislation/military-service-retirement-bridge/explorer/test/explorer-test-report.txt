@@ -1,0 +1,2112 @@
+Military Service Retirement Bridge — Legislative Scenario Explorer
+OUTPUT-ACCURACY TEST REPORT
+Target: dist/explorer-standalone.html at commit d34e50b
+Run: 2026-10-20 09:02 UTC
+Browser: Google Chrome 155.0.8059.85 
+Node: v26.11.0
+
+Prepared by Policy Development Team using legal, policy, and financial analysis
+tools, pending review by veterans' legal counsel.
+
+############################################################################
+## PART 1 — engine reconciliation against the committed Python fiscal model
+############################################################################
+
+=== 1. Per-member price and value (T1-price-vs-value.csv) ===
+  PASS  A: price paid                                        got        $42,500   want        $42,500
+  PASS  A: PV allowance under the bill                       got       $639,274   want       $639,274
+  PASS  A: PV baseline allowance (SUB)                       got       $255,710   want       $255,710
+  PASS  A: value of acceleration (SUB)                       got       $383,565   want       $383,565
+  PASS  A: net per-member subsidy (SUB)                      got       $341,065   want       $341,065
+  PASS  A: value of acceleration (WTE)                       got        $21,000   want        $21,000
+  PASS  A: net per-member (WTE, overpays)                    got       $-21,500   want       $-21,500
+  PASS  A: cost recovery %                                   got          11.08   want           11.1
+  PASS  A: breakeven rate (% of salary/yr)                   got        112.813   want          112.8
+  PASS  A: SUB reduction factor (50/10)                      got            0.4   want            0.4
+  PASS  A: years of acceleration                             got              4   want              4
+  PASS  D: price paid                                        got        $38,664   want        $38,664
+  PASS  D: value of acceleration (SUB)                       got        $60,451   want        $60,451
+  PASS  D: net per-member subsidy (SUB)                      got        $21,787   want        $21,787
+  PASS  D: years of acceleration (2, not 4)                  got              2   want              2
+  PASS  D: annual allowance under the bill                   got        $34,211   want        $34,211
+  PASS  B: price paid                                        got        $20,000   want        $20,000
+  PASS  B: value (SUB)                                       got       $121,480   want       $121,480
+  PASS  B: value (WTE)                                       got        $13,994   want        $13,994
+  PASS  B: acceleration years                                got              2   want              2
+  PASS  C: price paid                                        got        $27,000   want        $27,000
+  PASS  C: value (SUB)                                       got        $92,368   want        $92,368
+  PASS  C: value (WTE)                                       got        $21,273   want        $21,273
+  PASS  C: acceleration years                                got              3   want              3
+  PASS  E: price paid                                        got        $25,132   want        $25,132
+  PASS  E: value (SUB)                                       got        $44,706   want        $44,706
+  PASS  E: value (WTE)                                       got        $10,583   want        $10,583
+  PASS  E: acceleration years                                got            1.5   want            1.5
+  PASS  F: price paid                                        got        $32,650   want        $32,650
+  PASS  F: value (SUB)                                       got        $41,572   want        $41,572
+  PASS  F: value (WTE)                                       got         $9,821   want         $9,821
+  PASS  F: acceleration years                                got              2   want              2
+  PASS  G: price paid                                        got        $22,712   want        $22,712
+  PASS  G: value (SUB)                                       got        $12,355   want        $12,355
+  PASS  G: value (WTE)                                       got         $2,035   want         $2,035
+  PASS  G: acceleration years                                got              1   want              1
+
+=== 2. Aggregate central case (T4 / T5, phi=0.50, 20% take-up) ===
+  PASS  purchasable pool (10-yr cohort)                      got      1,109.713   want        1,109.7
+  PASS  participants at 20% take-up                          got        221.943   want            222
+  PASS  member ANC payments received                         got     $7,289,178   want     $7,289,178
+  PASS  value of acceleration (SUB)                          got    $25,026,853   want    $25,026,853
+  PASS  value of acceleration (WTE)                          got     $3,855,044   want     $3,855,044
+  PASS  value blended (phi=0.50)                             got    $14,440,949   want    $14,440,949
+  PASS  net increase in unfunded liability                   got     $7,151,771   want     $7,151,771
+  PASS  aggregate rate impact                                got         0.1888   want         0.1888
+
+  per employer plan (T4, M-D4a):
+  PASS  ST: member payments                                  got     $2,130,586   want     $2,130,000
+  PASS  ST: net liability increase                           got     $2,049,395   want     $2,050,000
+  PASS  ST: rate impact (bp)                                 got         0.2245   want         0.2200
+  PASS  TC: member payments                                  got     $2,354,343   want     $2,350,000
+  PASS  TC: net liability increase                           got     $3,478,436   want     $3,480,000
+  PASS  TC: rate impact (bp)                                 got         0.2039   want         0.2000
+  PASS  PS: member payments                                  got     $2,804,249   want     $2,800,000
+  PASS  PS: net liability increase                           got     $1,623,940   want     $1,620,000
+  PASS  PS: rate impact (bp)                                 got         0.1389   want         0.1400
+
+  benefit-structure contributions must sum to the combined bp:
+  PASS  P1 bp + P2 bp == combined bp                         got         0.1888   want         0.1888
+
+=== 3. Sensitivity swings (T5-sensitivity.csv) ===
+  PASS  phi=0.25: net liability                              got    $12,444,723   want    $12,440,000
+  PASS  phi=0.25: aggregate bp                               got         0.3285   want         0.3300
+  PASS  phi=0.75: net liability                              got     $1,858,819   want     $1,860,000
+  PASS  phi=0.75: aggregate bp                               got         0.0491   want         0.0500
+  PASS  take-up 10%: net liability                           got     $3,575,886   want     $3,580,000
+  PASS  take-up 10%: aggregate bp                            got         0.0944   want         0.0900
+  PASS  take-up 30%: net liability                           got    $10,727,657   want    $10,730,000
+  PASS  take-up 30%: aggregate bp                            got         0.2832   want         0.2800
+  PASS  rule D4b: net liability                              got     $4,905,900   want     $4,910,000
+  PASS  rule D4b: aggregate bp                               got         0.1295   want         0.1300
+  PASS  discount 5.75%: net liability                        got     $8,104,556   want     $8,100,000
+  PASS  discount 5.75%: aggregate bp                         got         0.2139   want         0.2100
+  PASS  discount 7.75%: net liability                        got     $6,365,799   want     $6,370,000
+  PASS  discount 7.75%: aggregate bp                         got         0.1680   want         0.1700
+  PASS  salary growth 2.50%: net liability                   got     $8,033,359   want     $8,030,000
+  PASS  salary growth 2.50%: aggregate bp                    got         0.2120   want         0.2100
+  PASS  salary growth 4.50%: net liability                   got     $6,090,065   want     $6,090,000
+  PASS  salary growth 4.50%: aggregate bp                    got         0.1608   want         0.1600
+  PASS  mortality improvement 0.00%: net liability           got     $6,888,229   want     $6,890,000
+  PASS  mortality improvement 0.00%: aggregate bp            got         0.1818   want         0.1800
+  PASS  mortality improvement 1.25%: net liability           got     $7,327,713   want     $7,330,000
+  PASS  mortality improvement 1.25%: aggregate bp            got         0.1934   want         0.1900
+  PASS  hybrid included: net liability                       got     $7,061,909   want     $7,060,000
+  PASS  hybrid included: aggregate bp                        got         0.1864   want         0.1900
+  PASS  funnel low: net liability                            got     $2,698,267   want     $2,700,000
+  PASS  funnel low: aggregate bp                             got         0.0712   want         0.0700
+  PASS  funnel high: net liability                           got    $16,775,513   want    $16,780,000
+  PASS  funnel high: aggregate bp                            got         0.4428   want         0.4400
+
+=== 4. Workforce / payroll effect (T8-workforce.csv) ===
+  PASS  A: PV of departing member payroll                    got       $324,786   want       $324,786
+  PASS  A: PV employer DB contributions                      got        $35,954   want        $35,954
+  PASS  A: gross payroll diff at 90% replacement             got        $32,479   want        $32,479
+  PASS  A: net employer comp diff at 90%                     got        $36,074   want        $36,074
+
+=== 5. Guardrails the tool must enforce ===
+  PASS  100% replacement ⇒ zero payroll effect               got             $0   want             $0
+  PASS  100% replacement ⇒ pension impact unchanged          got     $7,151,771   want     $7,151,771
+  PASS  75% replacement ⇒ pension impact STILL unchanged     got     $7,151,771   want     $7,151,771
+  PASS  10% not replaced ⇒ pension impact STILL unchanged    got     $7,151,771   want     $7,151,771
+  PASS  hybrid excluded by default ⇒ no HY participants      got              0   want              0
+  PASS  COLA exposure is never quantified                    got              0   want              0
+
+=== 6. Direct participant entry preserves the modeled mix ===
+  PASS  400 Plan 1 participants requested                    got            400   want            400
+  PASS  0 Plan 2 participants requested                      got              0   want              0
+  PASS  price per participant is mix-preserved               got        $32,220   want        $32,220
+
+=== 7. Salary override is exactly linear ===
+  PASS  doubling Plan 1 salary doubles Plan 1 price          got    $10,592,161   want    $10,592,161
+  PASS  doubling Plan 1 salary doubles Plan 1 SUB value      got    $45,367,162   want    $45,367,162
+  PASS  Plan 2 untouched by a Plan 1 override                got     $1,993,097   want     $1,993,097
+
+=== 8. Performance ===
+  cold run 228 ms | warm run (post-hoc only) 0 ms | tornado (16 recomputes) 96 ms
+
+==========================================================================
+  98 passed, 0 failed
+==========================================================================
+
+
+############################################################################
+## PART 2 — the shipped single file, driven through every control
+############################################################################
+
+=== 1. The shipped single file IS the current application ===
+  PASS  dist/explorer-standalone.html exists and is non-trivial
+  PASS  inlined payload matches css/explorer.css
+  PASS  inlined payload matches data/baseline.js
+  PASS  inlined payload matches data/cells.js
+  PASS  inlined payload matches js/engine.js
+  PASS  inlined payload matches js/registry.js
+  PASS  inlined payload matches js/ui.js
+  PASS  no local file references survive inlining
+  PASS  required text present: "not an actuarial certification"
+  PASS  required text present: "30-19.1:7"
+  PASS  required text present: "Prepared by Policy Development Team using legal,"
+
+=== 2. The engine inside the shipped file reproduces the Python model ===
+  PASS  inline script payloads found in the shipped file
+  PASS  engine exported by the shipped file
+  PASS  profile A price paid (T1)
+  PASS  profile A value, frozen-service (T1)
+  PASS  profile A net subsidy = the $341,065 figure
+  PASS  profile A net, work-to-eligibility (overpays)
+  PASS  profile A years of acceleration
+  PASS  profile D price paid (T1)
+  PASS  profile D acceleration: 4 points buy 2 years
+  PASS  central participants at 20% take-up (T4)
+  PASS  central member ANC payments (T4)
+  PASS  central net liability (T4)
+  PASS  central aggregate rate impact = the 0.19 bp figure
+  PASS  P1 bp + P2 bp sums to the combined bp
+  PASS  COLA exposure is never quantified
+  PASS  hybrid excluded from the primary model
+
+=== 3. Opening state reproduces the central case ===
+  PASS  open: i-takeup displays its own value (v-takeup)
+  PASS  open: i-p1y displays its own value (v-p1y)
+  PASS  open: i-p2y displays its own value (v-p2y)
+  PASS  open: i-phi displays its own value (v-phi)
+  PASS  open: i-repl displays its own value (v-repl)
+  PASS  open: i-notrepl displays its own value (v-notrepl)
+  PASS  open: i-vac displays its own value (v-vac)
+  PASS  open: i-growth displays its own value (v-growth)
+  PASS  open: i-disc displays its own value (v-disc)
+  PASS  open: i-impr displays its own value (v-impr)
+  PASS  open: i-vst displays its own value (v-vst)
+  PASS  open: i-vtc displays its own value (v-vtc)
+  PASS  open: i-vps displays its own value (v-vps)
+  PASS  open: i-qual displays its own value (v-qual)
+  PASS  open: i-bar displays its own value (v-bar)
+  PASS  open: i-notbought displays its own value (v-notbought)
+  PASS  open: behavioural split labels agree with φ
+  PASS  open: all 85 panel figures match the model
+  PASS  scenario chip reads the Central case
+  PASS  opening combined bp is the published 0.19 figure
+  PASS  browser agrees with the Node-side engine on net liability
+  PASS  no page exception during startup render
+
+=== 4. Every slider: display, wiring and rendered output ===
+  PASS  i-takeup=5: i-takeup displays its own value (v-takeup)
+  PASS  i-takeup=5: i-p1y displays its own value (v-p1y)
+  PASS  i-takeup=5: i-p2y displays its own value (v-p2y)
+  PASS  i-takeup=5: i-phi displays its own value (v-phi)
+  PASS  i-takeup=5: i-repl displays its own value (v-repl)
+  PASS  i-takeup=5: i-notrepl displays its own value (v-notrepl)
+  PASS  i-takeup=5: i-vac displays its own value (v-vac)
+  PASS  i-takeup=5: i-growth displays its own value (v-growth)
+  PASS  i-takeup=5: i-disc displays its own value (v-disc)
+  PASS  i-takeup=5: i-impr displays its own value (v-impr)
+  PASS  i-takeup=5: i-vst displays its own value (v-vst)
+  PASS  i-takeup=5: i-vtc displays its own value (v-vtc)
+  PASS  i-takeup=5: i-vps displays its own value (v-vps)
+  PASS  i-takeup=5: i-qual displays its own value (v-qual)
+  PASS  i-takeup=5: i-bar displays its own value (v-bar)
+  PASS  i-takeup=5: i-notbought displays its own value (v-notbought)
+  PASS  i-takeup=5: behavioural split labels agree with φ
+  PASS  i-takeup=5: all 85 panel figures match the model
+  PASS  i-takeup=5 reaches the model as takeUp
+  PASS  i-takeup=10: i-takeup displays its own value (v-takeup)
+  PASS  i-takeup=10: i-p1y displays its own value (v-p1y)
+  PASS  i-takeup=10: i-p2y displays its own value (v-p2y)
+  PASS  i-takeup=10: i-phi displays its own value (v-phi)
+  PASS  i-takeup=10: i-repl displays its own value (v-repl)
+  PASS  i-takeup=10: i-notrepl displays its own value (v-notrepl)
+  PASS  i-takeup=10: i-vac displays its own value (v-vac)
+  PASS  i-takeup=10: i-growth displays its own value (v-growth)
+  PASS  i-takeup=10: i-disc displays its own value (v-disc)
+  PASS  i-takeup=10: i-impr displays its own value (v-impr)
+  PASS  i-takeup=10: i-vst displays its own value (v-vst)
+  PASS  i-takeup=10: i-vtc displays its own value (v-vtc)
+  PASS  i-takeup=10: i-vps displays its own value (v-vps)
+  PASS  i-takeup=10: i-qual displays its own value (v-qual)
+  PASS  i-takeup=10: i-bar displays its own value (v-bar)
+  PASS  i-takeup=10: i-notbought displays its own value (v-notbought)
+  PASS  i-takeup=10: behavioural split labels agree with φ
+  PASS  i-takeup=10: all 85 panel figures match the model
+  PASS  i-takeup=10 reaches the model as takeUp
+  PASS  i-takeup=20: i-takeup displays its own value (v-takeup)
+  PASS  i-takeup=20: i-p1y displays its own value (v-p1y)
+  PASS  i-takeup=20: i-p2y displays its own value (v-p2y)
+  PASS  i-takeup=20: i-phi displays its own value (v-phi)
+  PASS  i-takeup=20: i-repl displays its own value (v-repl)
+  PASS  i-takeup=20: i-notrepl displays its own value (v-notrepl)
+  PASS  i-takeup=20: i-vac displays its own value (v-vac)
+  PASS  i-takeup=20: i-growth displays its own value (v-growth)
+  PASS  i-takeup=20: i-disc displays its own value (v-disc)
+  PASS  i-takeup=20: i-impr displays its own value (v-impr)
+  PASS  i-takeup=20: i-vst displays its own value (v-vst)
+  PASS  i-takeup=20: i-vtc displays its own value (v-vtc)
+  PASS  i-takeup=20: i-vps displays its own value (v-vps)
+  PASS  i-takeup=20: i-qual displays its own value (v-qual)
+  PASS  i-takeup=20: i-bar displays its own value (v-bar)
+  PASS  i-takeup=20: i-notbought displays its own value (v-notbought)
+  PASS  i-takeup=20: behavioural split labels agree with φ
+  PASS  i-takeup=20: all 85 panel figures match the model
+  PASS  i-takeup=20 reaches the model as takeUp
+  PASS  i-takeup=30: i-takeup displays its own value (v-takeup)
+  PASS  i-takeup=30: i-p1y displays its own value (v-p1y)
+  PASS  i-takeup=30: i-p2y displays its own value (v-p2y)
+  PASS  i-takeup=30: i-phi displays its own value (v-phi)
+  PASS  i-takeup=30: i-repl displays its own value (v-repl)
+  PASS  i-takeup=30: i-notrepl displays its own value (v-notrepl)
+  PASS  i-takeup=30: i-vac displays its own value (v-vac)
+  PASS  i-takeup=30: i-growth displays its own value (v-growth)
+  PASS  i-takeup=30: i-disc displays its own value (v-disc)
+  PASS  i-takeup=30: i-impr displays its own value (v-impr)
+  PASS  i-takeup=30: i-vst displays its own value (v-vst)
+  PASS  i-takeup=30: i-vtc displays its own value (v-vtc)
+  PASS  i-takeup=30: i-vps displays its own value (v-vps)
+  PASS  i-takeup=30: i-qual displays its own value (v-qual)
+  PASS  i-takeup=30: i-bar displays its own value (v-bar)
+  PASS  i-takeup=30: i-notbought displays its own value (v-notbought)
+  PASS  i-takeup=30: behavioural split labels agree with φ
+  PASS  i-takeup=30: all 85 panel figures match the model
+  PASS  i-takeup=30 reaches the model as takeUp
+  PASS  i-takeup=37: i-takeup displays its own value (v-takeup)
+  PASS  i-takeup=37: i-p1y displays its own value (v-p1y)
+  PASS  i-takeup=37: i-p2y displays its own value (v-p2y)
+  PASS  i-takeup=37: i-phi displays its own value (v-phi)
+  PASS  i-takeup=37: i-repl displays its own value (v-repl)
+  PASS  i-takeup=37: i-notrepl displays its own value (v-notrepl)
+  PASS  i-takeup=37: i-vac displays its own value (v-vac)
+  PASS  i-takeup=37: i-growth displays its own value (v-growth)
+  PASS  i-takeup=37: i-disc displays its own value (v-disc)
+  PASS  i-takeup=37: i-impr displays its own value (v-impr)
+  PASS  i-takeup=37: i-vst displays its own value (v-vst)
+  PASS  i-takeup=37: i-vtc displays its own value (v-vtc)
+  PASS  i-takeup=37: i-vps displays its own value (v-vps)
+  PASS  i-takeup=37: i-qual displays its own value (v-qual)
+  PASS  i-takeup=37: i-bar displays its own value (v-bar)
+  PASS  i-takeup=37: i-notbought displays its own value (v-notbought)
+  PASS  i-takeup=37: behavioural split labels agree with φ
+  PASS  i-takeup=37: all 85 panel figures match the model
+  PASS  i-takeup=37 reaches the model as takeUp
+  PASS  i-takeup=50: i-takeup displays its own value (v-takeup)
+  PASS  i-takeup=50: i-p1y displays its own value (v-p1y)
+  PASS  i-takeup=50: i-p2y displays its own value (v-p2y)
+  PASS  i-takeup=50: i-phi displays its own value (v-phi)
+  PASS  i-takeup=50: i-repl displays its own value (v-repl)
+  PASS  i-takeup=50: i-notrepl displays its own value (v-notrepl)
+  PASS  i-takeup=50: i-vac displays its own value (v-vac)
+  PASS  i-takeup=50: i-growth displays its own value (v-growth)
+  PASS  i-takeup=50: i-disc displays its own value (v-disc)
+  PASS  i-takeup=50: i-impr displays its own value (v-impr)
+  PASS  i-takeup=50: i-vst displays its own value (v-vst)
+  PASS  i-takeup=50: i-vtc displays its own value (v-vtc)
+  PASS  i-takeup=50: i-vps displays its own value (v-vps)
+  PASS  i-takeup=50: i-qual displays its own value (v-qual)
+  PASS  i-takeup=50: i-bar displays its own value (v-bar)
+  PASS  i-takeup=50: i-notbought displays its own value (v-notbought)
+  PASS  i-takeup=50: behavioural split labels agree with φ
+  PASS  i-takeup=50: all 85 panel figures match the model
+  PASS  i-takeup=50 reaches the model as takeUp
+  PASS  i-takeup changes some modeled output between its extremes
+  PASS  i-phi=0: i-takeup displays its own value (v-takeup)
+  PASS  i-phi=0: i-p1y displays its own value (v-p1y)
+  PASS  i-phi=0: i-p2y displays its own value (v-p2y)
+  PASS  i-phi=0: i-phi displays its own value (v-phi)
+  PASS  i-phi=0: i-repl displays its own value (v-repl)
+  PASS  i-phi=0: i-notrepl displays its own value (v-notrepl)
+  PASS  i-phi=0: i-vac displays its own value (v-vac)
+  PASS  i-phi=0: i-growth displays its own value (v-growth)
+  PASS  i-phi=0: i-disc displays its own value (v-disc)
+  PASS  i-phi=0: i-impr displays its own value (v-impr)
+  PASS  i-phi=0: i-vst displays its own value (v-vst)
+  PASS  i-phi=0: i-vtc displays its own value (v-vtc)
+  PASS  i-phi=0: i-vps displays its own value (v-vps)
+  PASS  i-phi=0: i-qual displays its own value (v-qual)
+  PASS  i-phi=0: i-bar displays its own value (v-bar)
+  PASS  i-phi=0: i-notbought displays its own value (v-notbought)
+  PASS  i-phi=0: behavioural split labels agree with φ
+  PASS  i-phi=0: all 85 panel figures match the model
+  PASS  i-phi=0 reaches the model as phi
+  PASS  i-phi=25: i-takeup displays its own value (v-takeup)
+  PASS  i-phi=25: i-p1y displays its own value (v-p1y)
+  PASS  i-phi=25: i-p2y displays its own value (v-p2y)
+  PASS  i-phi=25: i-phi displays its own value (v-phi)
+  PASS  i-phi=25: i-repl displays its own value (v-repl)
+  PASS  i-phi=25: i-notrepl displays its own value (v-notrepl)
+  PASS  i-phi=25: i-vac displays its own value (v-vac)
+  PASS  i-phi=25: i-growth displays its own value (v-growth)
+  PASS  i-phi=25: i-disc displays its own value (v-disc)
+  PASS  i-phi=25: i-impr displays its own value (v-impr)
+  PASS  i-phi=25: i-vst displays its own value (v-vst)
+  PASS  i-phi=25: i-vtc displays its own value (v-vtc)
+  PASS  i-phi=25: i-vps displays its own value (v-vps)
+  PASS  i-phi=25: i-qual displays its own value (v-qual)
+  PASS  i-phi=25: i-bar displays its own value (v-bar)
+  PASS  i-phi=25: i-notbought displays its own value (v-notbought)
+  PASS  i-phi=25: behavioural split labels agree with φ
+  PASS  i-phi=25: all 85 panel figures match the model
+  PASS  i-phi=25 reaches the model as phi
+  PASS  i-phi=50: i-takeup displays its own value (v-takeup)
+  PASS  i-phi=50: i-p1y displays its own value (v-p1y)
+  PASS  i-phi=50: i-p2y displays its own value (v-p2y)
+  PASS  i-phi=50: i-phi displays its own value (v-phi)
+  PASS  i-phi=50: i-repl displays its own value (v-repl)
+  PASS  i-phi=50: i-notrepl displays its own value (v-notrepl)
+  PASS  i-phi=50: i-vac displays its own value (v-vac)
+  PASS  i-phi=50: i-growth displays its own value (v-growth)
+  PASS  i-phi=50: i-disc displays its own value (v-disc)
+  PASS  i-phi=50: i-impr displays its own value (v-impr)
+  PASS  i-phi=50: i-vst displays its own value (v-vst)
+  PASS  i-phi=50: i-vtc displays its own value (v-vtc)
+  PASS  i-phi=50: i-vps displays its own value (v-vps)
+  PASS  i-phi=50: i-qual displays its own value (v-qual)
+  PASS  i-phi=50: i-bar displays its own value (v-bar)
+  PASS  i-phi=50: i-notbought displays its own value (v-notbought)
+  PASS  i-phi=50: behavioural split labels agree with φ
+  PASS  i-phi=50: all 85 panel figures match the model
+  PASS  i-phi=50 reaches the model as phi
+  PASS  i-phi=75: i-takeup displays its own value (v-takeup)
+  PASS  i-phi=75: i-p1y displays its own value (v-p1y)
+  PASS  i-phi=75: i-p2y displays its own value (v-p2y)
+  PASS  i-phi=75: i-phi displays its own value (v-phi)
+  PASS  i-phi=75: i-repl displays its own value (v-repl)
+  PASS  i-phi=75: i-notrepl displays its own value (v-notrepl)
+  PASS  i-phi=75: i-vac displays its own value (v-vac)
+  PASS  i-phi=75: i-growth displays its own value (v-growth)
+  PASS  i-phi=75: i-disc displays its own value (v-disc)
+  PASS  i-phi=75: i-impr displays its own value (v-impr)
+  PASS  i-phi=75: i-vst displays its own value (v-vst)
+  PASS  i-phi=75: i-vtc displays its own value (v-vtc)
+  PASS  i-phi=75: i-vps displays its own value (v-vps)
+  PASS  i-phi=75: i-qual displays its own value (v-qual)
+  PASS  i-phi=75: i-bar displays its own value (v-bar)
+  PASS  i-phi=75: i-notbought displays its own value (v-notbought)
+  PASS  i-phi=75: behavioural split labels agree with φ
+  PASS  i-phi=75: all 85 panel figures match the model
+  PASS  i-phi=75 reaches the model as phi
+  PASS  i-phi=100: i-takeup displays its own value (v-takeup)
+  PASS  i-phi=100: i-p1y displays its own value (v-p1y)
+  PASS  i-phi=100: i-p2y displays its own value (v-p2y)
+  PASS  i-phi=100: i-phi displays its own value (v-phi)
+  PASS  i-phi=100: i-repl displays its own value (v-repl)
+  PASS  i-phi=100: i-notrepl displays its own value (v-notrepl)
+  PASS  i-phi=100: i-vac displays its own value (v-vac)
+  PASS  i-phi=100: i-growth displays its own value (v-growth)
+  PASS  i-phi=100: i-disc displays its own value (v-disc)
+  PASS  i-phi=100: i-impr displays its own value (v-impr)
+  PASS  i-phi=100: i-vst displays its own value (v-vst)
+  PASS  i-phi=100: i-vtc displays its own value (v-vtc)
+  PASS  i-phi=100: i-vps displays its own value (v-vps)
+  PASS  i-phi=100: i-qual displays its own value (v-qual)
+  PASS  i-phi=100: i-bar displays its own value (v-bar)
+  PASS  i-phi=100: i-notbought displays its own value (v-notbought)
+  PASS  i-phi=100: behavioural split labels agree with φ
+  PASS  i-phi=100: all 85 panel figures match the model
+  PASS  i-phi=100 reaches the model as phi
+  PASS  i-phi changes some modeled output between its extremes
+  PASS  i-repl=75: i-takeup displays its own value (v-takeup)
+  PASS  i-repl=75: i-p1y displays its own value (v-p1y)
+  PASS  i-repl=75: i-p2y displays its own value (v-p2y)
+  PASS  i-repl=75: i-phi displays its own value (v-phi)
+  PASS  i-repl=75: i-repl displays its own value (v-repl)
+  PASS  i-repl=75: i-notrepl displays its own value (v-notrepl)
+  PASS  i-repl=75: i-vac displays its own value (v-vac)
+  PASS  i-repl=75: i-growth displays its own value (v-growth)
+  PASS  i-repl=75: i-disc displays its own value (v-disc)
+  PASS  i-repl=75: i-impr displays its own value (v-impr)
+  PASS  i-repl=75: i-vst displays its own value (v-vst)
+  PASS  i-repl=75: i-vtc displays its own value (v-vtc)
+  PASS  i-repl=75: i-vps displays its own value (v-vps)
+  PASS  i-repl=75: i-qual displays its own value (v-qual)
+  PASS  i-repl=75: i-bar displays its own value (v-bar)
+  PASS  i-repl=75: i-notbought displays its own value (v-notbought)
+  PASS  i-repl=75: behavioural split labels agree with φ
+  PASS  i-repl=75: all 85 panel figures match the model
+  PASS  i-repl=75 reaches the model as replacementPct
+  PASS  i-repl=80: i-takeup displays its own value (v-takeup)
+  PASS  i-repl=80: i-p1y displays its own value (v-p1y)
+  PASS  i-repl=80: i-p2y displays its own value (v-p2y)
+  PASS  i-repl=80: i-phi displays its own value (v-phi)
+  PASS  i-repl=80: i-repl displays its own value (v-repl)
+  PASS  i-repl=80: i-notrepl displays its own value (v-notrepl)
+  PASS  i-repl=80: i-vac displays its own value (v-vac)
+  PASS  i-repl=80: i-growth displays its own value (v-growth)
+  PASS  i-repl=80: i-disc displays its own value (v-disc)
+  PASS  i-repl=80: i-impr displays its own value (v-impr)
+  PASS  i-repl=80: i-vst displays its own value (v-vst)
+  PASS  i-repl=80: i-vtc displays its own value (v-vtc)
+  PASS  i-repl=80: i-vps displays its own value (v-vps)
+  PASS  i-repl=80: i-qual displays its own value (v-qual)
+  PASS  i-repl=80: i-bar displays its own value (v-bar)
+  PASS  i-repl=80: i-notbought displays its own value (v-notbought)
+  PASS  i-repl=80: behavioural split labels agree with φ
+  PASS  i-repl=80: all 85 panel figures match the model
+  PASS  i-repl=80 reaches the model as replacementPct
+  PASS  i-repl=85: i-takeup displays its own value (v-takeup)
+  PASS  i-repl=85: i-p1y displays its own value (v-p1y)
+  PASS  i-repl=85: i-p2y displays its own value (v-p2y)
+  PASS  i-repl=85: i-phi displays its own value (v-phi)
+  PASS  i-repl=85: i-repl displays its own value (v-repl)
+  PASS  i-repl=85: i-notrepl displays its own value (v-notrepl)
+  PASS  i-repl=85: i-vac displays its own value (v-vac)
+  PASS  i-repl=85: i-growth displays its own value (v-growth)
+  PASS  i-repl=85: i-disc displays its own value (v-disc)
+  PASS  i-repl=85: i-impr displays its own value (v-impr)
+  PASS  i-repl=85: i-vst displays its own value (v-vst)
+  PASS  i-repl=85: i-vtc displays its own value (v-vtc)
+  PASS  i-repl=85: i-vps displays its own value (v-vps)
+  PASS  i-repl=85: i-qual displays its own value (v-qual)
+  PASS  i-repl=85: i-bar displays its own value (v-bar)
+  PASS  i-repl=85: i-notbought displays its own value (v-notbought)
+  PASS  i-repl=85: behavioural split labels agree with φ
+  PASS  i-repl=85: all 85 panel figures match the model
+  PASS  i-repl=85 reaches the model as replacementPct
+  PASS  i-repl=90: i-takeup displays its own value (v-takeup)
+  PASS  i-repl=90: i-p1y displays its own value (v-p1y)
+  PASS  i-repl=90: i-p2y displays its own value (v-p2y)
+  PASS  i-repl=90: i-phi displays its own value (v-phi)
+  PASS  i-repl=90: i-repl displays its own value (v-repl)
+  PASS  i-repl=90: i-notrepl displays its own value (v-notrepl)
+  PASS  i-repl=90: i-vac displays its own value (v-vac)
+  PASS  i-repl=90: i-growth displays its own value (v-growth)
+  PASS  i-repl=90: i-disc displays its own value (v-disc)
+  PASS  i-repl=90: i-impr displays its own value (v-impr)
+  PASS  i-repl=90: i-vst displays its own value (v-vst)
+  PASS  i-repl=90: i-vtc displays its own value (v-vtc)
+  PASS  i-repl=90: i-vps displays its own value (v-vps)
+  PASS  i-repl=90: i-qual displays its own value (v-qual)
+  PASS  i-repl=90: i-bar displays its own value (v-bar)
+  PASS  i-repl=90: i-notbought displays its own value (v-notbought)
+  PASS  i-repl=90: behavioural split labels agree with φ
+  PASS  i-repl=90: all 85 panel figures match the model
+  PASS  i-repl=90 reaches the model as replacementPct
+  PASS  i-repl=95: i-takeup displays its own value (v-takeup)
+  PASS  i-repl=95: i-p1y displays its own value (v-p1y)
+  PASS  i-repl=95: i-p2y displays its own value (v-p2y)
+  PASS  i-repl=95: i-phi displays its own value (v-phi)
+  PASS  i-repl=95: i-repl displays its own value (v-repl)
+  PASS  i-repl=95: i-notrepl displays its own value (v-notrepl)
+  PASS  i-repl=95: i-vac displays its own value (v-vac)
+  PASS  i-repl=95: i-growth displays its own value (v-growth)
+  PASS  i-repl=95: i-disc displays its own value (v-disc)
+  PASS  i-repl=95: i-impr displays its own value (v-impr)
+  PASS  i-repl=95: i-vst displays its own value (v-vst)
+  PASS  i-repl=95: i-vtc displays its own value (v-vtc)
+  PASS  i-repl=95: i-vps displays its own value (v-vps)
+  PASS  i-repl=95: i-qual displays its own value (v-qual)
+  PASS  i-repl=95: i-bar displays its own value (v-bar)
+  PASS  i-repl=95: i-notbought displays its own value (v-notbought)
+  PASS  i-repl=95: behavioural split labels agree with φ
+  PASS  i-repl=95: all 85 panel figures match the model
+  PASS  i-repl=95 reaches the model as replacementPct
+  PASS  i-repl=100: i-takeup displays its own value (v-takeup)
+  PASS  i-repl=100: i-p1y displays its own value (v-p1y)
+  PASS  i-repl=100: i-p2y displays its own value (v-p2y)
+  PASS  i-repl=100: i-phi displays its own value (v-phi)
+  PASS  i-repl=100: i-repl displays its own value (v-repl)
+  PASS  i-repl=100: i-notrepl displays its own value (v-notrepl)
+  PASS  i-repl=100: i-vac displays its own value (v-vac)
+  PASS  i-repl=100: i-growth displays its own value (v-growth)
+  PASS  i-repl=100: i-disc displays its own value (v-disc)
+  PASS  i-repl=100: i-impr displays its own value (v-impr)
+  PASS  i-repl=100: i-vst displays its own value (v-vst)
+  PASS  i-repl=100: i-vtc displays its own value (v-vtc)
+  PASS  i-repl=100: i-vps displays its own value (v-vps)
+  PASS  i-repl=100: i-qual displays its own value (v-qual)
+  PASS  i-repl=100: i-bar displays its own value (v-bar)
+  PASS  i-repl=100: i-notbought displays its own value (v-notbought)
+  PASS  i-repl=100: behavioural split labels agree with φ
+  PASS  i-repl=100: all 85 panel figures match the model
+  PASS  i-repl=100 reaches the model as replacementPct
+  PASS  i-repl changes some modeled output between its extremes
+  PASS  i-notrepl=0: i-takeup displays its own value (v-takeup)
+  PASS  i-notrepl=0: i-p1y displays its own value (v-p1y)
+  PASS  i-notrepl=0: i-p2y displays its own value (v-p2y)
+  PASS  i-notrepl=0: i-phi displays its own value (v-phi)
+  PASS  i-notrepl=0: i-repl displays its own value (v-repl)
+  PASS  i-notrepl=0: i-notrepl displays its own value (v-notrepl)
+  PASS  i-notrepl=0: i-vac displays its own value (v-vac)
+  PASS  i-notrepl=0: i-growth displays its own value (v-growth)
+  PASS  i-notrepl=0: i-disc displays its own value (v-disc)
+  PASS  i-notrepl=0: i-impr displays its own value (v-impr)
+  PASS  i-notrepl=0: i-vst displays its own value (v-vst)
+  PASS  i-notrepl=0: i-vtc displays its own value (v-vtc)
+  PASS  i-notrepl=0: i-vps displays its own value (v-vps)
+  PASS  i-notrepl=0: i-qual displays its own value (v-qual)
+  PASS  i-notrepl=0: i-bar displays its own value (v-bar)
+  PASS  i-notrepl=0: i-notbought displays its own value (v-notbought)
+  PASS  i-notrepl=0: behavioural split labels agree with φ
+  PASS  i-notrepl=0: all 85 panel figures match the model
+  PASS  i-notrepl=0 reaches the model as notReplacedPct
+  PASS  i-notrepl=2.5: i-takeup displays its own value (v-takeup)
+  PASS  i-notrepl=2.5: i-p1y displays its own value (v-p1y)
+  PASS  i-notrepl=2.5: i-p2y displays its own value (v-p2y)
+  PASS  i-notrepl=2.5: i-phi displays its own value (v-phi)
+  PASS  i-notrepl=2.5: i-repl displays its own value (v-repl)
+  PASS  i-notrepl=2.5: i-notrepl displays its own value (v-notrepl)
+  PASS  i-notrepl=2.5: i-vac displays its own value (v-vac)
+  PASS  i-notrepl=2.5: i-growth displays its own value (v-growth)
+  PASS  i-notrepl=2.5: i-disc displays its own value (v-disc)
+  PASS  i-notrepl=2.5: i-impr displays its own value (v-impr)
+  PASS  i-notrepl=2.5: i-vst displays its own value (v-vst)
+  PASS  i-notrepl=2.5: i-vtc displays its own value (v-vtc)
+  PASS  i-notrepl=2.5: i-vps displays its own value (v-vps)
+  PASS  i-notrepl=2.5: i-qual displays its own value (v-qual)
+  PASS  i-notrepl=2.5: i-bar displays its own value (v-bar)
+  PASS  i-notrepl=2.5: i-notbought displays its own value (v-notbought)
+  PASS  i-notrepl=2.5: behavioural split labels agree with φ
+  PASS  i-notrepl=2.5: all 85 panel figures match the model
+  PASS  i-notrepl=2.5 reaches the model as notReplacedPct
+  PASS  i-notrepl=5: i-takeup displays its own value (v-takeup)
+  PASS  i-notrepl=5: i-p1y displays its own value (v-p1y)
+  PASS  i-notrepl=5: i-p2y displays its own value (v-p2y)
+  PASS  i-notrepl=5: i-phi displays its own value (v-phi)
+  PASS  i-notrepl=5: i-repl displays its own value (v-repl)
+  PASS  i-notrepl=5: i-notrepl displays its own value (v-notrepl)
+  PASS  i-notrepl=5: i-vac displays its own value (v-vac)
+  PASS  i-notrepl=5: i-growth displays its own value (v-growth)
+  PASS  i-notrepl=5: i-disc displays its own value (v-disc)
+  PASS  i-notrepl=5: i-impr displays its own value (v-impr)
+  PASS  i-notrepl=5: i-vst displays its own value (v-vst)
+  PASS  i-notrepl=5: i-vtc displays its own value (v-vtc)
+  PASS  i-notrepl=5: i-vps displays its own value (v-vps)
+  PASS  i-notrepl=5: i-qual displays its own value (v-qual)
+  PASS  i-notrepl=5: i-bar displays its own value (v-bar)
+  PASS  i-notrepl=5: i-notbought displays its own value (v-notbought)
+  PASS  i-notrepl=5: behavioural split labels agree with φ
+  PASS  i-notrepl=5: all 85 panel figures match the model
+  PASS  i-notrepl=5 reaches the model as notReplacedPct
+  PASS  i-notrepl=7.5: i-takeup displays its own value (v-takeup)
+  PASS  i-notrepl=7.5: i-p1y displays its own value (v-p1y)
+  PASS  i-notrepl=7.5: i-p2y displays its own value (v-p2y)
+  PASS  i-notrepl=7.5: i-phi displays its own value (v-phi)
+  PASS  i-notrepl=7.5: i-repl displays its own value (v-repl)
+  PASS  i-notrepl=7.5: i-notrepl displays its own value (v-notrepl)
+  PASS  i-notrepl=7.5: i-vac displays its own value (v-vac)
+  PASS  i-notrepl=7.5: i-growth displays its own value (v-growth)
+  PASS  i-notrepl=7.5: i-disc displays its own value (v-disc)
+  PASS  i-notrepl=7.5: i-impr displays its own value (v-impr)
+  PASS  i-notrepl=7.5: i-vst displays its own value (v-vst)
+  PASS  i-notrepl=7.5: i-vtc displays its own value (v-vtc)
+  PASS  i-notrepl=7.5: i-vps displays its own value (v-vps)
+  PASS  i-notrepl=7.5: i-qual displays its own value (v-qual)
+  PASS  i-notrepl=7.5: i-bar displays its own value (v-bar)
+  PASS  i-notrepl=7.5: i-notbought displays its own value (v-notbought)
+  PASS  i-notrepl=7.5: behavioural split labels agree with φ
+  PASS  i-notrepl=7.5: all 85 panel figures match the model
+  PASS  i-notrepl=7.5 reaches the model as notReplacedPct
+  PASS  i-notrepl=10: i-takeup displays its own value (v-takeup)
+  PASS  i-notrepl=10: i-p1y displays its own value (v-p1y)
+  PASS  i-notrepl=10: i-p2y displays its own value (v-p2y)
+  PASS  i-notrepl=10: i-phi displays its own value (v-phi)
+  PASS  i-notrepl=10: i-repl displays its own value (v-repl)
+  PASS  i-notrepl=10: i-notrepl displays its own value (v-notrepl)
+  PASS  i-notrepl=10: i-vac displays its own value (v-vac)
+  PASS  i-notrepl=10: i-growth displays its own value (v-growth)
+  PASS  i-notrepl=10: i-disc displays its own value (v-disc)
+  PASS  i-notrepl=10: i-impr displays its own value (v-impr)
+  PASS  i-notrepl=10: i-vst displays its own value (v-vst)
+  PASS  i-notrepl=10: i-vtc displays its own value (v-vtc)
+  PASS  i-notrepl=10: i-vps displays its own value (v-vps)
+  PASS  i-notrepl=10: i-qual displays its own value (v-qual)
+  PASS  i-notrepl=10: i-bar displays its own value (v-bar)
+  PASS  i-notrepl=10: i-notbought displays its own value (v-notbought)
+  PASS  i-notrepl=10: behavioural split labels agree with φ
+  PASS  i-notrepl=10: all 85 panel figures match the model
+  PASS  i-notrepl=10 reaches the model as notReplacedPct
+  PASS  i-notrepl changes some modeled output between its extremes
+  PASS  i-vac=0: i-takeup displays its own value (v-takeup)
+  PASS  i-vac=0: i-p1y displays its own value (v-p1y)
+  PASS  i-vac=0: i-p2y displays its own value (v-p2y)
+  PASS  i-vac=0: i-phi displays its own value (v-phi)
+  PASS  i-vac=0: i-repl displays its own value (v-repl)
+  PASS  i-vac=0: i-notrepl displays its own value (v-notrepl)
+  PASS  i-vac=0: i-vac displays its own value (v-vac)
+  PASS  i-vac=0: i-growth displays its own value (v-growth)
+  PASS  i-vac=0: i-disc displays its own value (v-disc)
+  PASS  i-vac=0: i-impr displays its own value (v-impr)
+  PASS  i-vac=0: i-vst displays its own value (v-vst)
+  PASS  i-vac=0: i-vtc displays its own value (v-vtc)
+  PASS  i-vac=0: i-vps displays its own value (v-vps)
+  PASS  i-vac=0: i-qual displays its own value (v-qual)
+  PASS  i-vac=0: i-bar displays its own value (v-bar)
+  PASS  i-vac=0: i-notbought displays its own value (v-notbought)
+  PASS  i-vac=0: behavioural split labels agree with φ
+  PASS  i-vac=0: all 85 panel figures match the model
+  PASS  i-vac=0 reaches the model as vacancyMonths
+  PASS  i-vac=1: i-takeup displays its own value (v-takeup)
+  PASS  i-vac=1: i-p1y displays its own value (v-p1y)
+  PASS  i-vac=1: i-p2y displays its own value (v-p2y)
+  PASS  i-vac=1: i-phi displays its own value (v-phi)
+  PASS  i-vac=1: i-repl displays its own value (v-repl)
+  PASS  i-vac=1: i-notrepl displays its own value (v-notrepl)
+  PASS  i-vac=1: i-vac displays its own value (v-vac)
+  PASS  i-vac=1: i-growth displays its own value (v-growth)
+  PASS  i-vac=1: i-disc displays its own value (v-disc)
+  PASS  i-vac=1: i-impr displays its own value (v-impr)
+  PASS  i-vac=1: i-vst displays its own value (v-vst)
+  PASS  i-vac=1: i-vtc displays its own value (v-vtc)
+  PASS  i-vac=1: i-vps displays its own value (v-vps)
+  PASS  i-vac=1: i-qual displays its own value (v-qual)
+  PASS  i-vac=1: i-bar displays its own value (v-bar)
+  PASS  i-vac=1: i-notbought displays its own value (v-notbought)
+  PASS  i-vac=1: behavioural split labels agree with φ
+  PASS  i-vac=1: all 85 panel figures match the model
+  PASS  i-vac=1 reaches the model as vacancyMonths
+  PASS  i-vac=3: i-takeup displays its own value (v-takeup)
+  PASS  i-vac=3: i-p1y displays its own value (v-p1y)
+  PASS  i-vac=3: i-p2y displays its own value (v-p2y)
+  PASS  i-vac=3: i-phi displays its own value (v-phi)
+  PASS  i-vac=3: i-repl displays its own value (v-repl)
+  PASS  i-vac=3: i-notrepl displays its own value (v-notrepl)
+  PASS  i-vac=3: i-vac displays its own value (v-vac)
+  PASS  i-vac=3: i-growth displays its own value (v-growth)
+  PASS  i-vac=3: i-disc displays its own value (v-disc)
+  PASS  i-vac=3: i-impr displays its own value (v-impr)
+  PASS  i-vac=3: i-vst displays its own value (v-vst)
+  PASS  i-vac=3: i-vtc displays its own value (v-vtc)
+  PASS  i-vac=3: i-vps displays its own value (v-vps)
+  PASS  i-vac=3: i-qual displays its own value (v-qual)
+  PASS  i-vac=3: i-bar displays its own value (v-bar)
+  PASS  i-vac=3: i-notbought displays its own value (v-notbought)
+  PASS  i-vac=3: behavioural split labels agree with φ
+  PASS  i-vac=3: all 85 panel figures match the model
+  PASS  i-vac=3 reaches the model as vacancyMonths
+  PASS  i-vac=6: i-takeup displays its own value (v-takeup)
+  PASS  i-vac=6: i-p1y displays its own value (v-p1y)
+  PASS  i-vac=6: i-p2y displays its own value (v-p2y)
+  PASS  i-vac=6: i-phi displays its own value (v-phi)
+  PASS  i-vac=6: i-repl displays its own value (v-repl)
+  PASS  i-vac=6: i-notrepl displays its own value (v-notrepl)
+  PASS  i-vac=6: i-vac displays its own value (v-vac)
+  PASS  i-vac=6: i-growth displays its own value (v-growth)
+  PASS  i-vac=6: i-disc displays its own value (v-disc)
+  PASS  i-vac=6: i-impr displays its own value (v-impr)
+  PASS  i-vac=6: i-vst displays its own value (v-vst)
+  PASS  i-vac=6: i-vtc displays its own value (v-vtc)
+  PASS  i-vac=6: i-vps displays its own value (v-vps)
+  PASS  i-vac=6: i-qual displays its own value (v-qual)
+  PASS  i-vac=6: i-bar displays its own value (v-bar)
+  PASS  i-vac=6: i-notbought displays its own value (v-notbought)
+  PASS  i-vac=6: behavioural split labels agree with φ
+  PASS  i-vac=6: all 85 panel figures match the model
+  PASS  i-vac=6 reaches the model as vacancyMonths
+  PASS  i-vac=12: i-takeup displays its own value (v-takeup)
+  PASS  i-vac=12: i-p1y displays its own value (v-p1y)
+  PASS  i-vac=12: i-p2y displays its own value (v-p2y)
+  PASS  i-vac=12: i-phi displays its own value (v-phi)
+  PASS  i-vac=12: i-repl displays its own value (v-repl)
+  PASS  i-vac=12: i-notrepl displays its own value (v-notrepl)
+  PASS  i-vac=12: i-vac displays its own value (v-vac)
+  PASS  i-vac=12: i-growth displays its own value (v-growth)
+  PASS  i-vac=12: i-disc displays its own value (v-disc)
+  PASS  i-vac=12: i-impr displays its own value (v-impr)
+  PASS  i-vac=12: i-vst displays its own value (v-vst)
+  PASS  i-vac=12: i-vtc displays its own value (v-vtc)
+  PASS  i-vac=12: i-vps displays its own value (v-vps)
+  PASS  i-vac=12: i-qual displays its own value (v-qual)
+  PASS  i-vac=12: i-bar displays its own value (v-bar)
+  PASS  i-vac=12: i-notbought displays its own value (v-notbought)
+  PASS  i-vac=12: behavioural split labels agree with φ
+  PASS  i-vac=12: all 85 panel figures match the model
+  PASS  i-vac=12 reaches the model as vacancyMonths
+  PASS  i-vac changes some modeled output between its extremes
+  PASS  i-growth=1.5: i-takeup displays its own value (v-takeup)
+  PASS  i-growth=1.5: i-p1y displays its own value (v-p1y)
+  PASS  i-growth=1.5: i-p2y displays its own value (v-p2y)
+  PASS  i-growth=1.5: i-phi displays its own value (v-phi)
+  PASS  i-growth=1.5: i-repl displays its own value (v-repl)
+  PASS  i-growth=1.5: i-notrepl displays its own value (v-notrepl)
+  PASS  i-growth=1.5: i-vac displays its own value (v-vac)
+  PASS  i-growth=1.5: i-growth displays its own value (v-growth)
+  PASS  i-growth=1.5: i-disc displays its own value (v-disc)
+  PASS  i-growth=1.5: i-impr displays its own value (v-impr)
+  PASS  i-growth=1.5: i-vst displays its own value (v-vst)
+  PASS  i-growth=1.5: i-vtc displays its own value (v-vtc)
+  PASS  i-growth=1.5: i-vps displays its own value (v-vps)
+  PASS  i-growth=1.5: i-qual displays its own value (v-qual)
+  PASS  i-growth=1.5: i-bar displays its own value (v-bar)
+  PASS  i-growth=1.5: i-notbought displays its own value (v-notbought)
+  PASS  i-growth=1.5: behavioural split labels agree with φ
+  PASS  i-growth=1.5: all 85 panel figures match the model
+  PASS  i-growth=1.5 reaches the model as salaryGrowth
+  PASS  i-growth=2.5: i-takeup displays its own value (v-takeup)
+  PASS  i-growth=2.5: i-p1y displays its own value (v-p1y)
+  PASS  i-growth=2.5: i-p2y displays its own value (v-p2y)
+  PASS  i-growth=2.5: i-phi displays its own value (v-phi)
+  PASS  i-growth=2.5: i-repl displays its own value (v-repl)
+  PASS  i-growth=2.5: i-notrepl displays its own value (v-notrepl)
+  PASS  i-growth=2.5: i-vac displays its own value (v-vac)
+  PASS  i-growth=2.5: i-growth displays its own value (v-growth)
+  PASS  i-growth=2.5: i-disc displays its own value (v-disc)
+  PASS  i-growth=2.5: i-impr displays its own value (v-impr)
+  PASS  i-growth=2.5: i-vst displays its own value (v-vst)
+  PASS  i-growth=2.5: i-vtc displays its own value (v-vtc)
+  PASS  i-growth=2.5: i-vps displays its own value (v-vps)
+  PASS  i-growth=2.5: i-qual displays its own value (v-qual)
+  PASS  i-growth=2.5: i-bar displays its own value (v-bar)
+  PASS  i-growth=2.5: i-notbought displays its own value (v-notbought)
+  PASS  i-growth=2.5: behavioural split labels agree with φ
+  PASS  i-growth=2.5: all 85 panel figures match the model
+  PASS  i-growth=2.5 reaches the model as salaryGrowth
+  PASS  i-growth=3.5: i-takeup displays its own value (v-takeup)
+  PASS  i-growth=3.5: i-p1y displays its own value (v-p1y)
+  PASS  i-growth=3.5: i-p2y displays its own value (v-p2y)
+  PASS  i-growth=3.5: i-phi displays its own value (v-phi)
+  PASS  i-growth=3.5: i-repl displays its own value (v-repl)
+  PASS  i-growth=3.5: i-notrepl displays its own value (v-notrepl)
+  PASS  i-growth=3.5: i-vac displays its own value (v-vac)
+  PASS  i-growth=3.5: i-growth displays its own value (v-growth)
+  PASS  i-growth=3.5: i-disc displays its own value (v-disc)
+  PASS  i-growth=3.5: i-impr displays its own value (v-impr)
+  PASS  i-growth=3.5: i-vst displays its own value (v-vst)
+  PASS  i-growth=3.5: i-vtc displays its own value (v-vtc)
+  PASS  i-growth=3.5: i-vps displays its own value (v-vps)
+  PASS  i-growth=3.5: i-qual displays its own value (v-qual)
+  PASS  i-growth=3.5: i-bar displays its own value (v-bar)
+  PASS  i-growth=3.5: i-notbought displays its own value (v-notbought)
+  PASS  i-growth=3.5: behavioural split labels agree with φ
+  PASS  i-growth=3.5: all 85 panel figures match the model
+  PASS  i-growth=3.5 reaches the model as salaryGrowth
+  PASS  i-growth=4.5: i-takeup displays its own value (v-takeup)
+  PASS  i-growth=4.5: i-p1y displays its own value (v-p1y)
+  PASS  i-growth=4.5: i-p2y displays its own value (v-p2y)
+  PASS  i-growth=4.5: i-phi displays its own value (v-phi)
+  PASS  i-growth=4.5: i-repl displays its own value (v-repl)
+  PASS  i-growth=4.5: i-notrepl displays its own value (v-notrepl)
+  PASS  i-growth=4.5: i-vac displays its own value (v-vac)
+  PASS  i-growth=4.5: i-growth displays its own value (v-growth)
+  PASS  i-growth=4.5: i-disc displays its own value (v-disc)
+  PASS  i-growth=4.5: i-impr displays its own value (v-impr)
+  PASS  i-growth=4.5: i-vst displays its own value (v-vst)
+  PASS  i-growth=4.5: i-vtc displays its own value (v-vtc)
+  PASS  i-growth=4.5: i-vps displays its own value (v-vps)
+  PASS  i-growth=4.5: i-qual displays its own value (v-qual)
+  PASS  i-growth=4.5: i-bar displays its own value (v-bar)
+  PASS  i-growth=4.5: i-notbought displays its own value (v-notbought)
+  PASS  i-growth=4.5: behavioural split labels agree with φ
+  PASS  i-growth=4.5: all 85 panel figures match the model
+  PASS  i-growth=4.5 reaches the model as salaryGrowth
+  PASS  i-growth=5.5: i-takeup displays its own value (v-takeup)
+  PASS  i-growth=5.5: i-p1y displays its own value (v-p1y)
+  PASS  i-growth=5.5: i-p2y displays its own value (v-p2y)
+  PASS  i-growth=5.5: i-phi displays its own value (v-phi)
+  PASS  i-growth=5.5: i-repl displays its own value (v-repl)
+  PASS  i-growth=5.5: i-notrepl displays its own value (v-notrepl)
+  PASS  i-growth=5.5: i-vac displays its own value (v-vac)
+  PASS  i-growth=5.5: i-growth displays its own value (v-growth)
+  PASS  i-growth=5.5: i-disc displays its own value (v-disc)
+  PASS  i-growth=5.5: i-impr displays its own value (v-impr)
+  PASS  i-growth=5.5: i-vst displays its own value (v-vst)
+  PASS  i-growth=5.5: i-vtc displays its own value (v-vtc)
+  PASS  i-growth=5.5: i-vps displays its own value (v-vps)
+  PASS  i-growth=5.5: i-qual displays its own value (v-qual)
+  PASS  i-growth=5.5: i-bar displays its own value (v-bar)
+  PASS  i-growth=5.5: i-notbought displays its own value (v-notbought)
+  PASS  i-growth=5.5: behavioural split labels agree with φ
+  PASS  i-growth=5.5: all 85 panel figures match the model
+  PASS  i-growth=5.5 reaches the model as salaryGrowth
+  PASS  i-growth changes some modeled output between its extremes
+  PASS  i-disc=4.75: i-takeup displays its own value (v-takeup)
+  PASS  i-disc=4.75: i-p1y displays its own value (v-p1y)
+  PASS  i-disc=4.75: i-p2y displays its own value (v-p2y)
+  PASS  i-disc=4.75: i-phi displays its own value (v-phi)
+  PASS  i-disc=4.75: i-repl displays its own value (v-repl)
+  PASS  i-disc=4.75: i-notrepl displays its own value (v-notrepl)
+  PASS  i-disc=4.75: i-vac displays its own value (v-vac)
+  PASS  i-disc=4.75: i-growth displays its own value (v-growth)
+  PASS  i-disc=4.75: i-disc displays its own value (v-disc)
+  PASS  i-disc=4.75: i-impr displays its own value (v-impr)
+  PASS  i-disc=4.75: i-vst displays its own value (v-vst)
+  PASS  i-disc=4.75: i-vtc displays its own value (v-vtc)
+  PASS  i-disc=4.75: i-vps displays its own value (v-vps)
+  PASS  i-disc=4.75: i-qual displays its own value (v-qual)
+  PASS  i-disc=4.75: i-bar displays its own value (v-bar)
+  PASS  i-disc=4.75: i-notbought displays its own value (v-notbought)
+  PASS  i-disc=4.75: behavioural split labels agree with φ
+  PASS  i-disc=4.75: all 85 panel figures match the model
+  PASS  i-disc=4.75 reaches the model as discount
+  PASS  i-disc=5.75: i-takeup displays its own value (v-takeup)
+  PASS  i-disc=5.75: i-p1y displays its own value (v-p1y)
+  PASS  i-disc=5.75: i-p2y displays its own value (v-p2y)
+  PASS  i-disc=5.75: i-phi displays its own value (v-phi)
+  PASS  i-disc=5.75: i-repl displays its own value (v-repl)
+  PASS  i-disc=5.75: i-notrepl displays its own value (v-notrepl)
+  PASS  i-disc=5.75: i-vac displays its own value (v-vac)
+  PASS  i-disc=5.75: i-growth displays its own value (v-growth)
+  PASS  i-disc=5.75: i-disc displays its own value (v-disc)
+  PASS  i-disc=5.75: i-impr displays its own value (v-impr)
+  PASS  i-disc=5.75: i-vst displays its own value (v-vst)
+  PASS  i-disc=5.75: i-vtc displays its own value (v-vtc)
+  PASS  i-disc=5.75: i-vps displays its own value (v-vps)
+  PASS  i-disc=5.75: i-qual displays its own value (v-qual)
+  PASS  i-disc=5.75: i-bar displays its own value (v-bar)
+  PASS  i-disc=5.75: i-notbought displays its own value (v-notbought)
+  PASS  i-disc=5.75: behavioural split labels agree with φ
+  PASS  i-disc=5.75: all 85 panel figures match the model
+  PASS  i-disc=5.75 reaches the model as discount
+  PASS  i-disc=6.75: i-takeup displays its own value (v-takeup)
+  PASS  i-disc=6.75: i-p1y displays its own value (v-p1y)
+  PASS  i-disc=6.75: i-p2y displays its own value (v-p2y)
+  PASS  i-disc=6.75: i-phi displays its own value (v-phi)
+  PASS  i-disc=6.75: i-repl displays its own value (v-repl)
+  PASS  i-disc=6.75: i-notrepl displays its own value (v-notrepl)
+  PASS  i-disc=6.75: i-vac displays its own value (v-vac)
+  PASS  i-disc=6.75: i-growth displays its own value (v-growth)
+  PASS  i-disc=6.75: i-disc displays its own value (v-disc)
+  PASS  i-disc=6.75: i-impr displays its own value (v-impr)
+  PASS  i-disc=6.75: i-vst displays its own value (v-vst)
+  PASS  i-disc=6.75: i-vtc displays its own value (v-vtc)
+  PASS  i-disc=6.75: i-vps displays its own value (v-vps)
+  PASS  i-disc=6.75: i-qual displays its own value (v-qual)
+  PASS  i-disc=6.75: i-bar displays its own value (v-bar)
+  PASS  i-disc=6.75: i-notbought displays its own value (v-notbought)
+  PASS  i-disc=6.75: behavioural split labels agree with φ
+  PASS  i-disc=6.75: all 85 panel figures match the model
+  PASS  i-disc=6.75 reaches the model as discount
+  PASS  i-disc=7.75: i-takeup displays its own value (v-takeup)
+  PASS  i-disc=7.75: i-p1y displays its own value (v-p1y)
+  PASS  i-disc=7.75: i-p2y displays its own value (v-p2y)
+  PASS  i-disc=7.75: i-phi displays its own value (v-phi)
+  PASS  i-disc=7.75: i-repl displays its own value (v-repl)
+  PASS  i-disc=7.75: i-notrepl displays its own value (v-notrepl)
+  PASS  i-disc=7.75: i-vac displays its own value (v-vac)
+  PASS  i-disc=7.75: i-growth displays its own value (v-growth)
+  PASS  i-disc=7.75: i-disc displays its own value (v-disc)
+  PASS  i-disc=7.75: i-impr displays its own value (v-impr)
+  PASS  i-disc=7.75: i-vst displays its own value (v-vst)
+  PASS  i-disc=7.75: i-vtc displays its own value (v-vtc)
+  PASS  i-disc=7.75: i-vps displays its own value (v-vps)
+  PASS  i-disc=7.75: i-qual displays its own value (v-qual)
+  PASS  i-disc=7.75: i-bar displays its own value (v-bar)
+  PASS  i-disc=7.75: i-notbought displays its own value (v-notbought)
+  PASS  i-disc=7.75: behavioural split labels agree with φ
+  PASS  i-disc=7.75: all 85 panel figures match the model
+  PASS  i-disc=7.75 reaches the model as discount
+  PASS  i-disc=8.75: i-takeup displays its own value (v-takeup)
+  PASS  i-disc=8.75: i-p1y displays its own value (v-p1y)
+  PASS  i-disc=8.75: i-p2y displays its own value (v-p2y)
+  PASS  i-disc=8.75: i-phi displays its own value (v-phi)
+  PASS  i-disc=8.75: i-repl displays its own value (v-repl)
+  PASS  i-disc=8.75: i-notrepl displays its own value (v-notrepl)
+  PASS  i-disc=8.75: i-vac displays its own value (v-vac)
+  PASS  i-disc=8.75: i-growth displays its own value (v-growth)
+  PASS  i-disc=8.75: i-disc displays its own value (v-disc)
+  PASS  i-disc=8.75: i-impr displays its own value (v-impr)
+  PASS  i-disc=8.75: i-vst displays its own value (v-vst)
+  PASS  i-disc=8.75: i-vtc displays its own value (v-vtc)
+  PASS  i-disc=8.75: i-vps displays its own value (v-vps)
+  PASS  i-disc=8.75: i-qual displays its own value (v-qual)
+  PASS  i-disc=8.75: i-bar displays its own value (v-bar)
+  PASS  i-disc=8.75: i-notbought displays its own value (v-notbought)
+  PASS  i-disc=8.75: behavioural split labels agree with φ
+  PASS  i-disc=8.75: all 85 panel figures match the model
+  PASS  i-disc=8.75 reaches the model as discount
+  PASS  i-disc changes some modeled output between its extremes
+  PASS  i-impr=0: i-takeup displays its own value (v-takeup)
+  PASS  i-impr=0: i-p1y displays its own value (v-p1y)
+  PASS  i-impr=0: i-p2y displays its own value (v-p2y)
+  PASS  i-impr=0: i-phi displays its own value (v-phi)
+  PASS  i-impr=0: i-repl displays its own value (v-repl)
+  PASS  i-impr=0: i-notrepl displays its own value (v-notrepl)
+  PASS  i-impr=0: i-vac displays its own value (v-vac)
+  PASS  i-impr=0: i-growth displays its own value (v-growth)
+  PASS  i-impr=0: i-disc displays its own value (v-disc)
+  PASS  i-impr=0: i-impr displays its own value (v-impr)
+  PASS  i-impr=0: i-vst displays its own value (v-vst)
+  PASS  i-impr=0: i-vtc displays its own value (v-vtc)
+  PASS  i-impr=0: i-vps displays its own value (v-vps)
+  PASS  i-impr=0: i-qual displays its own value (v-qual)
+  PASS  i-impr=0: i-bar displays its own value (v-bar)
+  PASS  i-impr=0: i-notbought displays its own value (v-notbought)
+  PASS  i-impr=0: behavioural split labels agree with φ
+  PASS  i-impr=0: all 85 panel figures match the model
+  PASS  i-impr=0 reaches the model as improvement
+  PASS  i-impr=0.75: i-takeup displays its own value (v-takeup)
+  PASS  i-impr=0.75: i-p1y displays its own value (v-p1y)
+  PASS  i-impr=0.75: i-p2y displays its own value (v-p2y)
+  PASS  i-impr=0.75: i-phi displays its own value (v-phi)
+  PASS  i-impr=0.75: i-repl displays its own value (v-repl)
+  PASS  i-impr=0.75: i-notrepl displays its own value (v-notrepl)
+  PASS  i-impr=0.75: i-vac displays its own value (v-vac)
+  PASS  i-impr=0.75: i-growth displays its own value (v-growth)
+  PASS  i-impr=0.75: i-disc displays its own value (v-disc)
+  PASS  i-impr=0.75: i-impr displays its own value (v-impr)
+  PASS  i-impr=0.75: i-vst displays its own value (v-vst)
+  PASS  i-impr=0.75: i-vtc displays its own value (v-vtc)
+  PASS  i-impr=0.75: i-vps displays its own value (v-vps)
+  PASS  i-impr=0.75: i-qual displays its own value (v-qual)
+  PASS  i-impr=0.75: i-bar displays its own value (v-bar)
+  PASS  i-impr=0.75: i-notbought displays its own value (v-notbought)
+  PASS  i-impr=0.75: behavioural split labels agree with φ
+  PASS  i-impr=0.75: all 85 panel figures match the model
+  PASS  i-impr=0.75 reaches the model as improvement
+  PASS  i-impr=1.5: i-takeup displays its own value (v-takeup)
+  PASS  i-impr=1.5: i-p1y displays its own value (v-p1y)
+  PASS  i-impr=1.5: i-p2y displays its own value (v-p2y)
+  PASS  i-impr=1.5: i-phi displays its own value (v-phi)
+  PASS  i-impr=1.5: i-repl displays its own value (v-repl)
+  PASS  i-impr=1.5: i-notrepl displays its own value (v-notrepl)
+  PASS  i-impr=1.5: i-vac displays its own value (v-vac)
+  PASS  i-impr=1.5: i-growth displays its own value (v-growth)
+  PASS  i-impr=1.5: i-disc displays its own value (v-disc)
+  PASS  i-impr=1.5: i-impr displays its own value (v-impr)
+  PASS  i-impr=1.5: i-vst displays its own value (v-vst)
+  PASS  i-impr=1.5: i-vtc displays its own value (v-vtc)
+  PASS  i-impr=1.5: i-vps displays its own value (v-vps)
+  PASS  i-impr=1.5: i-qual displays its own value (v-qual)
+  PASS  i-impr=1.5: i-bar displays its own value (v-bar)
+  PASS  i-impr=1.5: i-notbought displays its own value (v-notbought)
+  PASS  i-impr=1.5: behavioural split labels agree with φ
+  PASS  i-impr=1.5: all 85 panel figures match the model
+  PASS  i-impr=1.5 reaches the model as improvement
+  PASS  i-impr changes some modeled output between its extremes
+  PASS  i-vst=1: i-takeup displays its own value (v-takeup)
+  PASS  i-vst=1: i-p1y displays its own value (v-p1y)
+  PASS  i-vst=1: i-p2y displays its own value (v-p2y)
+  PASS  i-vst=1: i-phi displays its own value (v-phi)
+  PASS  i-vst=1: i-repl displays its own value (v-repl)
+  PASS  i-vst=1: i-notrepl displays its own value (v-notrepl)
+  PASS  i-vst=1: i-vac displays its own value (v-vac)
+  PASS  i-vst=1: i-growth displays its own value (v-growth)
+  PASS  i-vst=1: i-disc displays its own value (v-disc)
+  PASS  i-vst=1: i-impr displays its own value (v-impr)
+  PASS  i-vst=1: i-vst displays its own value (v-vst)
+  PASS  i-vst=1: i-vtc displays its own value (v-vtc)
+  PASS  i-vst=1: i-vps displays its own value (v-vps)
+  PASS  i-vst=1: i-qual displays its own value (v-qual)
+  PASS  i-vst=1: i-bar displays its own value (v-bar)
+  PASS  i-vst=1: i-notbought displays its own value (v-notbought)
+  PASS  i-vst=1: behavioural split labels agree with φ
+  PASS  i-vst=1: all 85 panel figures match the model
+  PASS  i-vst=6: i-takeup displays its own value (v-takeup)
+  PASS  i-vst=6: i-p1y displays its own value (v-p1y)
+  PASS  i-vst=6: i-p2y displays its own value (v-p2y)
+  PASS  i-vst=6: i-phi displays its own value (v-phi)
+  PASS  i-vst=6: i-repl displays its own value (v-repl)
+  PASS  i-vst=6: i-notrepl displays its own value (v-notrepl)
+  PASS  i-vst=6: i-vac displays its own value (v-vac)
+  PASS  i-vst=6: i-growth displays its own value (v-growth)
+  PASS  i-vst=6: i-disc displays its own value (v-disc)
+  PASS  i-vst=6: i-impr displays its own value (v-impr)
+  PASS  i-vst=6: i-vst displays its own value (v-vst)
+  PASS  i-vst=6: i-vtc displays its own value (v-vtc)
+  PASS  i-vst=6: i-vps displays its own value (v-vps)
+  PASS  i-vst=6: i-qual displays its own value (v-qual)
+  PASS  i-vst=6: i-bar displays its own value (v-bar)
+  PASS  i-vst=6: i-notbought displays its own value (v-notbought)
+  PASS  i-vst=6: behavioural split labels agree with φ
+  PASS  i-vst=6: all 85 panel figures match the model
+  PASS  i-vst=16: i-takeup displays its own value (v-takeup)
+  PASS  i-vst=16: i-p1y displays its own value (v-p1y)
+  PASS  i-vst=16: i-p2y displays its own value (v-p2y)
+  PASS  i-vst=16: i-phi displays its own value (v-phi)
+  PASS  i-vst=16: i-repl displays its own value (v-repl)
+  PASS  i-vst=16: i-notrepl displays its own value (v-notrepl)
+  PASS  i-vst=16: i-vac displays its own value (v-vac)
+  PASS  i-vst=16: i-growth displays its own value (v-growth)
+  PASS  i-vst=16: i-disc displays its own value (v-disc)
+  PASS  i-vst=16: i-impr displays its own value (v-impr)
+  PASS  i-vst=16: i-vst displays its own value (v-vst)
+  PASS  i-vst=16: i-vtc displays its own value (v-vtc)
+  PASS  i-vst=16: i-vps displays its own value (v-vps)
+  PASS  i-vst=16: i-qual displays its own value (v-qual)
+  PASS  i-vst=16: i-bar displays its own value (v-bar)
+  PASS  i-vst=16: i-notbought displays its own value (v-notbought)
+  PASS  i-vst=16: behavioural split labels agree with φ
+  PASS  i-vst=16: all 85 panel figures match the model
+  PASS  i-vst changes some modeled output between its extremes
+  PASS  i-vtc=0.5: i-takeup displays its own value (v-takeup)
+  PASS  i-vtc=0.5: i-p1y displays its own value (v-p1y)
+  PASS  i-vtc=0.5: i-p2y displays its own value (v-p2y)
+  PASS  i-vtc=0.5: i-phi displays its own value (v-phi)
+  PASS  i-vtc=0.5: i-repl displays its own value (v-repl)
+  PASS  i-vtc=0.5: i-notrepl displays its own value (v-notrepl)
+  PASS  i-vtc=0.5: i-vac displays its own value (v-vac)
+  PASS  i-vtc=0.5: i-growth displays its own value (v-growth)
+  PASS  i-vtc=0.5: i-disc displays its own value (v-disc)
+  PASS  i-vtc=0.5: i-impr displays its own value (v-impr)
+  PASS  i-vtc=0.5: i-vst displays its own value (v-vst)
+  PASS  i-vtc=0.5: i-vtc displays its own value (v-vtc)
+  PASS  i-vtc=0.5: i-vps displays its own value (v-vps)
+  PASS  i-vtc=0.5: i-qual displays its own value (v-qual)
+  PASS  i-vtc=0.5: i-bar displays its own value (v-bar)
+  PASS  i-vtc=0.5: i-notbought displays its own value (v-notbought)
+  PASS  i-vtc=0.5: behavioural split labels agree with φ
+  PASS  i-vtc=0.5: all 85 panel figures match the model
+  PASS  i-vtc=2.5: i-takeup displays its own value (v-takeup)
+  PASS  i-vtc=2.5: i-p1y displays its own value (v-p1y)
+  PASS  i-vtc=2.5: i-p2y displays its own value (v-p2y)
+  PASS  i-vtc=2.5: i-phi displays its own value (v-phi)
+  PASS  i-vtc=2.5: i-repl displays its own value (v-repl)
+  PASS  i-vtc=2.5: i-notrepl displays its own value (v-notrepl)
+  PASS  i-vtc=2.5: i-vac displays its own value (v-vac)
+  PASS  i-vtc=2.5: i-growth displays its own value (v-growth)
+  PASS  i-vtc=2.5: i-disc displays its own value (v-disc)
+  PASS  i-vtc=2.5: i-impr displays its own value (v-impr)
+  PASS  i-vtc=2.5: i-vst displays its own value (v-vst)
+  PASS  i-vtc=2.5: i-vtc displays its own value (v-vtc)
+  PASS  i-vtc=2.5: i-vps displays its own value (v-vps)
+  PASS  i-vtc=2.5: i-qual displays its own value (v-qual)
+  PASS  i-vtc=2.5: i-bar displays its own value (v-bar)
+  PASS  i-vtc=2.5: i-notbought displays its own value (v-notbought)
+  PASS  i-vtc=2.5: behavioural split labels agree with φ
+  PASS  i-vtc=2.5: all 85 panel figures match the model
+  PASS  i-vtc=12: i-takeup displays its own value (v-takeup)
+  PASS  i-vtc=12: i-p1y displays its own value (v-p1y)
+  PASS  i-vtc=12: i-p2y displays its own value (v-p2y)
+  PASS  i-vtc=12: i-phi displays its own value (v-phi)
+  PASS  i-vtc=12: i-repl displays its own value (v-repl)
+  PASS  i-vtc=12: i-notrepl displays its own value (v-notrepl)
+  PASS  i-vtc=12: i-vac displays its own value (v-vac)
+  PASS  i-vtc=12: i-growth displays its own value (v-growth)
+  PASS  i-vtc=12: i-disc displays its own value (v-disc)
+  PASS  i-vtc=12: i-impr displays its own value (v-impr)
+  PASS  i-vtc=12: i-vst displays its own value (v-vst)
+  PASS  i-vtc=12: i-vtc displays its own value (v-vtc)
+  PASS  i-vtc=12: i-vps displays its own value (v-vps)
+  PASS  i-vtc=12: i-qual displays its own value (v-qual)
+  PASS  i-vtc=12: i-bar displays its own value (v-bar)
+  PASS  i-vtc=12: i-notbought displays its own value (v-notbought)
+  PASS  i-vtc=12: behavioural split labels agree with φ
+  PASS  i-vtc=12: all 85 panel figures match the model
+  PASS  i-vtc changes some modeled output between its extremes
+  PASS  i-vps=1: i-takeup displays its own value (v-takeup)
+  PASS  i-vps=1: i-p1y displays its own value (v-p1y)
+  PASS  i-vps=1: i-p2y displays its own value (v-p2y)
+  PASS  i-vps=1: i-phi displays its own value (v-phi)
+  PASS  i-vps=1: i-repl displays its own value (v-repl)
+  PASS  i-vps=1: i-notrepl displays its own value (v-notrepl)
+  PASS  i-vps=1: i-vac displays its own value (v-vac)
+  PASS  i-vps=1: i-growth displays its own value (v-growth)
+  PASS  i-vps=1: i-disc displays its own value (v-disc)
+  PASS  i-vps=1: i-impr displays its own value (v-impr)
+  PASS  i-vps=1: i-vst displays its own value (v-vst)
+  PASS  i-vps=1: i-vtc displays its own value (v-vtc)
+  PASS  i-vps=1: i-vps displays its own value (v-vps)
+  PASS  i-vps=1: i-qual displays its own value (v-qual)
+  PASS  i-vps=1: i-bar displays its own value (v-bar)
+  PASS  i-vps=1: i-notbought displays its own value (v-notbought)
+  PASS  i-vps=1: behavioural split labels agree with φ
+  PASS  i-vps=1: all 85 panel figures match the model
+  PASS  i-vps=7: i-takeup displays its own value (v-takeup)
+  PASS  i-vps=7: i-p1y displays its own value (v-p1y)
+  PASS  i-vps=7: i-p2y displays its own value (v-p2y)
+  PASS  i-vps=7: i-phi displays its own value (v-phi)
+  PASS  i-vps=7: i-repl displays its own value (v-repl)
+  PASS  i-vps=7: i-notrepl displays its own value (v-notrepl)
+  PASS  i-vps=7: i-vac displays its own value (v-vac)
+  PASS  i-vps=7: i-growth displays its own value (v-growth)
+  PASS  i-vps=7: i-disc displays its own value (v-disc)
+  PASS  i-vps=7: i-impr displays its own value (v-impr)
+  PASS  i-vps=7: i-vst displays its own value (v-vst)
+  PASS  i-vps=7: i-vtc displays its own value (v-vtc)
+  PASS  i-vps=7: i-vps displays its own value (v-vps)
+  PASS  i-vps=7: i-qual displays its own value (v-qual)
+  PASS  i-vps=7: i-bar displays its own value (v-bar)
+  PASS  i-vps=7: i-notbought displays its own value (v-notbought)
+  PASS  i-vps=7: behavioural split labels agree with φ
+  PASS  i-vps=7: all 85 panel figures match the model
+  PASS  i-vps=18: i-takeup displays its own value (v-takeup)
+  PASS  i-vps=18: i-p1y displays its own value (v-p1y)
+  PASS  i-vps=18: i-p2y displays its own value (v-p2y)
+  PASS  i-vps=18: i-phi displays its own value (v-phi)
+  PASS  i-vps=18: i-repl displays its own value (v-repl)
+  PASS  i-vps=18: i-notrepl displays its own value (v-notrepl)
+  PASS  i-vps=18: i-vac displays its own value (v-vac)
+  PASS  i-vps=18: i-growth displays its own value (v-growth)
+  PASS  i-vps=18: i-disc displays its own value (v-disc)
+  PASS  i-vps=18: i-impr displays its own value (v-impr)
+  PASS  i-vps=18: i-vst displays its own value (v-vst)
+  PASS  i-vps=18: i-vtc displays its own value (v-vtc)
+  PASS  i-vps=18: i-vps displays its own value (v-vps)
+  PASS  i-vps=18: i-qual displays its own value (v-qual)
+  PASS  i-vps=18: i-bar displays its own value (v-bar)
+  PASS  i-vps=18: i-notbought displays its own value (v-notbought)
+  PASS  i-vps=18: behavioural split labels agree with φ
+  PASS  i-vps=18: all 85 panel figures match the model
+  PASS  i-vps changes some modeled output between its extremes
+  PASS  i-qual=50: i-takeup displays its own value (v-takeup)
+  PASS  i-qual=50: i-p1y displays its own value (v-p1y)
+  PASS  i-qual=50: i-p2y displays its own value (v-p2y)
+  PASS  i-qual=50: i-phi displays its own value (v-phi)
+  PASS  i-qual=50: i-repl displays its own value (v-repl)
+  PASS  i-qual=50: i-notrepl displays its own value (v-notrepl)
+  PASS  i-qual=50: i-vac displays its own value (v-vac)
+  PASS  i-qual=50: i-growth displays its own value (v-growth)
+  PASS  i-qual=50: i-disc displays its own value (v-disc)
+  PASS  i-qual=50: i-impr displays its own value (v-impr)
+  PASS  i-qual=50: i-vst displays its own value (v-vst)
+  PASS  i-qual=50: i-vtc displays its own value (v-vtc)
+  PASS  i-qual=50: i-vps displays its own value (v-vps)
+  PASS  i-qual=50: i-qual displays its own value (v-qual)
+  PASS  i-qual=50: i-bar displays its own value (v-bar)
+  PASS  i-qual=50: i-notbought displays its own value (v-notbought)
+  PASS  i-qual=50: behavioural split labels agree with φ
+  PASS  i-qual=50: all 85 panel figures match the model
+  PASS  i-qual=50 reaches the model as qualifyingShare
+  PASS  i-qual=80: i-takeup displays its own value (v-takeup)
+  PASS  i-qual=80: i-p1y displays its own value (v-p1y)
+  PASS  i-qual=80: i-p2y displays its own value (v-p2y)
+  PASS  i-qual=80: i-phi displays its own value (v-phi)
+  PASS  i-qual=80: i-repl displays its own value (v-repl)
+  PASS  i-qual=80: i-notrepl displays its own value (v-notrepl)
+  PASS  i-qual=80: i-vac displays its own value (v-vac)
+  PASS  i-qual=80: i-growth displays its own value (v-growth)
+  PASS  i-qual=80: i-disc displays its own value (v-disc)
+  PASS  i-qual=80: i-impr displays its own value (v-impr)
+  PASS  i-qual=80: i-vst displays its own value (v-vst)
+  PASS  i-qual=80: i-vtc displays its own value (v-vtc)
+  PASS  i-qual=80: i-vps displays its own value (v-vps)
+  PASS  i-qual=80: i-qual displays its own value (v-qual)
+  PASS  i-qual=80: i-bar displays its own value (v-bar)
+  PASS  i-qual=80: i-notbought displays its own value (v-notbought)
+  PASS  i-qual=80: behavioural split labels agree with φ
+  PASS  i-qual=80: all 85 panel figures match the model
+  PASS  i-qual=80 reaches the model as qualifyingShare
+  PASS  i-qual=100: i-takeup displays its own value (v-takeup)
+  PASS  i-qual=100: i-p1y displays its own value (v-p1y)
+  PASS  i-qual=100: i-p2y displays its own value (v-p2y)
+  PASS  i-qual=100: i-phi displays its own value (v-phi)
+  PASS  i-qual=100: i-repl displays its own value (v-repl)
+  PASS  i-qual=100: i-notrepl displays its own value (v-notrepl)
+  PASS  i-qual=100: i-vac displays its own value (v-vac)
+  PASS  i-qual=100: i-growth displays its own value (v-growth)
+  PASS  i-qual=100: i-disc displays its own value (v-disc)
+  PASS  i-qual=100: i-impr displays its own value (v-impr)
+  PASS  i-qual=100: i-vst displays its own value (v-vst)
+  PASS  i-qual=100: i-vtc displays its own value (v-vtc)
+  PASS  i-qual=100: i-vps displays its own value (v-vps)
+  PASS  i-qual=100: i-qual displays its own value (v-qual)
+  PASS  i-qual=100: i-bar displays its own value (v-bar)
+  PASS  i-qual=100: i-notbought displays its own value (v-notbought)
+  PASS  i-qual=100: behavioural split labels agree with φ
+  PASS  i-qual=100: all 85 panel figures match the model
+  PASS  i-qual=100 reaches the model as qualifyingShare
+  PASS  i-qual changes some modeled output between its extremes
+  PASS  i-bar=0: i-takeup displays its own value (v-takeup)
+  PASS  i-bar=0: i-p1y displays its own value (v-p1y)
+  PASS  i-bar=0: i-p2y displays its own value (v-p2y)
+  PASS  i-bar=0: i-phi displays its own value (v-phi)
+  PASS  i-bar=0: i-repl displays its own value (v-repl)
+  PASS  i-bar=0: i-notrepl displays its own value (v-notrepl)
+  PASS  i-bar=0: i-vac displays its own value (v-vac)
+  PASS  i-bar=0: i-growth displays its own value (v-growth)
+  PASS  i-bar=0: i-disc displays its own value (v-disc)
+  PASS  i-bar=0: i-impr displays its own value (v-impr)
+  PASS  i-bar=0: i-vst displays its own value (v-vst)
+  PASS  i-bar=0: i-vtc displays its own value (v-vtc)
+  PASS  i-bar=0: i-vps displays its own value (v-vps)
+  PASS  i-bar=0: i-qual displays its own value (v-qual)
+  PASS  i-bar=0: i-bar displays its own value (v-bar)
+  PASS  i-bar=0: i-notbought displays its own value (v-notbought)
+  PASS  i-bar=0: behavioural split labels agree with φ
+  PASS  i-bar=0: all 85 panel figures match the model
+  PASS  i-bar=0 reaches the model as retiredPayBar
+  PASS  i-bar=18: i-takeup displays its own value (v-takeup)
+  PASS  i-bar=18: i-p1y displays its own value (v-p1y)
+  PASS  i-bar=18: i-p2y displays its own value (v-p2y)
+  PASS  i-bar=18: i-phi displays its own value (v-phi)
+  PASS  i-bar=18: i-repl displays its own value (v-repl)
+  PASS  i-bar=18: i-notrepl displays its own value (v-notrepl)
+  PASS  i-bar=18: i-vac displays its own value (v-vac)
+  PASS  i-bar=18: i-growth displays its own value (v-growth)
+  PASS  i-bar=18: i-disc displays its own value (v-disc)
+  PASS  i-bar=18: i-impr displays its own value (v-impr)
+  PASS  i-bar=18: i-vst displays its own value (v-vst)
+  PASS  i-bar=18: i-vtc displays its own value (v-vtc)
+  PASS  i-bar=18: i-vps displays its own value (v-vps)
+  PASS  i-bar=18: i-qual displays its own value (v-qual)
+  PASS  i-bar=18: i-bar displays its own value (v-bar)
+  PASS  i-bar=18: i-notbought displays its own value (v-notbought)
+  PASS  i-bar=18: behavioural split labels agree with φ
+  PASS  i-bar=18: all 85 panel figures match the model
+  PASS  i-bar=18 reaches the model as retiredPayBar
+  PASS  i-bar=50: i-takeup displays its own value (v-takeup)
+  PASS  i-bar=50: i-p1y displays its own value (v-p1y)
+  PASS  i-bar=50: i-p2y displays its own value (v-p2y)
+  PASS  i-bar=50: i-phi displays its own value (v-phi)
+  PASS  i-bar=50: i-repl displays its own value (v-repl)
+  PASS  i-bar=50: i-notrepl displays its own value (v-notrepl)
+  PASS  i-bar=50: i-vac displays its own value (v-vac)
+  PASS  i-bar=50: i-growth displays its own value (v-growth)
+  PASS  i-bar=50: i-disc displays its own value (v-disc)
+  PASS  i-bar=50: i-impr displays its own value (v-impr)
+  PASS  i-bar=50: i-vst displays its own value (v-vst)
+  PASS  i-bar=50: i-vtc displays its own value (v-vtc)
+  PASS  i-bar=50: i-vps displays its own value (v-vps)
+  PASS  i-bar=50: i-qual displays its own value (v-qual)
+  PASS  i-bar=50: i-bar displays its own value (v-bar)
+  PASS  i-bar=50: i-notbought displays its own value (v-notbought)
+  PASS  i-bar=50: behavioural split labels agree with φ
+  PASS  i-bar=50: all 85 panel figures match the model
+  PASS  i-bar=50 reaches the model as retiredPayBar
+  PASS  i-bar changes some modeled output between its extremes
+  PASS  i-notbought=30: i-takeup displays its own value (v-takeup)
+  PASS  i-notbought=30: i-p1y displays its own value (v-p1y)
+  PASS  i-notbought=30: i-p2y displays its own value (v-p2y)
+  PASS  i-notbought=30: i-phi displays its own value (v-phi)
+  PASS  i-notbought=30: i-repl displays its own value (v-repl)
+  PASS  i-notbought=30: i-notrepl displays its own value (v-notrepl)
+  PASS  i-notbought=30: i-vac displays its own value (v-vac)
+  PASS  i-notbought=30: i-growth displays its own value (v-growth)
+  PASS  i-notbought=30: i-disc displays its own value (v-disc)
+  PASS  i-notbought=30: i-impr displays its own value (v-impr)
+  PASS  i-notbought=30: i-vst displays its own value (v-vst)
+  PASS  i-notbought=30: i-vtc displays its own value (v-vtc)
+  PASS  i-notbought=30: i-vps displays its own value (v-vps)
+  PASS  i-notbought=30: i-qual displays its own value (v-qual)
+  PASS  i-notbought=30: i-bar displays its own value (v-bar)
+  PASS  i-notbought=30: i-notbought displays its own value (v-notbought)
+  PASS  i-notbought=30: behavioural split labels agree with φ
+  PASS  i-notbought=30: all 85 panel figures match the model
+  PASS  i-notbought=30 reaches the model as notAlreadyBought
+  PASS  i-notbought=70: i-takeup displays its own value (v-takeup)
+  PASS  i-notbought=70: i-p1y displays its own value (v-p1y)
+  PASS  i-notbought=70: i-p2y displays its own value (v-p2y)
+  PASS  i-notbought=70: i-phi displays its own value (v-phi)
+  PASS  i-notbought=70: i-repl displays its own value (v-repl)
+  PASS  i-notbought=70: i-notrepl displays its own value (v-notrepl)
+  PASS  i-notbought=70: i-vac displays its own value (v-vac)
+  PASS  i-notbought=70: i-growth displays its own value (v-growth)
+  PASS  i-notbought=70: i-disc displays its own value (v-disc)
+  PASS  i-notbought=70: i-impr displays its own value (v-impr)
+  PASS  i-notbought=70: i-vst displays its own value (v-vst)
+  PASS  i-notbought=70: i-vtc displays its own value (v-vtc)
+  PASS  i-notbought=70: i-vps displays its own value (v-vps)
+  PASS  i-notbought=70: i-qual displays its own value (v-qual)
+  PASS  i-notbought=70: i-bar displays its own value (v-bar)
+  PASS  i-notbought=70: i-notbought displays its own value (v-notbought)
+  PASS  i-notbought=70: behavioural split labels agree with φ
+  PASS  i-notbought=70: all 85 panel figures match the model
+  PASS  i-notbought=70 reaches the model as notAlreadyBought
+  PASS  i-notbought=100: i-takeup displays its own value (v-takeup)
+  PASS  i-notbought=100: i-p1y displays its own value (v-p1y)
+  PASS  i-notbought=100: i-p2y displays its own value (v-p2y)
+  PASS  i-notbought=100: i-phi displays its own value (v-phi)
+  PASS  i-notbought=100: i-repl displays its own value (v-repl)
+  PASS  i-notbought=100: i-notrepl displays its own value (v-notrepl)
+  PASS  i-notbought=100: i-vac displays its own value (v-vac)
+  PASS  i-notbought=100: i-growth displays its own value (v-growth)
+  PASS  i-notbought=100: i-disc displays its own value (v-disc)
+  PASS  i-notbought=100: i-impr displays its own value (v-impr)
+  PASS  i-notbought=100: i-vst displays its own value (v-vst)
+  PASS  i-notbought=100: i-vtc displays its own value (v-vtc)
+  PASS  i-notbought=100: i-vps displays its own value (v-vps)
+  PASS  i-notbought=100: i-qual displays its own value (v-qual)
+  PASS  i-notbought=100: i-bar displays its own value (v-bar)
+  PASS  i-notbought=100: i-notbought displays its own value (v-notbought)
+  PASS  i-notbought=100: behavioural split labels agree with φ
+  PASS  i-notbought=100: all 85 panel figures match the model
+  PASS  i-notbought=100 reaches the model as notAlreadyBought
+  PASS  i-notbought changes some modeled output between its extremes
+
+=== 5. Bridge-amount sliders in fixed mode (Plan 1 and Plan 2 separate) ===
+  PASS  fixed bridge=1: i-takeup displays its own value (v-takeup)
+  PASS  fixed bridge=1: i-p1y displays its own value (v-p1y)
+  PASS  fixed bridge=1: i-p2y displays its own value (v-p2y)
+  PASS  fixed bridge=1: i-phi displays its own value (v-phi)
+  PASS  fixed bridge=1: i-repl displays its own value (v-repl)
+  PASS  fixed bridge=1: i-notrepl displays its own value (v-notrepl)
+  PASS  fixed bridge=1: i-vac displays its own value (v-vac)
+  PASS  fixed bridge=1: i-growth displays its own value (v-growth)
+  PASS  fixed bridge=1: i-disc displays its own value (v-disc)
+  PASS  fixed bridge=1: i-impr displays its own value (v-impr)
+  PASS  fixed bridge=1: i-vst displays its own value (v-vst)
+  PASS  fixed bridge=1: i-vtc displays its own value (v-vtc)
+  PASS  fixed bridge=1: i-vps displays its own value (v-vps)
+  PASS  fixed bridge=1: i-qual displays its own value (v-qual)
+  PASS  fixed bridge=1: i-bar displays its own value (v-bar)
+  PASS  fixed bridge=1: i-notbought displays its own value (v-notbought)
+  PASS  fixed bridge=1: behavioural split labels agree with φ
+  PASS  fixed bridge=1: all 85 panel figures match the model
+  PASS  p1BridgeYears reaches the model at 1
+  PASS  p2BridgeYears reaches the model at 1
+  PASS  fixed 1: mean Plan 1 purchase never exceeds the setting
+  PASS  fixed 1: mean Plan 2 purchase never exceeds the setting
+  PASS  fixed bridge=2: i-takeup displays its own value (v-takeup)
+  PASS  fixed bridge=2: i-p1y displays its own value (v-p1y)
+  PASS  fixed bridge=2: i-p2y displays its own value (v-p2y)
+  PASS  fixed bridge=2: i-phi displays its own value (v-phi)
+  PASS  fixed bridge=2: i-repl displays its own value (v-repl)
+  PASS  fixed bridge=2: i-notrepl displays its own value (v-notrepl)
+  PASS  fixed bridge=2: i-vac displays its own value (v-vac)
+  PASS  fixed bridge=2: i-growth displays its own value (v-growth)
+  PASS  fixed bridge=2: i-disc displays its own value (v-disc)
+  PASS  fixed bridge=2: i-impr displays its own value (v-impr)
+  PASS  fixed bridge=2: i-vst displays its own value (v-vst)
+  PASS  fixed bridge=2: i-vtc displays its own value (v-vtc)
+  PASS  fixed bridge=2: i-vps displays its own value (v-vps)
+  PASS  fixed bridge=2: i-qual displays its own value (v-qual)
+  PASS  fixed bridge=2: i-bar displays its own value (v-bar)
+  PASS  fixed bridge=2: i-notbought displays its own value (v-notbought)
+  PASS  fixed bridge=2: behavioural split labels agree with φ
+  PASS  fixed bridge=2: all 85 panel figures match the model
+  PASS  p1BridgeYears reaches the model at 2
+  PASS  p2BridgeYears reaches the model at 2
+  PASS  fixed 2: mean Plan 1 purchase never exceeds the setting
+  PASS  fixed 2: mean Plan 2 purchase never exceeds the setting
+  PASS  fixed bridge=3.1: i-takeup displays its own value (v-takeup)
+  PASS  fixed bridge=3.1: i-p1y displays its own value (v-p1y)
+  PASS  fixed bridge=3.1: i-p2y displays its own value (v-p2y)
+  PASS  fixed bridge=3.1: i-phi displays its own value (v-phi)
+  PASS  fixed bridge=3.1: i-repl displays its own value (v-repl)
+  PASS  fixed bridge=3.1: i-notrepl displays its own value (v-notrepl)
+  PASS  fixed bridge=3.1: i-vac displays its own value (v-vac)
+  PASS  fixed bridge=3.1: i-growth displays its own value (v-growth)
+  PASS  fixed bridge=3.1: i-disc displays its own value (v-disc)
+  PASS  fixed bridge=3.1: i-impr displays its own value (v-impr)
+  PASS  fixed bridge=3.1: i-vst displays its own value (v-vst)
+  PASS  fixed bridge=3.1: i-vtc displays its own value (v-vtc)
+  PASS  fixed bridge=3.1: i-vps displays its own value (v-vps)
+  PASS  fixed bridge=3.1: i-qual displays its own value (v-qual)
+  PASS  fixed bridge=3.1: i-bar displays its own value (v-bar)
+  PASS  fixed bridge=3.1: i-notbought displays its own value (v-notbought)
+  PASS  fixed bridge=3.1: behavioural split labels agree with φ
+  PASS  fixed bridge=3.1: all 85 panel figures match the model
+  PASS  p1BridgeYears reaches the model at 3.1
+  PASS  p2BridgeYears reaches the model at 3.1
+  PASS  fixed 3.1: mean Plan 1 purchase never exceeds the setting
+  PASS  fixed 3.1: mean Plan 2 purchase never exceeds the setting
+  PASS  fixed bridge=4: i-takeup displays its own value (v-takeup)
+  PASS  fixed bridge=4: i-p1y displays its own value (v-p1y)
+  PASS  fixed bridge=4: i-p2y displays its own value (v-p2y)
+  PASS  fixed bridge=4: i-phi displays its own value (v-phi)
+  PASS  fixed bridge=4: i-repl displays its own value (v-repl)
+  PASS  fixed bridge=4: i-notrepl displays its own value (v-notrepl)
+  PASS  fixed bridge=4: i-vac displays its own value (v-vac)
+  PASS  fixed bridge=4: i-growth displays its own value (v-growth)
+  PASS  fixed bridge=4: i-disc displays its own value (v-disc)
+  PASS  fixed bridge=4: i-impr displays its own value (v-impr)
+  PASS  fixed bridge=4: i-vst displays its own value (v-vst)
+  PASS  fixed bridge=4: i-vtc displays its own value (v-vtc)
+  PASS  fixed bridge=4: i-vps displays its own value (v-vps)
+  PASS  fixed bridge=4: i-qual displays its own value (v-qual)
+  PASS  fixed bridge=4: i-bar displays its own value (v-bar)
+  PASS  fixed bridge=4: i-notbought displays its own value (v-notbought)
+  PASS  fixed bridge=4: behavioural split labels agree with φ
+  PASS  fixed bridge=4: all 85 panel figures match the model
+  PASS  p1BridgeYears reaches the model at 4
+  PASS  p2BridgeYears reaches the model at 4
+  PASS  fixed 4: mean Plan 1 purchase never exceeds the setting
+  PASS  fixed 4: mean Plan 2 purchase never exceeds the setting
+  PASS  moving the Plan 1 bridge slider leaves Plan 2 untouched
+  PASS  a Plan 1 point of credit buys more acceleration than a Plan 2 point
+
+=== 6. Participant modes: rate-driven and direct entry ===
+  PASS  direct p1=0: i-takeup displays its own value (v-takeup)
+  PASS  direct p1=0: i-p1y displays its own value (v-p1y)
+  PASS  direct p1=0: i-p2y displays its own value (v-p2y)
+  PASS  direct p1=0: i-phi displays its own value (v-phi)
+  PASS  direct p1=0: i-repl displays its own value (v-repl)
+  PASS  direct p1=0: i-notrepl displays its own value (v-notrepl)
+  PASS  direct p1=0: i-vac displays its own value (v-vac)
+  PASS  direct p1=0: i-growth displays its own value (v-growth)
+  PASS  direct p1=0: i-disc displays its own value (v-disc)
+  PASS  direct p1=0: i-impr displays its own value (v-impr)
+  PASS  direct p1=0: i-vst displays its own value (v-vst)
+  PASS  direct p1=0: i-vtc displays its own value (v-vtc)
+  PASS  direct p1=0: i-vps displays its own value (v-vps)
+  PASS  direct p1=0: i-qual displays its own value (v-qual)
+  PASS  direct p1=0: i-bar displays its own value (v-bar)
+  PASS  direct p1=0: i-notbought displays its own value (v-notbought)
+  PASS  direct p1=0: behavioural split labels agree with φ
+  PASS  direct p1=0: all 85 panel figures match the model
+  PASS  direct entry of 0 Plan 1 participants is honoured exactly
+  PASS  direct entry of 0 Plan 2 participants is honoured exactly
+  PASS  direct entry of 0 is reported as direct in the funnel
+  PASS  direct p1=1: i-takeup displays its own value (v-takeup)
+  PASS  direct p1=1: i-p1y displays its own value (v-p1y)
+  PASS  direct p1=1: i-p2y displays its own value (v-p2y)
+  PASS  direct p1=1: i-phi displays its own value (v-phi)
+  PASS  direct p1=1: i-repl displays its own value (v-repl)
+  PASS  direct p1=1: i-notrepl displays its own value (v-notrepl)
+  PASS  direct p1=1: i-vac displays its own value (v-vac)
+  PASS  direct p1=1: i-growth displays its own value (v-growth)
+  PASS  direct p1=1: i-disc displays its own value (v-disc)
+  PASS  direct p1=1: i-impr displays its own value (v-impr)
+  PASS  direct p1=1: i-vst displays its own value (v-vst)
+  PASS  direct p1=1: i-vtc displays its own value (v-vtc)
+  PASS  direct p1=1: i-vps displays its own value (v-vps)
+  PASS  direct p1=1: i-qual displays its own value (v-qual)
+  PASS  direct p1=1: i-bar displays its own value (v-bar)
+  PASS  direct p1=1: i-notbought displays its own value (v-notbought)
+  PASS  direct p1=1: behavioural split labels agree with φ
+  PASS  direct p1=1: all 85 panel figures match the model
+  PASS  direct entry of 1 Plan 1 participants is honoured exactly
+  PASS  direct entry of 0 Plan 2 participants is honoured exactly
+  PASS  direct entry of 1 is reported as direct in the funnel
+  PASS  direct entry of 1 preserves the modeled mix (price per head stable)
+  PASS  direct p1=400: i-takeup displays its own value (v-takeup)
+  PASS  direct p1=400: i-p1y displays its own value (v-p1y)
+  PASS  direct p1=400: i-p2y displays its own value (v-p2y)
+  PASS  direct p1=400: i-phi displays its own value (v-phi)
+  PASS  direct p1=400: i-repl displays its own value (v-repl)
+  PASS  direct p1=400: i-notrepl displays its own value (v-notrepl)
+  PASS  direct p1=400: i-vac displays its own value (v-vac)
+  PASS  direct p1=400: i-growth displays its own value (v-growth)
+  PASS  direct p1=400: i-disc displays its own value (v-disc)
+  PASS  direct p1=400: i-impr displays its own value (v-impr)
+  PASS  direct p1=400: i-vst displays its own value (v-vst)
+  PASS  direct p1=400: i-vtc displays its own value (v-vtc)
+  PASS  direct p1=400: i-vps displays its own value (v-vps)
+  PASS  direct p1=400: i-qual displays its own value (v-qual)
+  PASS  direct p1=400: i-bar displays its own value (v-bar)
+  PASS  direct p1=400: i-notbought displays its own value (v-notbought)
+  PASS  direct p1=400: behavioural split labels agree with φ
+  PASS  direct p1=400: all 85 panel figures match the model
+  PASS  direct entry of 400 Plan 1 participants is honoured exactly
+  PASS  direct entry of 0 Plan 2 participants is honoured exactly
+  PASS  direct entry of 400 is reported as direct in the funnel
+  PASS  direct entry of 400 preserves the modeled mix (price per head stable)
+  PASS  direct p1=1234: i-takeup displays its own value (v-takeup)
+  PASS  direct p1=1234: i-p1y displays its own value (v-p1y)
+  PASS  direct p1=1234: i-p2y displays its own value (v-p2y)
+  PASS  direct p1=1234: i-phi displays its own value (v-phi)
+  PASS  direct p1=1234: i-repl displays its own value (v-repl)
+  PASS  direct p1=1234: i-notrepl displays its own value (v-notrepl)
+  PASS  direct p1=1234: i-vac displays its own value (v-vac)
+  PASS  direct p1=1234: i-growth displays its own value (v-growth)
+  PASS  direct p1=1234: i-disc displays its own value (v-disc)
+  PASS  direct p1=1234: i-impr displays its own value (v-impr)
+  PASS  direct p1=1234: i-vst displays its own value (v-vst)
+  PASS  direct p1=1234: i-vtc displays its own value (v-vtc)
+  PASS  direct p1=1234: i-vps displays its own value (v-vps)
+  PASS  direct p1=1234: i-qual displays its own value (v-qual)
+  PASS  direct p1=1234: i-bar displays its own value (v-bar)
+  PASS  direct p1=1234: i-notbought displays its own value (v-notbought)
+  PASS  direct p1=1234: behavioural split labels agree with φ
+  PASS  direct p1=1234: all 85 panel figures match the model
+  PASS  direct entry of 1234 Plan 1 participants is honoured exactly
+  PASS  direct entry of 0 Plan 2 participants is honoured exactly
+  PASS  direct entry of 1234 is reported as direct in the funnel
+  PASS  direct entry of 1234 preserves the modeled mix (price per head stable)
+  PASS  direct p1=20000: i-takeup displays its own value (v-takeup)
+  PASS  direct p1=20000: i-p1y displays its own value (v-p1y)
+  PASS  direct p1=20000: i-p2y displays its own value (v-p2y)
+  PASS  direct p1=20000: i-phi displays its own value (v-phi)
+  PASS  direct p1=20000: i-repl displays its own value (v-repl)
+  PASS  direct p1=20000: i-notrepl displays its own value (v-notrepl)
+  PASS  direct p1=20000: i-vac displays its own value (v-vac)
+  PASS  direct p1=20000: i-growth displays its own value (v-growth)
+  PASS  direct p1=20000: i-disc displays its own value (v-disc)
+  PASS  direct p1=20000: i-impr displays its own value (v-impr)
+  PASS  direct p1=20000: i-vst displays its own value (v-vst)
+  PASS  direct p1=20000: i-vtc displays its own value (v-vtc)
+  PASS  direct p1=20000: i-vps displays its own value (v-vps)
+  PASS  direct p1=20000: i-qual displays its own value (v-qual)
+  PASS  direct p1=20000: i-bar displays its own value (v-bar)
+  PASS  direct p1=20000: i-notbought displays its own value (v-notbought)
+  PASS  direct p1=20000: behavioural split labels agree with φ
+  PASS  direct p1=20000: all 85 panel figures match the model
+  PASS  direct entry of 20000 Plan 1 participants is honoured exactly
+  PASS  direct entry of 0 Plan 2 participants is honoured exactly
+  PASS  direct entry of 20000 is reported as direct in the funnel
+  PASS  direct entry of 20000 preserves the modeled mix (price per head stable)
+  PASS  direct p1=400, p2 blank: i-takeup displays its own value (v-takeup)
+  PASS  direct p1=400, p2 blank: i-p1y displays its own value (v-p1y)
+  PASS  direct p1=400, p2 blank: i-p2y displays its own value (v-p2y)
+  PASS  direct p1=400, p2 blank: i-phi displays its own value (v-phi)
+  PASS  direct p1=400, p2 blank: i-repl displays its own value (v-repl)
+  PASS  direct p1=400, p2 blank: i-notrepl displays its own value (v-notrepl)
+  PASS  direct p1=400, p2 blank: i-vac displays its own value (v-vac)
+  PASS  direct p1=400, p2 blank: i-growth displays its own value (v-growth)
+  PASS  direct p1=400, p2 blank: i-disc displays its own value (v-disc)
+  PASS  direct p1=400, p2 blank: i-impr displays its own value (v-impr)
+  PASS  direct p1=400, p2 blank: i-vst displays its own value (v-vst)
+  PASS  direct p1=400, p2 blank: i-vtc displays its own value (v-vtc)
+  PASS  direct p1=400, p2 blank: i-vps displays its own value (v-vps)
+  PASS  direct p1=400, p2 blank: i-qual displays its own value (v-qual)
+  PASS  direct p1=400, p2 blank: i-bar displays its own value (v-bar)
+  PASS  direct p1=400, p2 blank: i-notbought displays its own value (v-notbought)
+  PASS  direct p1=400, p2 blank: behavioural split labels agree with φ
+  PASS  direct p1=400, p2 blank: all 85 panel figures match the model
+  PASS  a blank Plan 2 box falls back to the modeled count, not zero
+  PASS  participants are exactly linear in the take-up rate
+  PASS  member ANC payments are exactly linear in take-up
+
+=== 7. Salary mode: override is an exact rescaling ===
+  PASS  salary override 2x: i-takeup displays its own value (v-takeup)
+  PASS  salary override 2x: i-p1y displays its own value (v-p1y)
+  PASS  salary override 2x: i-p2y displays its own value (v-p2y)
+  PASS  salary override 2x: i-phi displays its own value (v-phi)
+  PASS  salary override 2x: i-repl displays its own value (v-repl)
+  PASS  salary override 2x: i-notrepl displays its own value (v-notrepl)
+  PASS  salary override 2x: i-vac displays its own value (v-vac)
+  PASS  salary override 2x: i-growth displays its own value (v-growth)
+  PASS  salary override 2x: i-disc displays its own value (v-disc)
+  PASS  salary override 2x: i-impr displays its own value (v-impr)
+  PASS  salary override 2x: i-vst displays its own value (v-vst)
+  PASS  salary override 2x: i-vtc displays its own value (v-vtc)
+  PASS  salary override 2x: i-vps displays its own value (v-vps)
+  PASS  salary override 2x: i-qual displays its own value (v-qual)
+  PASS  salary override 2x: i-bar displays its own value (v-bar)
+  PASS  salary override 2x: i-notbought displays its own value (v-notbought)
+  PASS  salary override 2x: behavioural split labels agree with φ
+  PASS  salary override 2x: all 85 panel figures match the model
+  PASS  doubling the Plan 1 salary scales Plan 1 member payments exactly
+  PASS  doubling the Plan 1 salary scales Plan 1 frozen-service value exactly
+  PASS  a Plan 1 salary override leaves Plan 2 untouched
+  PASS  a salary override does not change participant counts
+
+=== 8. Selects, checkboxes and the purchase rule ===
+  PASS  rule D4b: i-takeup displays its own value (v-takeup)
+  PASS  rule D4b: i-p1y displays its own value (v-p1y)
+  PASS  rule D4b: i-p2y displays its own value (v-p2y)
+  PASS  rule D4b: i-phi displays its own value (v-phi)
+  PASS  rule D4b: i-repl displays its own value (v-repl)
+  PASS  rule D4b: i-notrepl displays its own value (v-notrepl)
+  PASS  rule D4b: i-vac displays its own value (v-vac)
+  PASS  rule D4b: i-growth displays its own value (v-growth)
+  PASS  rule D4b: i-disc displays its own value (v-disc)
+  PASS  rule D4b: i-impr displays its own value (v-impr)
+  PASS  rule D4b: i-vst displays its own value (v-vst)
+  PASS  rule D4b: i-vtc displays its own value (v-vtc)
+  PASS  rule D4b: i-vps displays its own value (v-vps)
+  PASS  rule D4b: i-qual displays its own value (v-qual)
+  PASS  rule D4b: i-bar displays its own value (v-bar)
+  PASS  rule D4b: i-notbought displays its own value (v-notbought)
+  PASS  rule D4b: behavioural split labels agree with φ
+  PASS  rule D4b: all 85 panel figures match the model
+  PASS  rule D4b reaches the model
+  PASS  D4b (completion only) admits fewer purchasers than D4a
+  PASS  hybrid on: i-takeup displays its own value (v-takeup)
+  PASS  hybrid on: i-p1y displays its own value (v-p1y)
+  PASS  hybrid on: i-p2y displays its own value (v-p2y)
+  PASS  hybrid on: i-phi displays its own value (v-phi)
+  PASS  hybrid on: i-repl displays its own value (v-repl)
+  PASS  hybrid on: i-notrepl displays its own value (v-notrepl)
+  PASS  hybrid on: i-vac displays its own value (v-vac)
+  PASS  hybrid on: i-growth displays its own value (v-growth)
+  PASS  hybrid on: i-disc displays its own value (v-disc)
+  PASS  hybrid on: i-impr displays its own value (v-impr)
+  PASS  hybrid on: i-vst displays its own value (v-vst)
+  PASS  hybrid on: i-vtc displays its own value (v-vtc)
+  PASS  hybrid on: i-vps displays its own value (v-vps)
+  PASS  hybrid on: i-qual displays its own value (v-qual)
+  PASS  hybrid on: i-bar displays its own value (v-bar)
+  PASS  hybrid on: i-notbought displays its own value (v-notbought)
+  PASS  hybrid on: behavioural split labels agree with φ
+  PASS  hybrid on: all 89 panel figures match the model
+  PASS  the hybrid checkbox reaches the model
+  PASS  hybrid participants appear only when deliberately activated
+  PASS  including hybrid moves the modeled pension impact
+  PASS  the hybrid variant is immaterial, as its description claims
+  PASS  hybrid purchasers overpay, so the hybrid structure is a net credit
+  PASS  unchecking hybrid returns to the primary model exactly
+  PASS  amortize at scenario discount: i-takeup displays its own value (v-takeup)
+  PASS  amortize at scenario discount: i-p1y displays its own value (v-p1y)
+  PASS  amortize at scenario discount: i-p2y displays its own value (v-p2y)
+  PASS  amortize at scenario discount: i-phi displays its own value (v-phi)
+  PASS  amortize at scenario discount: i-repl displays its own value (v-repl)
+  PASS  amortize at scenario discount: i-notrepl displays its own value (v-notrepl)
+  PASS  amortize at scenario discount: i-vac displays its own value (v-vac)
+  PASS  amortize at scenario discount: i-growth displays its own value (v-growth)
+  PASS  amortize at scenario discount: i-disc displays its own value (v-disc)
+  PASS  amortize at scenario discount: i-impr displays its own value (v-impr)
+  PASS  amortize at scenario discount: i-vst displays its own value (v-vst)
+  PASS  amortize at scenario discount: i-vtc displays its own value (v-vtc)
+  PASS  amortize at scenario discount: i-vps displays its own value (v-vps)
+  PASS  amortize at scenario discount: i-qual displays its own value (v-qual)
+  PASS  amortize at scenario discount: i-bar displays its own value (v-bar)
+  PASS  amortize at scenario discount: i-notbought displays its own value (v-notbought)
+  PASS  amortize at scenario discount: behavioural split labels agree with φ
+  PASS  amortize at scenario discount: all 85 panel figures match the model
+  PASS  the amortization-basis checkbox changes the basis-point result
+  PASS  the amortization basis does not change the liability itself
+  PASS  "Official VRS data mode" either changes a number or changes the view
+
+=== 9. Fiscal guardrails, asserted through the interface ===
+  PASS  100% replacement, nothing eliminated, no vacancy ⇒ payroll effect is zero
+  PASS  100% replacement ⇒ lower-paid differential is zero by construction
+  PASS  at 100% replacement the panel says so in words
+  PASS  replacement 75% leaves every pension figure bit-identical
+  PASS  replacement 85% leaves every pension figure bit-identical
+  PASS  10% of positions eliminated leaves every pension figure bit-identical
+  PASS  12-month vacancy leaves every pension figure bit-identical
+  PASS  replacement 75%: exactly one ladder rung is marked selected
+  PASS  replacement 75%: the selected rung equals the headline payroll effect
+  PASS  replacement 85%: exactly one ladder rung is marked selected
+  PASS  replacement 85%: the selected rung equals the headline payroll effect
+  PASS  replacement 90%: exactly one ladder rung is marked selected
+  PASS  replacement 90%: the selected rung equals the headline payroll effect
+  PASS  replacement 100%: exactly one ladder rung is marked selected
+  PASS  replacement 100%: the selected rung equals the headline payroll effect
+  PASS  COLA is never given a number
+  PASS  HIC and COLA are stated to sit outside the rate figures
+  PASS  the required basis-point qualifier is on Panel B
+  PASS  Panel D pension total equals the Panel B net liability
+  PASS  Panel D payroll total equals the Panel C total
+  PASS  Panel D combined is payroll less pension, nothing else
+  PASS  Panel D pension total equals the Panel B net liability
+  PASS  Panel D payroll total equals the Panel C total
+  PASS  Panel D combined is payroll less pension, nothing else
+  PASS  the Panel D warning is present verbatim
+
+=== 10. Dimensional sanity of the workforce panel ===
+  PASS  vacancy 0 months: valued as 0 months of pay
+  PASS  vacancy 0 months: replacement payroll stays non-negative
+  PASS  vacancy 1 months: valued as 1 months of pay
+  PASS  vacancy 1 months: the refilled position still draws pay
+  PASS  vacancy 1 months: replacement payroll stays non-negative
+  PASS  vacancy 3 months: valued as 3 months of pay
+  PASS  vacancy 3 months: the refilled position still draws pay
+  PASS  vacancy 3 months: replacement payroll stays non-negative
+  PASS  vacancy 6 months: valued as 6 months of pay
+  PASS  vacancy 6 months: the refilled position still draws pay
+  PASS  vacancy 6 months: replacement payroll stays non-negative
+  PASS  vacancy 12 months: valued as 12 months of pay
+  PASS  vacancy 12 months: the refilled position still draws pay
+  PASS  vacancy 12 months: replacement payroll stays non-negative
+
+=== 11. The population funnel narrows at every step ===
+  PASS  funnel (central) never widens from one step to the next
+  PASS  funnel (central) step provenance is one of the three labels
+  PASS  funnel (central) step provenance is one of the three labels
+  PASS  funnel (central) step provenance is one of the three labels
+  PASS  funnel (central) step provenance is one of the three labels
+  PASS  funnel (central) step provenance is one of the three labels
+  PASS  funnel (central) step provenance is one of the three labels
+  PASS  funnel (central) step provenance is one of the three labels
+  PASS  funnel (central) step provenance is one of the three labels
+  PASS  funnel (central) has all eight steps
+  PASS  funnel (high take-up) never widens from one step to the next
+  PASS  funnel (high take-up) step provenance is one of the three labels
+  PASS  funnel (high take-up) step provenance is one of the three labels
+  PASS  funnel (high take-up) step provenance is one of the three labels
+  PASS  funnel (high take-up) step provenance is one of the three labels
+  PASS  funnel (high take-up) step provenance is one of the three labels
+  PASS  funnel (high take-up) step provenance is one of the three labels
+  PASS  funnel (high take-up) step provenance is one of the three labels
+  PASS  funnel (high take-up) step provenance is one of the three labels
+  PASS  funnel (high take-up) has all eight steps
+  PASS  funnel (teacher-weighted veteran shares) never widens from one step to the next
+  PASS  funnel (teacher-weighted veteran shares) step provenance is one of the three labels
+  PASS  funnel (teacher-weighted veteran shares) step provenance is one of the three labels
+  PASS  funnel (teacher-weighted veteran shares) step provenance is one of the three labels
+  PASS  funnel (teacher-weighted veteran shares) step provenance is one of the three labels
+  PASS  funnel (teacher-weighted veteran shares) step provenance is one of the three labels
+  PASS  funnel (teacher-weighted veteran shares) step provenance is one of the three labels
+  PASS  funnel (teacher-weighted veteran shares) step provenance is one of the three labels
+  PASS  funnel (teacher-weighted veteran shares) step provenance is one of the three labels
+  PASS  funnel (teacher-weighted veteran shares) has all eight steps
+  PASS  funnel (state-weighted veteran shares) never widens from one step to the next
+  PASS  funnel (state-weighted veteran shares) step provenance is one of the three labels
+  PASS  funnel (state-weighted veteran shares) step provenance is one of the three labels
+  PASS  funnel (state-weighted veteran shares) step provenance is one of the three labels
+  PASS  funnel (state-weighted veteran shares) step provenance is one of the three labels
+  PASS  funnel (state-weighted veteran shares) step provenance is one of the three labels
+  PASS  funnel (state-weighted veteran shares) step provenance is one of the three labels
+  PASS  funnel (state-weighted veteran shares) step provenance is one of the three labels
+  PASS  funnel (state-weighted veteran shares) step provenance is one of the three labels
+  PASS  funnel (state-weighted veteran shares) has all eight steps
+  PASS  funnel (subdivision-weighted veteran shares) never widens from one step to the next
+  PASS  funnel (subdivision-weighted veteran shares) step provenance is one of the three labels
+  PASS  funnel (subdivision-weighted veteran shares) step provenance is one of the three labels
+  PASS  funnel (subdivision-weighted veteran shares) step provenance is one of the three labels
+  PASS  funnel (subdivision-weighted veteran shares) step provenance is one of the three labels
+  PASS  funnel (subdivision-weighted veteran shares) step provenance is one of the three labels
+  PASS  funnel (subdivision-weighted veteran shares) step provenance is one of the three labels
+  PASS  funnel (subdivision-weighted veteran shares) step provenance is one of the three labels
+  PASS  funnel (subdivision-weighted veteran shares) step provenance is one of the three labels
+  PASS  funnel (subdivision-weighted veteran shares) has all eight steps
+  PASS  funnel (all filters wide open) never widens from one step to the next
+  PASS  funnel (all filters wide open) step provenance is one of the three labels
+  PASS  funnel (all filters wide open) step provenance is one of the three labels
+  PASS  funnel (all filters wide open) step provenance is one of the three labels
+  PASS  funnel (all filters wide open) step provenance is one of the three labels
+  PASS  funnel (all filters wide open) step provenance is one of the three labels
+  PASS  funnel (all filters wide open) step provenance is one of the three labels
+  PASS  funnel (all filters wide open) step provenance is one of the three labels
+  PASS  funnel (all filters wide open) step provenance is one of the three labels
+  PASS  funnel (all filters wide open) has all eight steps
+
+=== 12. Monotonic responses a legislator would expect ===
+  PASS  take-up is monotone up across 5, 10, 20, 30, 50
+  PASS  take-up → liability is monotone up across 5, 20, 50
+  PASS  φ → liability falls is monotone down across 0, 25, 50, 75, 100
+  PASS  replacement % → payroll effect falls is monotone down across 75, 85, 95, 100
+  PASS  positions eliminated → payroll effect rises is monotone up across 0, 2.5, 5, 10
+  PASS  qualifying share → participants rise is monotone up across 50, 80, 100
+  PASS  retired-pay bar → participants fall is monotone down across 0, 18, 50
+  PASS  not-already-bought → participants rise is monotone up across 30, 70, 100
+
+=== 13. Member examples track the behavioural assumption ===
+  PASS  φ = 0: i-takeup displays its own value (v-takeup)
+  PASS  φ = 0: i-p1y displays its own value (v-p1y)
+  PASS  φ = 0: i-p2y displays its own value (v-p2y)
+  PASS  φ = 0: i-phi displays its own value (v-phi)
+  PASS  φ = 0: i-repl displays its own value (v-repl)
+  PASS  φ = 0: i-notrepl displays its own value (v-notrepl)
+  PASS  φ = 0: i-vac displays its own value (v-vac)
+  PASS  φ = 0: i-growth displays its own value (v-growth)
+  PASS  φ = 0: i-disc displays its own value (v-disc)
+  PASS  φ = 0: i-impr displays its own value (v-impr)
+  PASS  φ = 0: i-vst displays its own value (v-vst)
+  PASS  φ = 0: i-vtc displays its own value (v-vtc)
+  PASS  φ = 0: i-vps displays its own value (v-vps)
+  PASS  φ = 0: i-qual displays its own value (v-qual)
+  PASS  φ = 0: i-bar displays its own value (v-bar)
+  PASS  φ = 0: i-notbought displays its own value (v-notbought)
+  PASS  φ = 0: behavioural split labels agree with φ
+  PASS  φ = 0: all 85 panel figures match the model
+  PASS  φ = 1: i-takeup displays its own value (v-takeup)
+  PASS  φ = 1: i-p1y displays its own value (v-p1y)
+  PASS  φ = 1: i-p2y displays its own value (v-p2y)
+  PASS  φ = 1: i-phi displays its own value (v-phi)
+  PASS  φ = 1: i-repl displays its own value (v-repl)
+  PASS  φ = 1: i-notrepl displays its own value (v-notrepl)
+  PASS  φ = 1: i-vac displays its own value (v-vac)
+  PASS  φ = 1: i-growth displays its own value (v-growth)
+  PASS  φ = 1: i-disc displays its own value (v-disc)
+  PASS  φ = 1: i-impr displays its own value (v-impr)
+  PASS  φ = 1: i-vst displays its own value (v-vst)
+  PASS  φ = 1: i-vtc displays its own value (v-vtc)
+  PASS  φ = 1: i-vps displays its own value (v-vps)
+  PASS  φ = 1: i-qual displays its own value (v-qual)
+  PASS  φ = 1: i-bar displays its own value (v-bar)
+  PASS  φ = 1: i-notbought displays its own value (v-notbought)
+  PASS  φ = 1: behavioural split labels agree with φ
+  PASS  φ = 1: all 85 panel figures match the model
+  PASS  at φ = 0 the Plan 1 example is subsidised (gains)
+  PASS  at φ = 1 the Plan 1 example overpays
+  PASS  at φ = 0 the member net equals the frozen-service net
+  PASS  at φ = 1 the member net equals the work-to-eligibility net
+  PASS  the $341,065 figure is labelled as a maximum, not a per-veteran cost
+  PASS  the Plan 2 example shows two years of acceleration, not four
+
+=== 14. Preset scenarios ===
+  PASS  all six presets are offered
+  PASS  preset central: i-takeup displays its own value (v-takeup)
+  PASS  preset central: i-p1y displays its own value (v-p1y)
+  PASS  preset central: i-p2y displays its own value (v-p2y)
+  PASS  preset central: i-phi displays its own value (v-phi)
+  PASS  preset central: i-repl displays its own value (v-repl)
+  PASS  preset central: i-notrepl displays its own value (v-notrepl)
+  PASS  preset central: i-vac displays its own value (v-vac)
+  PASS  preset central: i-growth displays its own value (v-growth)
+  PASS  preset central: i-disc displays its own value (v-disc)
+  PASS  preset central: i-impr displays its own value (v-impr)
+  PASS  preset central: i-vst displays its own value (v-vst)
+  PASS  preset central: i-vtc displays its own value (v-vtc)
+  PASS  preset central: i-vps displays its own value (v-vps)
+  PASS  preset central: i-qual displays its own value (v-qual)
+  PASS  preset central: i-bar displays its own value (v-bar)
+  PASS  preset central: i-notbought displays its own value (v-notbought)
+  PASS  preset central: behavioural split labels agree with φ
+  PASS  preset central: all 85 panel figures match the model
+  PASS  preset central sets takeUp = 0.2
+  PASS  preset central sets replacementPct = 0.9
+  PASS  preset central sets notReplacedPct = 0
+  PASS  preset central sets vacancyMonths = 0
+  PASS  preset central sets phi = 0.5
+  PASS  preset central is the one highlighted in the preset list
+  PASS  preset central labels itself in the scenario chip
+  PASS  preset central: i-takeup sits exactly on its own step grid
+  PASS  preset central: i-p1y sits exactly on its own step grid
+  PASS  preset central: i-p2y sits exactly on its own step grid
+  PASS  preset central: i-phi sits exactly on its own step grid
+  PASS  preset central: i-repl sits exactly on its own step grid
+  PASS  preset central: i-notrepl sits exactly on its own step grid
+  PASS  preset central: i-vac sits exactly on its own step grid
+  PASS  preset central: i-growth sits exactly on its own step grid
+  PASS  preset central: i-disc sits exactly on its own step grid
+  PASS  preset central: i-impr sits exactly on its own step grid
+  PASS  preset central: i-vst sits exactly on its own step grid
+  PASS  preset central: i-vtc sits exactly on its own step grid
+  PASS  preset central: i-vps sits exactly on its own step grid
+  PASS  preset central: i-qual sits exactly on its own step grid
+  PASS  preset central: i-bar sits exactly on its own step grid
+  PASS  preset central: i-notbought sits exactly on its own step grid
+  PASS  preset conservative: i-takeup displays its own value (v-takeup)
+  PASS  preset conservative: i-p1y displays its own value (v-p1y)
+  PASS  preset conservative: i-p2y displays its own value (v-p2y)
+  PASS  preset conservative: i-phi displays its own value (v-phi)
+  PASS  preset conservative: i-repl displays its own value (v-repl)
+  PASS  preset conservative: i-notrepl displays its own value (v-notrepl)
+  PASS  preset conservative: i-vac displays its own value (v-vac)
+  PASS  preset conservative: i-growth displays its own value (v-growth)
+  PASS  preset conservative: i-disc displays its own value (v-disc)
+  PASS  preset conservative: i-impr displays its own value (v-impr)
+  PASS  preset conservative: i-vst displays its own value (v-vst)
+  PASS  preset conservative: i-vtc displays its own value (v-vtc)
+  PASS  preset conservative: i-vps displays its own value (v-vps)
+  PASS  preset conservative: i-qual displays its own value (v-qual)
+  PASS  preset conservative: i-bar displays its own value (v-bar)
+  PASS  preset conservative: i-notbought displays its own value (v-notbought)
+  PASS  preset conservative: behavioural split labels agree with φ
+  PASS  preset conservative: all 85 panel figures match the model
+  PASS  preset conservative sets takeUp = 0.1
+  PASS  preset conservative sets replacementPct = 1
+  PASS  preset conservative sets notReplacedPct = 0
+  PASS  preset conservative sets vacancyMonths = 0
+  PASS  preset conservative sets phi = 0.75
+  PASS  preset conservative is the one highlighted in the preset list
+  PASS  preset conservative labels itself in the scenario chip
+  PASS  preset conservative: i-takeup sits exactly on its own step grid
+  PASS  preset conservative: i-p1y sits exactly on its own step grid
+  PASS  preset conservative: i-p2y sits exactly on its own step grid
+  PASS  preset conservative: i-phi sits exactly on its own step grid
+  PASS  preset conservative: i-repl sits exactly on its own step grid
+  PASS  preset conservative: i-notrepl sits exactly on its own step grid
+  PASS  preset conservative: i-vac sits exactly on its own step grid
+  PASS  preset conservative: i-growth sits exactly on its own step grid
+  PASS  preset conservative: i-disc sits exactly on its own step grid
+  PASS  preset conservative: i-impr sits exactly on its own step grid
+  PASS  preset conservative: i-vst sits exactly on its own step grid
+  PASS  preset conservative: i-vtc sits exactly on its own step grid
+  PASS  preset conservative: i-vps sits exactly on its own step grid
+  PASS  preset conservative: i-qual sits exactly on its own step grid
+  PASS  preset conservative: i-bar sits exactly on its own step grid
+  PASS  preset conservative: i-notbought sits exactly on its own step grid
+  PASS  preset high: i-takeup displays its own value (v-takeup)
+  PASS  preset high: i-p1y displays its own value (v-p1y)
+  PASS  preset high: i-p2y displays its own value (v-p2y)
+  PASS  preset high: i-phi displays its own value (v-phi)
+  PASS  preset high: i-repl displays its own value (v-repl)
+  PASS  preset high: i-notrepl displays its own value (v-notrepl)
+  PASS  preset high: i-vac displays its own value (v-vac)
+  PASS  preset high: i-growth displays its own value (v-growth)
+  PASS  preset high: i-disc displays its own value (v-disc)
+  PASS  preset high: i-impr displays its own value (v-impr)
+  PASS  preset high: i-vst displays its own value (v-vst)
+  PASS  preset high: i-vtc displays its own value (v-vtc)
+  PASS  preset high: i-vps displays its own value (v-vps)
+  PASS  preset high: i-qual displays its own value (v-qual)
+  PASS  preset high: i-bar displays its own value (v-bar)
+  PASS  preset high: i-notbought displays its own value (v-notbought)
+  PASS  preset high: behavioural split labels agree with φ
+  PASS  preset high: all 85 panel figures match the model
+  PASS  preset high sets takeUp = 0.3
+  PASS  preset high sets replacementPct = 0.9
+  PASS  preset high sets notReplacedPct = 0
+  PASS  preset high sets qualifyingShare = 0.9
+  PASS  preset high sets retiredPayBar = 0.12
+  PASS  preset high sets notAlreadyBought = 0.85
+  PASS  preset high is the one highlighted in the preset list
+  PASS  preset high labels itself in the scenario chip
+  PASS  preset high: i-takeup sits exactly on its own step grid
+  PASS  preset high: i-p1y sits exactly on its own step grid
+  PASS  preset high: i-p2y sits exactly on its own step grid
+  PASS  preset high: i-phi sits exactly on its own step grid
+  PASS  preset high: i-repl sits exactly on its own step grid
+  PASS  preset high: i-notrepl sits exactly on its own step grid
+  PASS  preset high: i-vac sits exactly on its own step grid
+  PASS  preset high: i-growth sits exactly on its own step grid
+  PASS  preset high: i-disc sits exactly on its own step grid
+  PASS  preset high: i-impr sits exactly on its own step grid
+  PASS  preset high: i-vst sits exactly on its own step grid
+  PASS  preset high: i-vtc sits exactly on its own step grid
+  PASS  preset high: i-vps sits exactly on its own step grid
+  PASS  preset high: i-qual sits exactly on its own step grid
+  PASS  preset high: i-bar sits exactly on its own step grid
+  PASS  preset high: i-notbought sits exactly on its own step grid
+  PASS  preset high keeps the 1.6x state veteran share exactly
+  PASS  preset high keeps the 1.6x subdivision veteran share exactly
+  PASS  preset turnover: i-takeup displays its own value (v-takeup)
+  PASS  preset turnover: i-p1y displays its own value (v-p1y)
+  PASS  preset turnover: i-p2y displays its own value (v-p2y)
+  PASS  preset turnover: i-phi displays its own value (v-phi)
+  PASS  preset turnover: i-repl displays its own value (v-repl)
+  PASS  preset turnover: i-notrepl displays its own value (v-notrepl)
+  PASS  preset turnover: i-vac displays its own value (v-vac)
+  PASS  preset turnover: i-growth displays its own value (v-growth)
+  PASS  preset turnover: i-disc displays its own value (v-disc)
+  PASS  preset turnover: i-impr displays its own value (v-impr)
+  PASS  preset turnover: i-vst displays its own value (v-vst)
+  PASS  preset turnover: i-vtc displays its own value (v-vtc)
+  PASS  preset turnover: i-vps displays its own value (v-vps)
+  PASS  preset turnover: i-qual displays its own value (v-qual)
+  PASS  preset turnover: i-bar displays its own value (v-bar)
+  PASS  preset turnover: i-notbought displays its own value (v-notbought)
+  PASS  preset turnover: behavioural split labels agree with φ
+  PASS  preset turnover: all 85 panel figures match the model
+  PASS  preset turnover sets takeUp = 0.2
+  PASS  preset turnover sets replacementPct = 0.85
+  PASS  preset turnover sets notReplacedPct = 0.05
+  PASS  preset turnover sets vacancyMonths = 3
+  PASS  preset turnover is the one highlighted in the preset list
+  PASS  preset turnover labels itself in the scenario chip
+  PASS  preset turnover: i-takeup sits exactly on its own step grid
+  PASS  preset turnover: i-p1y sits exactly on its own step grid
+  PASS  preset turnover: i-p2y sits exactly on its own step grid
+  PASS  preset turnover: i-phi sits exactly on its own step grid
+  PASS  preset turnover: i-repl sits exactly on its own step grid
+  PASS  preset turnover: i-notrepl sits exactly on its own step grid
+  PASS  preset turnover: i-vac sits exactly on its own step grid
+  PASS  preset turnover: i-growth sits exactly on its own step grid
+  PASS  preset turnover: i-disc sits exactly on its own step grid
+  PASS  preset turnover: i-impr sits exactly on its own step grid
+  PASS  preset turnover: i-vst sits exactly on its own step grid
+  PASS  preset turnover: i-vtc sits exactly on its own step grid
+  PASS  preset turnover: i-vps sits exactly on its own step grid
+  PASS  preset turnover: i-qual sits exactly on its own step grid
+  PASS  preset turnover: i-bar sits exactly on its own step grid
+  PASS  preset turnover: i-notbought sits exactly on its own step grid
+  PASS  preset noWorkforce: i-takeup displays its own value (v-takeup)
+  PASS  preset noWorkforce: i-p1y displays its own value (v-p1y)
+  PASS  preset noWorkforce: i-p2y displays its own value (v-p2y)
+  PASS  preset noWorkforce: i-phi displays its own value (v-phi)
+  PASS  preset noWorkforce: i-repl displays its own value (v-repl)
+  PASS  preset noWorkforce: i-notrepl displays its own value (v-notrepl)
+  PASS  preset noWorkforce: i-vac displays its own value (v-vac)
+  PASS  preset noWorkforce: i-growth displays its own value (v-growth)
+  PASS  preset noWorkforce: i-disc displays its own value (v-disc)
+  PASS  preset noWorkforce: i-impr displays its own value (v-impr)
+  PASS  preset noWorkforce: i-vst displays its own value (v-vst)
+  PASS  preset noWorkforce: i-vtc displays its own value (v-vtc)
+  PASS  preset noWorkforce: i-vps displays its own value (v-vps)
+  PASS  preset noWorkforce: i-qual displays its own value (v-qual)
+  PASS  preset noWorkforce: i-bar displays its own value (v-bar)
+  PASS  preset noWorkforce: i-notbought displays its own value (v-notbought)
+  PASS  preset noWorkforce: behavioural split labels agree with φ
+  PASS  preset noWorkforce: all 85 panel figures match the model
+  PASS  preset noWorkforce sets replacementPct = 1
+  PASS  preset noWorkforce sets notReplacedPct = 0
+  PASS  preset noWorkforce sets vacancyMonths = 0
+  PASS  preset noWorkforce is the one highlighted in the preset list
+  PASS  preset noWorkforce labels itself in the scenario chip
+  PASS  preset noWorkforce: i-takeup sits exactly on its own step grid
+  PASS  preset noWorkforce: i-p1y sits exactly on its own step grid
+  PASS  preset noWorkforce: i-p2y sits exactly on its own step grid
+  PASS  preset noWorkforce: i-phi sits exactly on its own step grid
+  PASS  preset noWorkforce: i-repl sits exactly on its own step grid
+  PASS  preset noWorkforce: i-notrepl sits exactly on its own step grid
+  PASS  preset noWorkforce: i-vac sits exactly on its own step grid
+  PASS  preset noWorkforce: i-growth sits exactly on its own step grid
+  PASS  preset noWorkforce: i-disc sits exactly on its own step grid
+  PASS  preset noWorkforce: i-impr sits exactly on its own step grid
+  PASS  preset noWorkforce: i-vst sits exactly on its own step grid
+  PASS  preset noWorkforce: i-vtc sits exactly on its own step grid
+  PASS  preset noWorkforce: i-vps sits exactly on its own step grid
+  PASS  preset noWorkforce: i-qual sits exactly on its own step grid
+  PASS  preset noWorkforce: i-bar sits exactly on its own step grid
+  PASS  preset noWorkforce: i-notbought sits exactly on its own step grid
+  PASS  preset hybrid: i-takeup displays its own value (v-takeup)
+  PASS  preset hybrid: i-p1y displays its own value (v-p1y)
+  PASS  preset hybrid: i-p2y displays its own value (v-p2y)
+  PASS  preset hybrid: i-phi displays its own value (v-phi)
+  PASS  preset hybrid: i-repl displays its own value (v-repl)
+  PASS  preset hybrid: i-notrepl displays its own value (v-notrepl)
+  PASS  preset hybrid: i-vac displays its own value (v-vac)
+  PASS  preset hybrid: i-growth displays its own value (v-growth)
+  PASS  preset hybrid: i-disc displays its own value (v-disc)
+  PASS  preset hybrid: i-impr displays its own value (v-impr)
+  PASS  preset hybrid: i-vst displays its own value (v-vst)
+  PASS  preset hybrid: i-vtc displays its own value (v-vtc)
+  PASS  preset hybrid: i-vps displays its own value (v-vps)
+  PASS  preset hybrid: i-qual displays its own value (v-qual)
+  PASS  preset hybrid: i-bar displays its own value (v-bar)
+  PASS  preset hybrid: i-notbought displays its own value (v-notbought)
+  PASS  preset hybrid: behavioural split labels agree with φ
+  PASS  preset hybrid: all 89 panel figures match the model
+  PASS  preset hybrid sets includeHybrid = true
+  PASS  preset hybrid is the one highlighted in the preset list
+  PASS  preset hybrid labels itself in the scenario chip
+  PASS  preset hybrid: i-takeup sits exactly on its own step grid
+  PASS  preset hybrid: i-p1y sits exactly on its own step grid
+  PASS  preset hybrid: i-p2y sits exactly on its own step grid
+  PASS  preset hybrid: i-phi sits exactly on its own step grid
+  PASS  preset hybrid: i-repl sits exactly on its own step grid
+  PASS  preset hybrid: i-notrepl sits exactly on its own step grid
+  PASS  preset hybrid: i-vac sits exactly on its own step grid
+  PASS  preset hybrid: i-growth sits exactly on its own step grid
+  PASS  preset hybrid: i-disc sits exactly on its own step grid
+  PASS  preset hybrid: i-impr sits exactly on its own step grid
+  PASS  preset hybrid: i-vst sits exactly on its own step grid
+  PASS  preset hybrid: i-vtc sits exactly on its own step grid
+  PASS  preset hybrid: i-vps sits exactly on its own step grid
+  PASS  preset hybrid: i-qual sits exactly on its own step grid
+  PASS  preset hybrid: i-bar sits exactly on its own step grid
+  PASS  preset hybrid: i-notbought sits exactly on its own step grid
+  PASS  No Workforce Savings preset ⇒ payroll effect exactly zero
+  PASS  No Workforce Savings preset ⇒ pension impact unchanged from central
+  PASS  No Workforce Savings preset ⇒ combined effect is the pension cost alone
+
+=== 15. Reset to Baseline ===
+  PASS  after reset: i-takeup displays its own value (v-takeup)
+  PASS  after reset: i-p1y displays its own value (v-p1y)
+  PASS  after reset: i-p2y displays its own value (v-p2y)
+  PASS  after reset: i-phi displays its own value (v-phi)
+  PASS  after reset: i-repl displays its own value (v-repl)
+  PASS  after reset: i-notrepl displays its own value (v-notrepl)
+  PASS  after reset: i-vac displays its own value (v-vac)
+  PASS  after reset: i-growth displays its own value (v-growth)
+  PASS  after reset: i-disc displays its own value (v-disc)
+  PASS  after reset: i-impr displays its own value (v-impr)
+  PASS  after reset: i-vst displays its own value (v-vst)
+  PASS  after reset: i-vtc displays its own value (v-vtc)
+  PASS  after reset: i-vps displays its own value (v-vps)
+  PASS  after reset: i-qual displays its own value (v-qual)
+  PASS  after reset: i-bar displays its own value (v-bar)
+  PASS  after reset: i-notbought displays its own value (v-notbought)
+  PASS  after reset: behavioural split labels agree with φ
+  PASS  after reset: all 85 panel figures match the model
+  PASS  reset returns the central net liability
+  PASS  reset returns the central bp
+  PASS  reset clears the direct participant entry
+  PASS  reset clears the salary overrides
+  PASS  reset restores every mode segment
+  PASS  reset restores the purchase rule and the hybrid exclusion
+  PASS  reset puts the scenario chip back to Central
+
+=== 16. Downloadable scenario summary and CSV ===
+  PASS  CSV downloads with a sensible filename
+  PASS  CSV is not empty
+  PASS  CSV carries the scenario the dashboard is showing (take-up 30%)
+  PASS  CSV carries the combined rate impact shown on Panel B
+  PASS  CSV carries the required qualifier on the 0.19 bp style figure
+  PASS  CSV labels funnel steps with their provenance
+  PASS  CSV never uses the word Savings as an output label
+  PASS  scenario summary downloads with a sensible filename
+  PASS  scenario summary is not empty
+  PASS  scenario summary carries the mandatory disclaimer
+  PASS  scenario summary carries the three separate totals
+  PASS  scenario summary reports the scenario actually on screen
+  PASS  scenario summary carries the preparation attribution
+
+=== 17. Sensitivity panel (Panel F) ===
+  PASS  the tornado lists all required drivers
+  PASS  tornado tests Participant count
+  PASS  tornado tests Behavioural assumption
+  PASS  tornado tests Average bridge amount
+  PASS  tornado tests Replacement salary percentage
+  PASS  tornado tests Positions not replaced
+  PASS  tornado tests Salary growth
+  PASS  tornado tests Actuarial discount rate
+  PASS  the two workforce drivers are reported as having no pension effect
+
+=== 18. Glossary tooltips for the required terms ===
+  PASS  glossary defines "approximate normal cost"
+  PASS  tooltip attached where "approximate normal cost" is used
+  PASS  glossary defines "actuarial equivalent cost"
+  PASS  tooltip attached where "actuarial equivalent cost" is used
+  PASS  glossary defines "unreduced retirement"
+  PASS  tooltip attached where "unreduced retirement" is used
+  PASS  glossary defines "rule of 90"
+  PASS  tooltip attached where "rule of 90" is used
+  PASS  glossary defines "employer contribution-rate basis points"
+  PASS  tooltip attached where "employer contribution-rate basis points" is used
+  PASS  glossary defines "pension liability"
+  PASS  tooltip attached where "pension liability" is used
+  PASS  glossary defines "payroll effect"
+  PASS  tooltip attached where "payroll effect" is used
+  PASS  glossary defines "present value"
+  PASS  tooltip attached where "present value" is used
+  PASS  no output on the dashboard is labelled "Savings"
+  PASS  required output label in use: "Modeled pension impact"
+  PASS  required output label in use: "Modeled payroll effect"
+  PASS  required output label in use: "Combined scenario effect"
+  PASS  the preparation attribution is visible on the rendered page
+  PASS  the illustrative-model disclaimer is visible on the rendered page
+
+=== 19. No page errors across the whole sweep ===
+  PASS  no uncaught page exception during any state tested
+
+==============================================================================
+  1928 passed, 0 failed
+==============================================================================
+
