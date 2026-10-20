@@ -96,7 +96,6 @@ function groupBuildFidelity() {
   const leftover = [...dist.matchAll(/(?:src|href)="([^"#]+)"/g)]
     .map((m) => m[1])
     .filter((u) => !/^(https?:|mailto:|data:|blob:)/.test(u))
-    .filter((u) => u !== 'methodology-standalone.html');
   check('no local file references survive inlining', leftover.length === 0,
     'would be broken for a file opened on its own: ' + leftover.join(', '));
 
@@ -114,6 +113,10 @@ function groupBuildFidelity() {
   for (const r of required) {
     check('required text present: "' + r.slice(0, 48) + '"', flat.includes(r));
   }
+  check('print-required disclaimer sits outside the hidden masthead',
+    /<\/header>\s*<div class="disclaimer print-required">/.test(dist));
+  check('the standalone Methodology link is embedded, not a relative dead link',
+    /href="data:text\/html;charset=utf-8;base64,/.test(dist));
 }
 
 /* ============================================================ GROUP 2 */
@@ -279,6 +282,28 @@ async function main() {
     }
     check('no page exception during startup render',
       page.errors().length === 0, page.errors().join(' | '));
+    check('covered payroll uses a billions branch',
+      base.text.b.includes('$26.05bn') && !base.text.b.includes('$26048.74M'));
+    check('benefit-structure contributions display enough precision to reconcile',
+      base.text.b.includes('0.204 bp') && base.text.b.includes('−0.015 bp')
+      && base.text.b.includes('0.189 bp'));
+    const bNote = await page.evaluate("return document.getElementById('b-note').textContent");
+    check('central-case Plan 1 / Plan 2 sign split is stated',
+      bNote.includes('entirely a Plan 1 result')
+      && bNote.includes('Plan 2 purchasers in aggregate pay'));
+    const badgeAudit = await page.evaluate(
+      "return {b:document.querySelectorAll('#b-hero .prov').length," +
+      "c:document.querySelectorAll('#c-tiles .prov').length," +
+      "d:document.querySelectorAll('#d-hero .prov').length}");
+    check('headline output figures carry provenance badges',
+      badgeAudit.b >= 2 && badgeAudit.c >= 1 && badgeAudit.d >= 3,
+      JSON.stringify(badgeAudit));
+    check('estimated-veterans funnel step is tagged Scenario Assumption',
+      base.model.funnel[2].provenance === 'Scenario Assumption',
+      base.model.funnel[2].provenance);
+    check('identity funnel step is described as purchase amount, not willingness',
+      base.text.g.includes('does not narrow headcount in the current grid')
+      && !base.text.g.includes('Able and willing to purchase'));
 
     /* ---------------------------------------------------------------- */
     startGroup('4. Every slider: display, wiring and rendered output');
@@ -367,6 +392,9 @@ async function main() {
         r.model.byPlan.P2.participants, 0, 1e-9);
       check(`direct entry of ${n} is reported as direct in the funnel`,
         r.model.funnelDirect === true);
+      check(`direct entry of ${n} is labelled as a user entry`,
+        r.text.g.includes('Participant count entered directly')
+        && r.text.g.includes('User entry'));
       if (n > 0) {
         const perHead = r.model.byPlan.P1.price / n;
         check(`direct entry of ${n} preserves the modeled mix (price per head stable)`,
@@ -492,8 +520,23 @@ async function main() {
       r100.model.workforce.total, 0, 1e-6);
     near('100% replacement ⇒ lower-paid differential is zero by construction',
       r100.model.workforce.lowerPaidDiff, 0, 1e-9);
-    check('at 100% replacement the panel says so in words',
-      r100.text.c.includes('zero by construction at 100% replacement'));
+    check('at 100% replacement the panel states the zero conditions',
+      r100.text.c.includes('zero with no vacancy or eliminated positions'));
+
+    for (const nu of [0, 5, 10]) {
+      for (const vac of [0, 3, 12]) {
+        const r = await drive(page, [['setRange', 'i-repl', 100],
+          ['setRange', 'i-notrepl', nu], ['setRange', 'i-vac', vac]]);
+        const shouldBeZero = nu === 0 && vac === 0;
+        check(`100% replacement, ${nu}% eliminated, ${vac}m vacancy: zero claim is conditional`,
+          (Math.abs(r.model.workforce.total) < 0.01) === shouldBeZero,
+          fmtN(r.model.workforce.total));
+        if (!shouldBeZero) {
+          check(`100% replacement, ${nu}% eliminated, ${vac}m: prose names remaining effects`,
+            /nonzero total below|separately identified non-replacement/.test(r.text.c));
+        }
+      }
+    }
 
     /* no workforce control may move any pension figure */
     const pensionOf = (m) => [m.combined.netLiability, m.combined.bp, m.combined.price,
@@ -512,17 +555,19 @@ async function main() {
         got.map((x, i) => `${fmtN(x)} vs ${fmtN(refPension[i])}`).join(' | '));
     }
 
-    /* the selected ladder rung must equal the headline payroll figure */
+    /* every ladder rung must equal the headline obtained by selecting it */
     await page.evaluate("window.__T.click('btn-reset'); return 1");
     await settle(page);
-    for (const v of [75, 85, 90, 100]) {
-      const r = await drive(page, [['setRange', 'i-repl', v]]);
-      const sel = r.model.ladder.filter((x) => x.selected);
-      check(`replacement ${v}%: exactly one ladder rung is marked selected`,
-        sel.length === 1, `${sel.length} marked`);
-      if (sel.length === 1) {
-        near(`replacement ${v}%: the selected rung equals the headline payroll effect`,
-          sel[0].total, r.model.workforce.total, 0.01);
+    for (const vac of [0, 3, 12]) {
+      const ladder = await drive(page, [['setRange', 'i-repl', 85],
+        ['setRange', 'i-notrepl', 5], ['setRange', 'i-vac', vac]]);
+      for (const rung of ladder.model.ladder) {
+        const direct = nodeSide.Engine.run({ replacementPct: rung.pct,
+          notReplacedPct: 0.05, vacancyMonths: vac });
+        near(`ladder ${rung.pct * 100}% at ${vac}m: total matches direct scenario`,
+          rung.total, direct.panelC.combined.total, 0.01);
+        near(`ladder ${rung.pct * 100}% at ${vac}m: vacancy matches direct scenario`,
+          rung.vacancyPayroll, direct.panelC.combined.vacancyPayroll, 0.01);
       }
     }
 
@@ -532,6 +577,10 @@ async function main() {
       && anc.text.hc.includes('Not quantified'));
     check('HIC and COLA are stated to sit outside the rate figures',
       anc.text.hc.includes('No'));
+    const hcNote = await page.evaluate("return document.getElementById('hc-note').textContent");
+    check('HIC uses employer-specific rates and discloses elective PS coverage',
+      anc.model.ancillary.hicPvEstimate < 410000
+      && hcNote.includes('employer-elective'));
     check('the required basis-point qualifier is on Panel B',
       (await page.evaluate("return document.getElementById('b-note').textContent"))
         .includes('excludes the separately funded health insurance credit and COLA'));
@@ -680,10 +729,17 @@ async function main() {
       phi0.model.memberA.netBlended, phi0.model.memberA.netSub, 1e-6);
     near('at φ = 1 the member net equals the work-to-eligibility net',
       phi100.model.memberA.netBlended, phi100.model.memberA.netWte, 1e-6);
-    check('the $341,065 figure is labelled as a maximum, not a per-veteran cost',
+    check('the $341,065 figure is limited to profile A and not called a model-wide maximum',
       phi0.text.e.includes('341,065')
-        && phi0.text.e.includes('maximum modeled net value above the member purchase price')
-        && phi0.text.e.includes('not'));
+        && phi0.text.e.includes('most favorable of the seven published profiles')
+        && phi0.text.e.includes('not a model-wide maximum')
+        && phi0.text.e.includes('419,000'));
+    check('negative pension impact is labelled as a gain, not a cost',
+      phi100.model.panelD.pensionImpact < 0
+        && phi100.text.d.includes('a gain to the plan')
+        && !phi100.text.d.includes('a cost to the plan'));
+    check('negative basis points use the typographic minus sign',
+      phi100.text.b.includes('−0.09 bp') && !phi100.text.b.includes('-0.09 bp'));
     check('the Plan 2 example shows two years of acceleration, not four',
       Math.abs(phi0.model.memberD.accelerationYears - 2) < 1e-9,
       String(phi0.model.memberD.accelerationYears));
@@ -694,6 +750,11 @@ async function main() {
       "return Array.prototype.map.call(document.querySelectorAll('#presets [data-preset]')," +
       " function(b){return b.getAttribute('data-preset');})");
     check('all six presets are offered', presetKeys.length === 6, presetKeys.join(', '));
+    check('the low-cost preset is not labelled conservative',
+      (await page.evaluate("return document.getElementById('presets').textContent"))
+        .includes('Low Participation (low-cost case)')
+      && !(await page.evaluate("return document.getElementById('presets').textContent"))
+        .includes('Conservative'));
     const expectPreset = {
       conservative: { takeUp: 0.10, replacementPct: 1.00, notReplacedPct: 0, vacancyMonths: 0, phi: 0.75 },
       central: { takeUp: 0.20, replacementPct: 0.90, notReplacedPct: 0, vacancyMonths: 0, phi: 0.50 },
@@ -805,6 +866,11 @@ async function main() {
         csv.text.includes('Published Fact') && csv.text.includes('Scenario Assumption'));
       check('CSV never uses the word Savings as an output label',
         !/,\s*"?Savings/i.test(csv.text));
+      check('CSV carries the phi warning and purchaser-count limitation',
+        /no published data bears on it/i.test(csv.text)
+        && /not re-estimated/i.test(csv.text));
+      check('CSV marks the combined scenario result READ LAST',
+        csv.text.includes('READ LAST'));
     }
     const hand = await page.evaluate("return window.__T.capture('handout')");
     check('scenario summary downloads with a sensible filename',
@@ -823,7 +889,29 @@ async function main() {
         `looking for ${live.model.combined.bp.toFixed(2)} bp`);
       check('scenario summary carries the preparation attribution',
         /Policy Development Team/.test(hand.text));
+      check('scenario summary carries the complete basis-point qualifier',
+        /version 1\.2 refresh is required/i.test(hand.text)
+        && /unquantified COLA exposure/i.test(hand.text));
     }
+    await page.evaluate("window.__T.setRange('i-phi',90); return 1");
+    await sleep(90); /* main render done; the 220ms chart debounce is intentionally pending */
+    const immediateReading = await page.evaluate('return window.__T.rendered()');
+    const immediateCsv = await page.evaluate("return window.__T.capture('csv')");
+    const expectedFunnel = nodeSide.Engine.tornado(immediateReading.model.params).rows
+      .find((r) => r.key === 'funnel');
+    check('CSV sensitivity is computed synchronously for the exported scenario',
+      immediateCsv.text.includes(expectedFunnel.lowBp.toFixed(3) + ' bp')
+      && immediateCsv.text.includes(expectedFunnel.highBp.toFixed(3) + ' bp'),
+      (immediateCsv.text.match(/"Sensitivity","Veteran[^\r\n]*/) ||
+        ['expected the phi=90 funnel sensitivity, not the preceding scenario'])[0]);
+    await drive(page, [['setRange', 'i-repl', 100], ['setRange', 'i-notrepl', 0],
+      ['setRange', 'i-vac', 12]], { tornado: true });
+    const guardCsv = await page.evaluate("return window.__T.capture('csv')");
+    const guardHand = await page.evaluate("return window.__T.capture('handout')");
+    check('100%/12-month CSV explains its nonzero payroll effect',
+      guardCsv.text.includes('100% replacement: any nonzero amount consists of vacancy'));
+    check('100%/12-month handout explains its nonzero payroll effect',
+      guardHand.text.includes('100% replacement: any nonzero amount consists of vacancy'));
 
     /* ---------------------------------------------------------------- */
     startGroup('17. Sensitivity panel (Panel F)');
@@ -840,6 +928,18 @@ async function main() {
     }
     check('the two workforce drivers are reported as having no pension effect',
       (f.text.match(/none/g) || []).length >= 2, f.text.slice(0, 200));
+    check('phi sensitivity reaches both control endpoints',
+      f.text.includes('φ = 1.00') && f.text.includes('φ = 0.00'));
+    const fNote = await page.evaluate("return document.getElementById('f-note').textContent");
+    check('sensitivity note renders no raw strong tags',
+      !fNote.includes('<strong>') && !fNote.includes('</strong>'));
+    check('sensitivity note discloses sign crossing and fixed purchaser counts',
+      fNote.includes('φ = 0.84') && fNote.includes('not re-estimated'));
+    await drive(page, [['setRange', 'i-phi', 90]], { tornado: true });
+    const gNote = await page.evaluate("return document.getElementById('g-note').textContent");
+    check('Panel G range follows the current scenario and avoids a false superlative',
+      gNote.includes('−0.01 bp') && gNote.includes('−0.08 bp')
+      && !gNote.includes('single largest uncertainty'));
 
     /* ---------------------------------------------------------------- */
     startGroup('18. Glossary tooltips for the required terms');

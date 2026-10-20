@@ -482,7 +482,7 @@
 
     var acc = { yearsBought: 0, price: 0, valueSub: 0, valueWte: 0, ncOffset: 0,
                 pvPayrollForgone: 0, acceleration: 0, memberContribForgone: 0,
-                erDbForgone: 0, salaryAtDeparture: 0, serviceAtRet: 0 };
+                erDbForgone: 0, salaryAtDeparture: 0, serviceAtRet: 0, hicPv: 0 };
     var pBuy = 0, i, qual, w, c;
     for (i = 0; i < dist.length; i++) {
       qual = dist[i][0]; w = dist[i][1];
@@ -506,6 +506,14 @@
       acc.erDbForgone += w * c.pvEmployerDbContribForgone;
       acc.salaryAtDeparture += w * c.salaryAtDeparture;
       acc.serviceAtRet += w * c.propService;
+      var hicRate = { ST: 4.25, TC: 4.00, PS: 1.50 }[cell.emp];
+      var hicMonthly = c.propService * hicRate;
+      if (cell.emp === 'PS') hicMonthly = Math.min(hicMonthly, 45);
+      var hicWhole = Math.trunc(c.accelerationYears), hicFactor = 0, ht;
+      for (ht = 0; ht < hicWhole; ht++) hicFactor += Math.pow(1 / (1 + p.discount), ht);
+      hicFactor += (c.accelerationYears - hicWhole) *
+        Math.pow(1 / (1 + p.discount), hicWhole);
+      acc.hicPv += w * hicMonthly * 12 * hicFactor;
     }
     acc.salary = salary;
     acc.pBuy = pBuy;
@@ -564,7 +572,7 @@
     function blankAcc() {
       return { purchasable: 0, exposed: 0, years: 0, price: 0, valueSub: 0,
                valueWte: 0, ncOffset: 0, pvPayrollForgone: 0, accelYears: 0,
-               memberContribForgone: 0, erDbForgone: 0, wSalaryDeparture: 0,
+               memberContribForgone: 0, erDbForgone: 0, hicPv: 0, wSalaryDeparture: 0,
                wServiceAtRet: 0, wSalary: 0, wDeficit: 0, wAge: 0, wService: 0 };
     }
     /* per benefit structure, and per benefit structure x employer plan */
@@ -609,6 +617,7 @@
         t.accelYears += pool * r.acceleration;
         t.memberContribForgone += pool * r.memberContribForgone;
         t.erDbForgone += pool * r.erDbForgone;
+        t.hicPv += pool * r.hicPv;
         t.wSalaryDeparture += pool * r.salaryAtDeparture;
         t.wServiceAtRet += pool * r.serviceAtRet;
         t.wSalary += pool * r.pBuy * r.salary;
@@ -662,6 +671,7 @@
         accelYears: acc.accelYears * kNoSal,
         memberContribForgone: acc.memberContribForgone * k,
         erDbForgone: acc.erDbForgone * k,
+        hicPv: acc.hicPv * kNoSal,
         salaryAtDeparture: acc.purchasable > 1e-9
           ? acc.wSalaryDeparture / acc.purchasable * salMult[pl] : 0,
         serviceAtRet: acc.purchasable > 1e-9 ? acc.wServiceAtRet / acc.purchasable : 0,
@@ -689,7 +699,7 @@
     var totals = { participants: 0, years: 0, price: 0, valueSub: 0, valueWte: 0,
                    valueBlended: 0, netLiability: 0, bp: 0, accelYears: 0,
                    pvPayrollForgone: 0, ncOffset: 0, memberContribForgone: 0,
-                   erDbForgone: 0 };
+                   erDbForgone: 0, hicPv: 0 };
 
     plansWanted.forEach(function (pl) {
       var s = scaled(byPlan[pl], pl);
@@ -715,7 +725,7 @@
       pension.byPlan[pl] = s;
       ['participants', 'years', 'price', 'valueSub', 'valueWte', 'valueBlended',
        'netLiability', 'accelYears', 'pvPayrollForgone', 'ncOffset',
-       'memberContribForgone', 'erDbForgone'].forEach(function (k) {
+       'memberContribForgone', 'erDbForgone', 'hicPv'].forEach(function (k) {
         totals[k] += s[k];
       });
     });
@@ -724,13 +734,17 @@
       var pd = B.plans.P1.by_employer[e] || B.plans.P2.by_employer[e];
       var acc = { price: 0, valueSub: 0, valueWte: 0, participants: 0,
                   pvPayrollForgone: 0, ncOffset: 0, erDbForgone: 0,
-                  memberContribForgone: 0, years: 0, accelYears: 0 };
+                  memberContribForgone: 0, years: 0, accelYears: 0, hicPv: 0,
+                  serviceAtRetWeighted: 0 };
       plansWanted.forEach(function (pl) {
         var s = scaled(byPlanEmp[pl][e], pl);
         ['price', 'valueSub', 'valueWte', 'participants', 'pvPayrollForgone',
          'ncOffset', 'erDbForgone', 'memberContribForgone', 'years',
-         'accelYears'].forEach(function (k) { acc[k] += s[k]; });
+         'accelYears', 'hicPv'].forEach(function (k) { acc[k] += s[k]; });
+        acc.serviceAtRetWeighted += s.serviceAtRet * s.participants;
       });
+      acc.serviceAtRet = acc.participants > 1e-9
+        ? acc.serviceAtRetWeighted / acc.participants : 0;
       acc.valueBlended = p.phi * acc.valueWte + (1 - p.phi) * acc.valueSub;
       acc.netLiability = acc.valueBlended - acc.price;
       acc.payroll = pd.payroll;
@@ -804,7 +818,7 @@
 
     /* payroll effect at each of the required replacement percentages */
     wf.replacementLadder = [0.75, 0.80, 0.85, 0.90, 0.95, 1.00].map(function (pct) {
-      var lower = 0, er = 0;
+      var lower = 0, er = 0, notReplaced = 0, vacancy = 0;
       EMPLOYERS.forEach(function (e) {
         var acc = pension.byEmployer[e];
         var refilled = acc.pvPayrollForgone * (1 - p.notReplacedPct);
@@ -814,34 +828,38 @@
         var vac = Math.min(mw > 1e-9 ? (refilled / mw) * pct * (p.vacancyMonths / 12.0) : 0,
                            rep);
         lower += refilled - rep;
+        notReplaced += acc.pvPayrollForgone * p.notReplacedPct;
+        vacancy += vac;
         er += acc.pvPayrollForgone * acc.erDbRate - (rep - vac) * acc.erDbRate;
       });
       return { pct: pct, lowerPaidDiff: lower, erContribDiff: er,
-               total: lower + er + wfTot.notReplacedPayroll + wfTot.vacancyPayroll,
+               notReplacedPayroll: notReplaced, vacancyPayroll: vacancy,
+               total: lower + er + notReplaced + vacancy,
                selected: Math.abs(pct - p.replacementPct) < 1e-9 };
     });
 
     /* ---- HIC and COLA — separately funded trusts, OUTSIDE the bp figure */
-    /* § 51.1-1400: the state health insurance credit is $4.25 per month per
-       year of creditable service. An earlier retirement starts it earlier; the
-       bill does not reach that, and DECISION 9 accepts and discloses it. */
-    var hicRate = 4.25;
+    /* Employer-specific statutory HIC rates. Political-subdivision coverage is
+       elective, so treating every modeled PS participant as covered produces
+       an explicit upper bound for that cohort, not a point estimate. */
     var hicPv = 0;
-    plansWanted.forEach(function (pl) {
-      var s = pension.byPlan[pl];
-      /* simple PV over the acceleration window at the scenario discount rate */
-      var annual = s.serviceAtRet * hicRate * 12;
-      var yrs = s.meanAcceleration;
+    EMPLOYERS.forEach(function (e) {
+      var s = pension.byEmployer[e];
+      var yrs = s.participants > 1e-9 ? s.accelYears / s.participants : 0;
       var v = 1 / (1 + p.discount), pvFactor = 0, t;
       for (t = 0; t < Math.trunc(yrs); t++) pvFactor += Math.pow(v, t);
       pvFactor += (yrs - Math.trunc(yrs)) * Math.pow(v, Math.trunc(yrs));
-      hicPv += annual * pvFactor * s.participants;
+      var monthly = s.serviceAtRet * { ST: 4.25, TC: 4.00, PS: 1.50 }[e];
+      if (e === 'PS') monthly = Math.min(monthly, 45);
+      hicPv += monthly * 12 * pvFactor * s.participants;
     });
     var ancillary = {
       hicPvEstimate: hicPv,
-      hicPerRetireeNote: 'Illustrative at $4.25 per month per year of creditable ' +
-        'service (§ 51.1-1400); about $5,300 for a state retiree with 26 years ' +
-        'over a four-year acceleration.',
+      hicPerRetireeNote: 'Illustrative using the employer-specific statutory rates: ' +
+        '$4.25 for state employees (§ 51.1-1400), $4.00 for teachers ' +
+        '(§ 51.1-1401), and $1.50 capped at $45 per month for political ' +
+        'subdivisions (§ 51.1-1402). Political-subdivision participation is ' +
+        'employer-elective, so that cohort is an upper bound.',
       colaQuantified: false,
       note: 'Both run on separately funded trusts and are OUTSIDE every ' +
         'contribution-rate figure in this tool. HIC and COLA follow the ' +
@@ -919,7 +937,8 @@
 
     return {
       steps: [
-        { label: 'Active members, three VRS plans (June 30, 2025)',
+        { label: 'Active members, three VRS employer plans — State, Teachers and ' +
+                 'Political Subdivisions (June 30, 2025)',
           value: activeThree, provenance: 'Published Fact',
           source: 'VAL2025 Results Summary (SRC-15)' },
         { label: 'Exposed to a purchase opportunity, FY2029–FY2038 — within ' +
@@ -929,8 +948,9 @@
           source: 'Published age × service grid (SRC-18) rolled forward; plan ' +
                   'structure inferred from service (ASM-10, ASM-23); political ' +
                   'subdivision grid constructed (ASM-12)' },
-        { label: 'Estimated veterans', value: afterVet,
-          provenance: 'Derived Estimate',
+        { label: 'Estimated veterans — 6.0% published anchor for state employees ' +
+                 'only; teacher and political-subdivision shares are assumed',
+          value: afterVet, provenance: 'Scenario Assumption',
           source: '6.0% published for the classified state workforce ' +
                   '(DHRM2025 slide 8, SRC-24); teacher and political ' +
                   'subdivision shares are ASSUMED (ASM-15) — no published ' +
@@ -949,13 +969,16 @@
         { label: 'Did not already purchase in the § 51.1-142.2 B 3 24-month window',
           value: afterBought, provenance: 'Scenario Assumption',
           source: 'ASM-18 — VRS does not publish purchase-of-prior-service take-up' },
-        { label: 'Able and willing to purchase (probability-weighted over ' +
-                 'available qualifying service, ASM-25)',
+        { label: 'Purchasable population; ASM-25 changes the amount each member ' +
+                 'can buy (it does not narrow headcount in the current grid)',
           value: purchasableTotal, provenance: 'Scenario Assumption',
           source: 'ASM-25 distribution of purchasable qualifying service' },
-        { label: 'Expected participants at the selected take-up rate',
+        { label: p.participantMode === 'direct'
+                   ? 'Participant count entered directly'
+                   : 'Expected participants at the selected take-up rate',
           value: participantsTotal, provenance: 'Scenario Assumption',
-          source: 'ASM-19 — low 10% / moderate 20% / high 30%; no evidence base' }
+          source: p.participantMode === 'direct' ? 'User entry'
+            : 'ASM-19 — low 10% / moderate 20% / high 30%; no evidence base' }
       ],
       directEntry: p.participantMode === 'direct'
     };
@@ -969,7 +992,9 @@
       employer: pr.employer, plan: pr.plan, path: pr.path, age: pr.age,
       service: pr.service, svcPre2013: pr.svc_pre2013, salary: pr.salary,
       birthYear: pr.birth_year === undefined ? null : pr.birth_year,
-      sex: pr.sex, rule: p.rule, qualifyingAvailable: 4.0,
+      sex: pr.sex, rule: p.rule,
+      qualifyingAvailable: p.bridgeYearsMode === 'fixed'
+        ? (pr.plan === 'P1' ? p.p1BridgeYears : p.p2BridgeYears) : 4.0,
       valuationYear: B.actuarial.valuation_year, discount: p.discount,
       salaryGrowth: p.salaryGrowth, improvement: p.improvement
     });
@@ -1003,8 +1028,8 @@
          low: { takeUp: 0.05 }, high: { takeUp: 0.50 },
          lowLabel: '5% take-up', highLabel: '50% take-up' },
       { key: 'phi', label: 'Behavioural assumption (φ, ASM-22)',
-         low: { phi: fa.phi.high }, high: { phi: fa.phi.low },
-         lowLabel: 'φ = 0.75 (more work on)', highLabel: 'φ = 0.25 (more leaving anyway)' },
+         low: { phi: 1.00 }, high: { phi: 0.00 },
+         lowLabel: 'φ = 1.00 (control endpoint)', highLabel: 'φ = 0.00 (control endpoint)' },
       { key: 'bridge', label: 'Average bridge amount',
          low: { bridgeYearsMode: 'fixed', p1BridgeYears: 1.0, p2BridgeYears: 1.0 },
          high: { bridgeYearsMode: 'fixed', p1BridgeYears: 4.0, p2BridgeYears: 4.0 },
@@ -1021,8 +1046,8 @@
          low: { salaryGrowth: 0.045 }, high: { salaryGrowth: 0.025 },
          lowLabel: '4.50%', highLabel: '2.50%' },
       { key: 'discount', label: 'Actuarial discount rate (SRC-01)',
-         low: { discount: 0.0775 }, high: { discount: 0.0575 },
-         lowLabel: '7.75%', highLabel: '5.75%' },
+         low: { discount: 0.0875 }, high: { discount: 0.0475 },
+         lowLabel: '8.75% (control endpoint)', highLabel: '4.75% (control endpoint)' },
       { key: 'funnel', label: 'Veteran / purchasability funnel (ASM-15–18)',
          low: { veteranShare: { ST: 0.060 * 0.6, TC: 0.025 * 0.6, PS: 0.070 * 0.6 },
                 qualifyingShare: fa.qualifying_share.low,
@@ -1066,10 +1091,11 @@
         params: {}
       },
       conservative: {
-        name: 'Conservative / Low Participation',
+        name: 'Low Participation (low-cost case)',
         description: 'Low take-up, positions refilled at full salary, no ' +
           'workforce reduction, and a high share of purchasers who would have ' +
-          'worked on to eligibility anyway.',
+          'worked on to eligibility anyway. This is the low-cost corner, not a ' +
+          'prudence case; use No Workforce Savings as the money-committee starting point.',
         params: { takeUp: fa.take_up.L, replacementPct: 1.00,
                   notReplacedPct: 0.00, vacancyMonths: 0, phi: fa.phi.high }
       },
@@ -1103,7 +1129,9 @@
         name: 'Hybrid Variant (not the bill)',
         description: 'DECISION 2 is to EXCLUDE hybrid participants. This ' +
           'scenario includes them, to show the fiscal consequence of the ' +
-          'alternative — which is close to nothing before FY2038.',
+          'alternative — which is close to nothing before FY2038. Because the ' +
+          'calibration output has no hybrid contribution-rate fields, contributions ' +
+          'forgone use Plan 1 rates in this variant.',
         params: { includeHybrid: true }
       }
     };

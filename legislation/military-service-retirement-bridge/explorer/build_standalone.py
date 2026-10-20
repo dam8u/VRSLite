@@ -27,6 +27,7 @@ from __future__ import annotations
 import os
 import re
 import sys
+import base64
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DIST = os.path.join(HERE, "dist")
@@ -62,7 +63,8 @@ def guard(text: str) -> str:
     return text.replace("</script", "<\\/script").replace("</style", "<\\/style")
 
 
-def inline(page: str) -> str:
+def inline(page: str, embedded_links: dict[str, str] | None = None,
+           disable_cross_links: bool = False) -> tuple[str, list[str]]:
     html = read(page)
     inlined: list[str] = []
 
@@ -81,7 +83,14 @@ def inline(page: str) -> str:
     html = re.sub(r'<script src="([^":]+)"></script>', js, html)
 
     for old, new in RENAME.items():
-        html = html.replace('href="%s"' % old, 'href="%s"' % new)
+        if disable_cross_links:
+            html = html.replace('href="%s"' % old,
+                                'href="#" title="Cross-page navigation is disabled in this embedded copy"')
+        elif embedded_links and old in embedded_links:
+            html = html.replace('href="%s"' % old,
+                                'href="%s"' % embedded_links[old])
+        else:
+            html = html.replace('href="%s"' % old, 'href="%s"' % new)
 
     # Anything still pointing at a local file would be a broken reference in a
     # file emailed on its own, so fail loudly rather than ship one.
@@ -102,7 +111,11 @@ def main() -> int:
     os.makedirs(DIST, exist_ok=True)
     total = 0
     for page, out_name in RENAME.items():
-        html, inlined = inline(page)
+        other_page = next(p for p in RENAME if p != page)
+        linked_html, _ = inline(other_page, disable_cross_links=True)
+        linked_data = "data:text/html;charset=utf-8;base64," + base64.b64encode(
+            linked_html.encode("utf-8")).decode("ascii")
+        html, inlined = inline(page, embedded_links={other_page: linked_data})
         out = os.path.join(DIST, out_name)
         with open(out, "w", encoding="utf-8") as fh:
             fh.write(html)

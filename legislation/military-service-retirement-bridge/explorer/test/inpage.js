@@ -35,6 +35,9 @@
   }
   function usdM(x) {
     if (Math.abs(x) < 1e6) return usd(Math.round(x / 1000) * 1000);
+    if (Math.abs(x) >= 1e9) {
+      return (x < 0 ? '−$' : '$') + (Math.abs(x) / 1e9).toFixed(2) + 'bn';
+    }
     return (x < 0 ? '−$' : '$') + (Math.abs(x) / 1e6).toFixed(2) + 'M';
   }
   function num(x, dp) {
@@ -43,7 +46,11 @@
       { minimumFractionDigits: d, maximumFractionDigits: d });
   }
   function pct(x, dp) { return (x * 100).toFixed(dp === undefined ? 1 : dp) + '%'; }
-  function bp(x) { return x.toFixed(2) + ' bp'; }
+  function bp(x, dp) {
+    var digits = dp === undefined ? 2 : dp;
+    var n = Math.abs(x) < Math.pow(10, -digits) / 2 ? 0 : x;
+    return (n < 0 ? '−' : '') + Math.abs(n).toFixed(digits) + ' bp';
+  }
 
   /* --------------------------------------------------------- driving */
   function fire(el, type) { el.dispatchEvent(new Event(type, { bubbles: true })); }
@@ -232,7 +239,7 @@
       plans.forEach(function (k) {
         want('b', k + ' price', usdM(m.byPlan[k].price));
         want('b', k + ' net liability', usdM(m.byPlan[k].netLiability));
-        want('b', k + ' rate contribution', bp(m.byPlan[k].bpContribution));
+        want('b', k + ' rate contribution', bp(m.byPlan[k].bpContribution, 3));
       });
       ['ST', 'TC', 'PS'].forEach(function (e) {
         want('b', e + ' rate impact', bp(m.byEmployer[e].bp));

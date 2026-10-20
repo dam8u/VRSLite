@@ -183,6 +183,44 @@ check('hybrid excluded by default ⇒ no HY participants',
   R.panelA.byPlan.HY === undefined ? 0 : 1, 0, 0, 'n');
 check('COLA exposure is never quantified', R.ancillary.colaQuantified ? 1 : 0, 0, 0, 'n');
 
+console.log('\n  conditional 100% guardrail across elimination × vacancy grid:');
+for (const nu of [0, 0.05, 0.10]) {
+  for (const vac of [0, 3, 12]) {
+    const g = Engine.run({ replacementPct: 1, notReplacedPct: nu, vacancyMonths: vac });
+    const expected = g.panelC.combined.notReplacedPayroll
+      + g.panelC.combined.vacancyPayroll + g.panelC.combined.erContribDiff;
+    check(`rho=100%, nu=${nu}, vacancy=${vac}: component identity`,
+      g.panelC.combined.total, expected, 1e-6, '$');
+    check(`rho=100%, nu=${nu}, vacancy=${vac}: zero iff both controls zero`,
+      Math.abs(g.panelC.combined.total) < 1e-6 ? 1 : 0,
+      nu === 0 && vac === 0 ? 1 : 0, 0, 'n');
+  }
+}
+
+console.log('\n  replacement ladder is a six-rung model grid, not a selected-row snapshot:');
+for (const vac of [0, 3, 12]) {
+  const ladderRun = Engine.run({ replacementPct: 0.85, notReplacedPct: 0.05,
+    vacancyMonths: vac });
+  for (const rung of ladderRun.panelC.replacementLadder) {
+    const direct = Engine.run({ replacementPct: rung.pct, notReplacedPct: 0.05,
+      vacancyMonths: vac });
+    check(`ladder ${rung.pct * 100}% at ${vac}m: total`, rung.total,
+      direct.panelC.combined.total, 1e-6, '$');
+    check(`ladder ${rung.pct * 100}% at ${vac}m: vacancy`, rung.vacancyPayroll,
+      direct.panelC.combined.vacancyPayroll, 1e-6, '$');
+  }
+}
+
+check('employer-specific HIC rates materially reduce the old $560,771 result',
+  R.ancillary.hicPvEstimate < 410000 ? 1 : 0, 1, 0, 'n');
+const exA1 = Engine.memberExample('A', { bridgeYearsMode: 'fixed', p1BridgeYears: 1 });
+check('profile A follows fixed bridge control', exA1.yearsPurchased, 1, 1e-9, 'n');
+const phiRow = Engine.tornado({}).rows.find((r) => r.key === 'phi');
+check('tornado phi low arm reaches control endpoint and crosses zero',
+  phiRow.lowBp, Engine.run({ phi: 1 }).panelB.combined.bp, 1e-9, 'bp');
+check('tornado phi high arm reaches control endpoint',
+  phiRow.highBp, Engine.run({ phi: 0 }).panelB.combined.bp, 1e-9, 'bp');
+
 console.log('\n=== 6. Direct participant entry preserves the modeled mix ===');
 const dir = Engine.run({ participantMode: 'direct', p1Participants: 400, p2Participants: 0 });
 check('400 Plan 1 participants requested', dir.panelA.byPlan.P1.participants, 400, 1e-6, 'n');

@@ -138,6 +138,7 @@ body {
   color: var(--text-primary);
 }
 .disclaimer strong { font-weight: 650; }
+.print-required { margin-left: 20px; margin-right: 20px; }
 
 .tabstrip {
   max-width: 1760px;
@@ -498,6 +499,7 @@ abbr.tipped { text-decoration: none; }
 
 @media print {
   .masthead, .controls, .tabstrip, .masthead-actions { display: none !important; }
+  .disclaimer { display: block !important; break-after: avoid; margin: 0 0 12px; }
   .shell { grid-template-columns: 1fr; padding: 0; }
   .card { break-inside: avoid; border: 1px solid #999; }
   body { background: #fff; }

@@ -30,18 +30,6 @@
     </div>
   </div>
 
-  <div class="disclaimer">
-    <strong>This tool is an illustrative policy-analysis model. It is not an actuarial
-    certification, the VRS Board impact statement required under § 30-19.1:7, or a
-    General Assembly fiscal impact statement.</strong>
-    It is not a savings calculator and does not advocate a result. Every figure is tagged
-    as a <span class="prov prov-fact"><span class="ic">&#9679;</span>Published&nbsp;Fact</span>,
-    a <span class="prov prov-derived"><span class="ic">&#9681;</span>Derived&nbsp;Estimate</span>,
-    or a <span class="prov prov-assumption"><span class="ic">&#9675;</span>Scenario&nbsp;Assumption</span>.
-    Prepared by Policy Development Team using legal, policy, and financial analysis tools,
-    pending review by veterans&rsquo; legal counsel.
-  </div>
-
   <nav class="tabstrip" aria-label="Dashboard panels">
     <a href="#panel-a">A &middot; Participants</a>
     <a href="#panel-b">B &middot; Pension impact</a>
@@ -54,6 +42,18 @@
     <a href="#panel-registry">Registry</a>
   </nav>
 </header>
+
+<div class="disclaimer print-required">
+  <strong>This tool is an illustrative policy-analysis model. It is not an actuarial
+  certification, the VRS Board impact statement required under § 30-19.1:7, or a
+  General Assembly fiscal impact statement.</strong>
+  It is not a savings calculator and does not advocate a result. Every figure is tagged
+  as a <span class="prov prov-fact"><span class="ic">&#9679;</span>Published&nbsp;Fact</span>,
+  a <span class="prov prov-derived"><span class="ic">&#9681;</span>Derived&nbsp;Estimate</span>,
+  or a <span class="prov prov-assumption"><span class="ic">&#9675;</span>Scenario&nbsp;Assumption</span>.
+  Prepared by Policy Development Team using legal, policy, and financial analysis tools,
+  pending review by veterans&rsquo; legal counsel.
+</div>
 
 <div class="shell">
 
@@ -161,8 +161,9 @@
         <span class="val" id="v-repl">90%</span>
       </div>
       <input type="range" id="i-repl" min="75" max="100" step="1" value="90">
-      <p class="ctrl-note">At 100% the payroll effect is <strong>zero by
-        construction</strong> &mdash; only the differential ever counts.</p>
+      <p class="ctrl-note">At 100%, the lower-paid differential is zero. The
+        <strong>total</strong> payroll effect is zero only when nothing is eliminated
+        and there is no vacancy.</p>
     </div>
     <div class="ctrl">
       <div class="ctrl-label">
@@ -310,7 +311,8 @@
         <span><strong>Separate Hybrid scenario.</strong> The bill
           <strong>excludes</strong> hybrid participants (DECISION 2, resolved
           October 19, 2026), so they are out of the primary model. Tick this only to
-          test the alternative.</span>
+          test the alternative. The calibration output has no hybrid contribution-rate
+          fields, so this variant prices contributions forgone at Plan 1 rates.</span>
       </label>
     </div>
   </details>

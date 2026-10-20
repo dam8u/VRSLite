@@ -36,6 +36,9 @@
   }
   function usdM(x) {
     if (Math.abs(x) < 1e6) return usd(Math.round(x / 1000) * 1000);
+    if (Math.abs(x) >= 1e9) {
+      return (x < 0 ? '−$' : '$') + (Math.abs(x) / 1e9).toFixed(2) + 'bn';
+    }
     return (x < 0 ? '−$' : '$') + (Math.abs(x) / 1e6).toFixed(2) + 'M';
   }
   function num(x, dp) {
@@ -44,7 +47,14 @@
         maximumFractionDigits: dp === undefined ? 0 : dp });
   }
   function pct(x, dp) { return (x * 100).toFixed(dp === undefined ? 1 : dp) + '%'; }
-  function bp(x) { return x.toFixed(2) + ' bp'; }
+  function bp(x) {
+    var n = Math.abs(x) < 0.0005 ? 0 : x;
+    return (n < 0 ? '−' : '') + Math.abs(n).toFixed(2) + ' bp';
+  }
+  function bp3(x) {
+    var n = Math.abs(x) < 0.00005 ? 0 : x;
+    return (n < 0 ? '−' : '') + Math.abs(n).toFixed(3) + ' bp';
+  }
   function esc(s) {
     return String(s).replace(/[&<>"]/g, function (c) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
@@ -240,9 +250,10 @@
        C.costRecovery !== null ? 'recovers ' + C.costRecovery.toFixed(0) +
        '% of the value conferred' : ''],
       ['accent-3', L.pension + ' (' + g('pension liability', 'net liability change') +
-       ')', usdM(C.netLiability),
+       ') ' + provBadge('Scenario Assumption'), usdM(C.netLiability),
        'value conferred less member payments'],
-      ['accent-mute', 'Employer contribution-rate impact', bp(C.bp),
+      ['accent-mute', 'Employer contribution-rate impact ' +
+       provBadge('Scenario Assumption'), bp(C.bp),
        g('employer contribution-rate basis points', 'basis points') +
        ' on ' + usdM(C.aggregatePayroll) + ' of covered payroll']
     ].map(function (t) {
@@ -304,11 +315,11 @@
       return { cells: [
         '<span class="swatch" style="background:' + planColor(k) + '"></span>' + planNameHtml(k),
         num(s.participants, 1), usdM(s.price), usdM(s.valueSub), usdM(s.valueWte),
-        usdM(s.valueBlended), usdM(s.netLiability), bp(s.bpContribution)] };
+        usdM(s.valueBlended), usdM(s.netLiability), bp3(s.bpContribution)] };
     });
     rows.push({ total: true, cells: ['Combined', num(C.participants, 1), usdM(C.price),
       usdM(C.valueSub), usdM(C.valueWte), usdM(C.valueBlended),
-      usdM(C.netLiability), bp(C.bp)] });
+      usdM(C.netLiability), bp3(C.bp)] });
     $('b-plan-table').innerHTML = table(
       'The benefit-structure basis-point figures are each structure’s additive ' +
       'contribution to the combined rate (its liability over combined covered payroll), ' +
@@ -349,7 +360,18 @@
       '<p>The <strong>sign of the per-member result depends on φ</strong>, on ' +
       'which no published data bears. At φ = 0 every purchaser is treated as ' +
       'leaving anyway and is subsidised; at φ = 1 every purchaser is treated as ' +
-      'having worked on, and purchasers overpay.</p>';
+      'having worked on, and purchasers overpay. The aggregate modeled pension ' +
+      'impact crosses zero at approximately <strong>φ = 0.84</strong>.</p>' +
+      (Math.abs(p.phi - 0.5) < 1e-9
+        ? '<p><strong>The central-case result is entirely a Plan 1 result.</strong> ' +
+          'Plan 2 purchasers in aggregate pay approximately ' +
+          usdM(Math.abs(R.panelB.byPlan.P2.netLiability)) + ' more than the value ' +
+          'they receive because one purchased Rule-of-90 point buys only half a ' +
+          'year of acceleration.</p>' : '') +
+      (p.phi < 0.25 || p.phi > 0.75
+        ? '<p><strong>Outside documented φ range.</strong> ASM-22 documents 0.25–0.75; ' +
+          'this control permits exploration from 0 to 1. Purchaser counts are ' +
+          '<strong>not re-estimated</strong> when φ moves.</p>' : '');
   }
 
   /* ==================================================================== */
@@ -364,7 +386,10 @@
        'at ' + pct(p.replacementPct, 0) + ' of departing compensation'],
       ['accent-1', 'Payroll difference from lower-paid replacements',
        usdM(w.lowerPaidDiff), p.replacementPct >= 1
-         ? '<strong>zero by construction at 100% replacement</strong>'
+         ? (Math.abs(w.total) < 0.5
+           ? '<strong>zero with no vacancy or eliminated positions</strong>'
+           : '<strong>lower-paid differential is zero; the nonzero total below is ' +
+             'vacancy, eliminated positions, and related contributions</strong>')
          : 'the differential only'],
       ['accent-2', 'Payroll on positions not replaced', usdM(w.notReplacedPayroll),
        pct(p.notReplacedPct, 1) + ' eliminated &mdash; a workforce decision, not a pension effect'],
@@ -372,7 +397,8 @@
        p.vacancyMonths + ' month(s) &mdash; one-off, not a recurring saving'],
       ['accent-mute', 'Employer retirement contribution difference',
        usdM(w.erContribDiff), 'at the published employer DB rates'],
-      ['accent-mute', g('payroll effect', L.payroll) + ' — total', usdM(w.total),
+      ['accent-mute', g('payroll effect', L.payroll) + ' — total ' +
+       provBadge('Scenario Assumption'), usdM(w.total),
        '<strong>not a pension saving</strong>']
     ].map(function (t) {
       return '<div class="tile ' + t[0] + '"><span class="k">' + t[1] +
@@ -400,8 +426,8 @@
         pct(r.pct, 0) + ' replacement salary',
         [['Lower-paid differential', usdM(r.lowerPaidDiff)],
          ['Employer contribution diff.', usdM(r.erContribDiff)],
-         ['Positions not replaced', usdM(R.panelC.combined.notReplacedPayroll)],
-         ['Vacancy effect', usdM(R.panelC.combined.vacancyPayroll)],
+         ['Positions not replaced', usdM(r.notReplacedPayroll)],
+         ['Vacancy effect', usdM(r.vacancyPayroll)],
          [L.payroll + ' total', usdM(r.total)]])) +
         '" d="' + vBarPath(x, H - padB, hh, bw) + '" fill="var(--series-1)" ' +
         'opacity="' + (r.selected ? 1 : 0.4) + '"' +
@@ -429,8 +455,7 @@
         return { total: r.selected, cells: [
           pct(r.pct, 0) + (r.selected ? ' <span class="pill live">selected</span>' : ''),
           usdM(r.lowerPaidDiff), usdM(r.erContribDiff),
-          usdM(R.panelC.combined.notReplacedPayroll),
-          usdM(R.panelC.combined.vacancyPayroll), usdM(r.total)] };
+          usdM(r.notReplacedPayroll), usdM(r.vacancyPayroll), usdM(r.total)] };
       }));
 
     var rows = ['ST', 'TC', 'PS'].map(function (e) {
@@ -453,8 +478,11 @@
       '<p><strong>These are employer workforce/payroll effects, not pension ' +
       'savings.</strong> The full salary of a retiring employee is never counted as ' +
       'a saving where the position is refilled. At 90% replacement only the 10% ' +
-      'differential and the related employer-cost differential count; at 100% the ' +
-      'payroll effect is zero.</p>' +
+      'differential and the related employer-cost differential count. At 100% ' +
+      'replacement <strong>with nothing eliminated and no vacancy</strong>, the ' +
+      'payroll effect is exactly zero; otherwise the remaining effect is the ' +
+      'separately identified non-replacement, vacancy, and related contribution ' +
+      'effect.</p>' +
       '<p><strong>No dollar value is assigned</strong> to recruiting, onboarding, ' +
       'productivity ramp-up, institutional-knowledge loss or service-delivery ' +
       'effects, because no data supports one — and all of them run the other ' +
@@ -468,12 +496,20 @@
   /* ==================================================================== */
   function renderD(R) {
     var d = R.panelD;
+    var pensionReading = d.pensionImpact > 0.5
+      ? 'a cost to the plan'
+      : d.pensionImpact < -0.5
+        ? 'a gain to the plan — at this φ purchasers pay more than the value received'
+        : 'approximately neutral at this φ';
     $('d-hero').innerHTML = [
-      ['accent-3', '1. ' + L.pension, usdM(d.pensionImpact),
-       bp(d.pensionBp) + ' on employer contribution rates — a cost to the plan'],
-      ['accent-1', '2. ' + L.payroll + ' / ' + L.workforce, usdM(d.payrollWorkforceEffect),
+      ['accent-3', '1. ' + L.pension + ' ' + provBadge('Scenario Assumption'),
+       usdM(d.pensionImpact), bp(d.pensionBp) + ' on employer contribution rates — ' +
+       pensionReading],
+      ['accent-1', '2. ' + L.payroll + ' / ' + L.workforce + ' ' +
+       provBadge('Scenario Assumption'), usdM(d.payrollWorkforceEffect),
        'an employer compensation effect — <strong>not</strong> a pension saving'],
-      ['accent-mute', '3. ' + L.combined, usdM(d.combinedScenarioEffect),
+      ['accent-mute', '3. ' + L.combined + ' ' + provBadge('Scenario Assumption'),
+       usdM(d.combinedScenarioEffect),
        'payroll effect less pension impact — the least reliable of the three']
     ].map(function (t) {
       return '<div class="tile ' + t[0] + '"><span class="k">' + t[1] +
@@ -498,8 +534,10 @@
   /* ==================================================================== */
   function renderE() {
     var html = '';
+    var profileA = null;
     [['A', 'Plan 1'], ['D', 'Plan 2']].forEach(function (pair) {
       var c = E.memberExample(pair[0], state);
+      if (pair[0] === 'A') profileA = c;
       var pr = B.profiles[pair[0]];
       var verdict = c.gainsOnBlend
         ? '<strong>Gains</strong> at φ = ' + c.phi.toFixed(2)
@@ -546,16 +584,21 @@
         '<div class="table-wrap">' + table('', ['Item', 'Value'],
           rows.map(function (r) { return { cells: [r[0], r[1]] }; })) + '</div>';
     });
-    html += '<div class="note"><p><strong>The sign flips between the two ' +
+    html += '<div class="note"><p><strong>The member examples respond to the ' +
+      'bridge-amount control and the selected actuarial assumptions.</strong> ' +
+      'A negative present value means that retiring earlier is worth less than ' +
+      'working on before the purchase price.</p><p><strong>The sign flips between the two ' +
       'baselines, and that is the central fact about this bill.</strong> A member ' +
       'who was leaving anyway receives a large subsidy; a member who would have ' +
       'worked on to unreduced eligibility pays more than the extra actuarial value ' +
       'received. Which group a real purchaser falls into is unobservable in any ' +
-      'published data.</p><p>The Plan 1 profile is the source of the ' +
-      '<strong>$341,065</strong> figure — the <strong>maximum modeled net ' +
-      'value above the member purchase price under the frozen-service/subsidy ' +
-      'scenario</strong>, i.e. the single most favorable modeled profile. It is ' +
-      '<strong>not</strong> a universal cost per veteran.</p></div>';
+      'published data.</p><p>At the selected settings, illustrative profile A’s ' +
+      'modeled net value above the purchase price under the frozen-service/subsidy ' +
+      'scenario is <strong>' + usd(profileA.netSub) + '</strong>. At the published ' +
+      'central assumptions it is <strong>$341,065</strong>, the most favorable of ' +
+      'the seven published profiles—not a cost per veteran and not a model-wide ' +
+      'maximum. The underlying cell grid reaches approximately <strong>$419,000</strong> ' +
+      'in its most favorable single cell.</p></div>';
     $('e-body').innerHTML = html;
   }
 
@@ -610,6 +653,12 @@
     });
     h += '<line class="baseline" x1="' + sx(base) + '" y1="' + padT + '" x2="' +
       sx(base) + '" y2="' + (H - 28) + '" stroke-width="2"/></svg>';
+    if (lo < 0 && hi > 0) {
+      h = h.replace('</svg>', '<line class="baseline" x1="' + sx(0) + '" y1="' +
+        padT + '" x2="' + sx(0) + '" y2="' + (H - 28) +
+        '" stroke-dasharray="4 3"/><text x="' + (sx(0) + 4) + '" y="' +
+        (H - 31) + '" class="lbl-cat">zero crossing</text></svg>');
+    }
     $('f-chart').innerHTML =
       legend([['Lower modeled pension impact', 'var(--diverge-low)'],
               ['Higher modeled pension impact', 'var(--diverge-high)']]) + h;
@@ -618,7 +667,9 @@
     $('f-table').innerHTML = table(
       'Each driver moved one at a time from the current scenario. The two workforce ' +
       'drivers are shown faded because they move the payroll effect only — by ' +
-      'design they cannot touch the pension impact.',
+      'design they cannot touch the pension impact. Drivers are not independent ' +
+      'and these one-at-a-time swings cannot be added; moving take-up and the ' +
+      'population funnel together spans approximately 0.02 to 1.11 basis points.',
       ['Driver', 'Low setting', 'Low', 'High setting', 'High',
        'Swing (pension)', 'Swing (' + L.payroll.toLowerCase() + ')'],
       rows.map(function (r) {
@@ -631,15 +682,18 @@
     var topTwo = rows.filter(function (r) { return !r.pensionNeutral; }).slice(0, 2);
     $('f-note').innerHTML =
       '<p><strong>Only assumptions about people matter.</strong> At these settings ' +
-      'the two largest drivers are <strong>' + esc(topTwo.map(function (r) {
-        return r.label; }).join('</strong> and <strong>')) + '</strong>. Every ' +
+      'the two largest drivers are <strong>' + topTwo.map(function (r) {
+        return esc(r.label); }).join('</strong> and <strong>') + '</strong>. Every ' +
       'classical actuarial lever — discount rate, mortality improvement, ' +
       'salary growth — moves the answer far less. That is why the ' +
       'pre-introduction asks are for VRS <em>member-level data</em>, not for a ' +
       'different actuarial method.</p>' +
       '<p>The two workforce drivers move the payroll effect substantially and the ' +
       'pension impact not at all. Any presentation that lets the first stand in for ' +
-      'the second is misleading.</p>';
+      'the second is misleading.</p><p><strong>φ guard band:</strong> ASM-22’s ' +
+      'documented range is 0.25–0.75, while the control and this tornado span 0–1 ' +
+      'and expose the sign change near φ = 0.84. Purchaser counts are not ' +
+      're-estimated as φ moves.</p>';
   }
 
   /* ==================================================================== */
@@ -668,9 +722,13 @@
           'show what the model estimates the eligible population to be — compare ' +
           'them against your entry.</p>'
         : '') +
-      '<p><strong>This funnel is the single largest uncertainty in the model.</strong> ' +
-      'Across its low and high cases it alone moves the aggregate from 0.07 to 0.44 ' +
-      'basis points. It is also the part that VRS member-level data would replace ' +
+      '<p><strong>The funnel is one of the two largest sources of uncertainty, ' +
+      'alongside take-up.</strong> At the current settings its low and high cases ' +
+      'move the aggregate from ' + bp((lastTornado && lastTornado.rows.filter(function (r) {
+        return r.key === 'funnel'; })[0] || { lowBp: 0 }).lowBp) + ' to ' +
+      bp((lastTornado && lastTornado.rows.filter(function (r) {
+        return r.key === 'funnel'; })[0] || { highBp: 0 }).highBp) +
+      '. It is also the part that VRS member-level data would replace ' +
       'outright — see <em>Official VRS data mode</em>.</p>';
   }
 
@@ -738,7 +796,13 @@
       'model that produced the numbers. The browser engine is verified against the ' +
       'model’s committed CSV tables by ' +
       '<code>explorer/test/reconcile.js</code> — 98 assertions, including the ' +
-      'per-member $341,065 and the 0.19 bp aggregate.</p></div>';
+      'illustrative profile A’s central-case $341,065 net value (the most ' +
+      'favorable of seven published profiles, not a cost per veteran or a ' +
+      'model-wide maximum) and the central-case combined employer contribution-rate ' +
+      'impact. That 0.19 bp figure is the modeled retirement-plan employer ' +
+      'contribution impact, excluding separately funded HIC and COLA effects ' +
+      'including unquantified COLA exposure; it is complete for bill version 1.1 ' +
+      'with a version 1.2 refresh required.</p></div>';
     $('reg-body').innerHTML = html;
   }
 
@@ -855,6 +919,7 @@
   function renderAll(withTornado) {
     var R = E.run(state);
     lastResult = R;
+    if (withTornado) lastTornado = E.tornado(state);
     renderA(R); renderB(R); renderC(R); renderD(R); renderE();
     renderG(R); renderAncillary(R);
     updateNotes(R);
@@ -869,10 +934,11 @@
     /* the tornado needs 16 recomputes; debounce it behind the main render so
        dragging a slider never waits on it */
     clearTimeout(tornadoTimer);
-    if (withTornado) { lastTornado = E.tornado(state); renderF(lastTornado); }
+    if (withTornado) { renderF(lastTornado); }
     else {
       tornadoTimer = setTimeout(function () {
         lastTornado = E.tornado(state); renderF(lastTornado);
+        renderG(lastResult);
       }, 220);
     }
   }
@@ -1003,8 +1069,12 @@
         ['Payroll on positions not replaced', usd(w.notReplacedPayroll)],
         ['Temporary vacancy effect', usd(w.vacancyPayroll)],
         ['Employer retirement contribution difference', usd(w.erContribDiff)],
-        [L.payroll + ' — total', usd(w.total)],
-        [L.combined, usd(R.panelD.combinedScenarioEffect)],
+        [L.payroll + ' — total' + (p.replacementPct >= 1
+          ? ' (100% replacement: any nonzero amount consists of vacancy, ' +
+            'positions eliminated, and related employer contributions)' : ''), usd(w.total)],
+        [L.combined + ' (READ LAST — least reliable total; combines a pension ' +
+          'measurement with a workforce assumption the Commonwealth controls and ' +
+          'this model cannot observe)', usd(R.panelD.combinedScenarioEffect)],
         ['Health insurance credit — earlier commencement (illustrative, outside the bp figures)',
           usd(R.ancillary.hicPvEstimate)],
         ['COLA — earlier commencement', 'NOT QUANTIFIED']
@@ -1017,6 +1087,15 @@
     'impact and excludes the separately funded health insurance credit and COLA ' +
     'effects, including unquantified COLA exposure. The fiscal model is complete for ' +
     'bill version 1.1; a version 1.2 refresh is required before external use.';
+
+  var BEHAVIOURAL_BASIS =
+    'The behavioural assumption (phi) decides whether a purchaser is subsidised ' +
+    'or overpays, and no published data bears on it. ASM-22 states low 0.25, ' +
+    'central 0.50, high 0.75; purchaser counts are not re-estimated when phi ' +
+    'moves. Population inputs use one published anchor (6% of the Virginia ' +
+    'classified state workforce, June 30, 2024) plus four assumed filters; no ' +
+    'published veteran share exists for teachers or political subdivisions. The ' +
+    '18% military-retired-pay exclusion is also an unsourced scenario assumption.';
 
   function downloadBlob(name, mime, text) {
     var a = document.createElement('a');
@@ -1062,6 +1141,8 @@
       '<h2>Assumptions selected</h2><table>' + rows(s.inputs) + '</table>' +
       '<h2>Modeled results</h2><table>' + rows(s.outputs) + '</table>' +
       '<div class="note"><strong>Required qualifier.</strong> ' + esc(QUALIFIER) + '</div>' +
+      '<div class="note"><strong>Behavioural and population basis.</strong> ' +
+      esc(BEHAVIOURAL_BASIS) + '</div>' +
       '<div class="note">The population inputs are estimated from one published ' +
       'anchor — veterans are 6% of the Virginia classified state workforce ' +
       '(June 30, 2024) — plus four assumed filters. No published veteran share ' +
@@ -1087,18 +1168,18 @@
       'actuarial certification, not the VRS Board statement under Sec. 30-19.1:7, not ' +
       'a General Assembly fiscal impact statement.')]);
     out.push([q('Header'), q('Required qualifier'), q(QUALIFIER)]);
+    out.push([q('Header'), q('Behavioural assumption basis'), q(BEHAVIOURAL_BASIS)]);
     s.inputs.forEach(function (r) { out.push([q('Input'), q(r[0]), q(r[1])]); });
     s.outputs.forEach(function (r) { out.push([q('Output'), q(r[0]), q(r[1])]); });
     R.panelG.steps.forEach(function (st) {
       out.push([q('Population funnel'), q(st.label + ' [' + st.provenance + ']'),
         q(num(st.value, 1))]);
     });
-    if (lastTornado) {
-      lastTornado.rows.forEach(function (r) {
+    var exportTornado = E.tornado(R.params);
+    exportTornado.rows.forEach(function (r) {
         out.push([q('Sensitivity'), q(r.label + ' — ' + r.lowLabel + ' / ' + r.highLabel),
           q(r.lowBp.toFixed(3) + ' bp / ' + r.highBp.toFixed(3) + ' bp')]);
       });
-    }
     return out.map(function (r) { return r.join(','); }).join('\r\n');
   }
 
@@ -1160,12 +1241,14 @@
       if (lastTornado) renderF(lastTornado);
     });
     $('btn-handout').addEventListener('click', function () {
+      readControls();
       downloadBlob('military-service-retirement-bridge-scenario-summary.html',
-        'text/html;charset=utf-8', buildHandout(lastResult));
+        'text/html;charset=utf-8', buildHandout(E.run(state)));
     });
     $('btn-csv').addEventListener('click', function () {
+      readControls();
       downloadBlob('military-service-retirement-bridge-scenario.csv',
-        'text/csv;charset=utf-8', buildCsv(lastResult));
+        'text/csv;charset=utf-8', buildCsv(E.run(state)));
     });
   }
 

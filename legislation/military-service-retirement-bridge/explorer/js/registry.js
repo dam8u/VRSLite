@@ -59,10 +59,12 @@ window.VRS_REGISTRY = {
       short: 'One basis point = 0.01% of covered payroll.',
       long: 'Employer pension contributions are set as a percentage of ' +
         'payroll. The modeled impact is expressed as the change in that ' +
-        'percentage, in hundredths of a percentage point. The state employer ' +
-        'rate is 11.07%; an impact of 0.19 basis points would take it to ' +
-        '11.0719%. To the nearest basis point, it does not move. That 0.19 ' +
-        'figure is the modeled retirement-plan employer contribution impact ' +
+        'percentage, in hundredths of a percentage point. The combined impact ' +
+        'is 0.19 basis points across all three employer plans. The state plan’s ' +
+        'own modeled impact is about 0.22 basis points, taking its 11.07% ' +
+        'published rate to approximately 11.0722%. To the nearest basis point, ' +
+        'it does not move. The 0.19 combined figure is the modeled ' +
+        'retirement-plan employer contribution impact ' +
         'and excludes the separately funded health insurance credit and COLA ' +
         'effects, including unquantified COLA exposure; the fiscal model is ' +
         'complete for bill version 1.1 and a version 1.2 refresh is required ' +
@@ -90,7 +92,7 @@ window.VRS_REGISTRY = {
       long: 'Future payments are discounted — at the VRS Board\'s published ' +
         '6.75% investment return assumption — and weighted by the ' +
         'probability the retiree is alive to receive them, using the Board\'s ' +
-        'published mortality tables. A pension of $35,000 a year for life ' +
+        'published mortality tables. A pension of $35,700 a year for life ' +
         'from age 50 has a present value of roughly $639,000.'
     },
     'creditable service': {
@@ -158,8 +160,9 @@ window.VRS_REGISTRY = {
       long: 'For Plan 1, 30 minus creditable service. For Plan 2, 90 minus ' +
         '(age + creditable service). Under § 51.1-142.4 C the member may ' +
         'purchase no more than this, capped at four years combined with any ' +
-        'earlier § 51.1-142.2 purchase. The modeled mean deficit in the ' +
-        'affected population is about 2.2 years — not four.'
+        'earlier § 51.1-142.2 purchase. The modeled mean is about 2.2 years ' +
+        'across the whole near-threshold population and about 3.1 (Plan 1) / ' +
+        '3.6 (Plan 2) among modeled purchasers.'
     }
   },
 

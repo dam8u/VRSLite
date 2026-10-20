@@ -244,9 +244,9 @@
         <td style="text-align:left">PV of departing payroll, employer DB contributions, and the
           differential at 90% replacement</td></tr>
       <tr><td>5 Guardrails</td><td style="text-align:left">&sect; 12 of this page</td>
-        <td style="text-align:left">100% replacement gives a zero payroll effect; no Panel C
-          control moves any pension figure; hybrid excluded by default; COLA never
-          quantified</td></tr>
+        <td style="text-align:left">100% replacement gives a zero lower-paid differential,
+          and gives a zero total only with no vacancy or elimination; no Panel C control
+          moves any pension figure; hybrid excluded by default; COLA never quantified</td></tr>
       <tr><td>6 Direct entry</td><td style="text-align:left">&sect; 10</td>
         <td style="text-align:left">A directly entered participant count preserves the modeled
           age/service/salary mix rather than replacing it with a flat average member</td></tr>
@@ -760,11 +760,13 @@ employer DB contrib. forgone  = PV payroll forgone &times; employer DB rate</cod
   contribution-rate arithmetic in &sect; 11.</p>
 
   <h3>9.6 The $341,065 figure, used correctly</h3>
-  <p>The cost model&rsquo;s headline per-member figure of <strong>$341,065</strong> is the
-  <strong>maximum modeled net value above the member purchase price under the
-  frozen-service / subsidy (SUB) scenario</strong> &mdash; the most favourable profile at
-  the most favourable baseline. It is <strong>not</strong> a universal cost per veteran and
-  must not be multiplied by a participant count. The model&rsquo;s companion finding is
+  <p><strong>$341,065</strong> is the modeled net value above the member purchase price for
+  illustrative profile A &mdash; a Plan 1 state employee four years short of thirty at the
+  minimum &sect; 51.1-153 B 2 age. It is the most favourable of the seven published
+  profiles, <strong>not</strong> a universal cost per veteran or a model-wide maximum, and
+  must not be multiplied by a participant count. The underlying 1,025-cell grid reaches
+  approximately <strong>$419,000</strong> in its most favourable single cell. The
+  model&rsquo;s companion finding is
   equally part of the result: members who otherwise would have worked to unreduced
   eligibility <strong>overpay</strong> in the modeled WTE scenarios. Panel E reports both
   signs for both example members, at the selected &phi;, for exactly this reason.</p>
@@ -902,8 +904,11 @@ payroll / workforce effect  = lower-paid diff + not replaced + vacancy
     <li><strong>A refilled position never produces a full-salary saving.</strong> Only the
       differential counts. At <code>&rho; = 90%</code>, 10% of compensation counts, not
       100%.</li>
-    <li><strong>At <code>&rho; = 100%</code> the payroll effect is exactly zero</strong>
-      &mdash; by construction, not by rounding. Harness group 5 asserts it.</li>
+    <li><strong>At <code>&rho; = 100%</code> the lower-paid differential is exactly
+      zero.</strong> The total payroll effect is exactly zero only when
+      <code>&nu; = 0</code> and vacancy is zero. Otherwise it consists of the separately
+      identified non-replacement, vacancy and related employer-contribution effects.
+      Harness group 9 asserts the full grid.</li>
     <li><strong>No Panel C control moves any pension figure.</strong> The harness checks
       the net pension liability is bit-identical at <code>&rho;</code> = 100%, 75%, and at
       <code>&nu;</code> = 10%. A legislator can verify this live by dragging the
@@ -933,8 +938,9 @@ payroll / workforce effect  = lower-paid diff + not replaced + vacancy
   <p>Panel C reports the payroll effect at <strong>75%, 80%, 85%, 90%, 95% and
   100%</strong> replacement simultaneously, with the selected setting marked. Showing the
   whole ladder rather than one point is deliberate: it makes the linearity of the
-  assumption visible, and it makes a 100%-replacement reading &mdash; zero effect &mdash;
-  impossible to miss.</p>
+  assumption visible. At 100% replacement, the lower-paid differential is zero; the total
+  is zero only with nothing eliminated and no vacancy. Each rung recomputes its own vacancy
+  and related employer-contribution effect.</p>
 </section>
 
 <!-- ----------------------------------------------------------------- 13 -->
@@ -956,9 +962,12 @@ payroll / workforce effect  = lower-paid diff + not replaced + vacancy
   date rather than creditable service.</p>
 
   <h3>13.1 The health insurance credit estimate</h3>
-  <p>&sect; 51.1-1400 sets the state credit at $4.25 per month per year of creditable
-  service. An earlier retirement starts it earlier:</p>
-  <pre><code>annual    = service at retirement &times; $4.25 &times; 12
+  <p>The estimate applies each employer plan&rsquo;s statutory credit: $4.25 per month per
+  year for state employees (&sect; 51.1-1400), $4.00 for teachers
+  (&sect; 51.1-1401), and $1.50 capped at $45 per month for political subdivisions
+  (&sect; 51.1-1402). Political-subdivision participation is employer-elective, so that
+  cohort is an upper bound. An earlier retirement starts the applicable credit earlier:</p>
+  <pre><code>annual    = min(service at retirement &times; employer-plan monthly rate, applicable cap) &times; 12
 PV factor = &Sigma;<sub>t=0..&lfloor;w&rfloor;&minus;1</sub> v^t  +  (w &minus; &lfloor;w&rfloor;) &times; v^<sup>&lfloor;w&rfloor;</sup>        w = mean acceleration
 HIC PV    = annual &times; PV factor &times; participants</code></pre>
   <p>Illustratively about <strong>$5,300</strong> for a state retiree with 26 years over a
@@ -968,7 +977,7 @@ HIC PV    = annual &times; PV factor &times; participants</code></pre>
   <h3>13.2 The COLA exposure is not quantified, and the tool says so</h3>
   <p>No figure in this model, and no figure in the fiscal model it is built on, quantifies
   the cost of commencing the post-retirement supplement up to four years earlier. The
-  engine carries an explicit <code>colaQuantified = false</code> flag, and harness group 5
+  engine carries an explicit <code>colaQuantified = false</code> flag, and harness group 9
   asserts the tool never reports a COLA number. <strong>This is the single largest
   disclosed gap in the package.</strong> Enactment clause 3(vi) requires the Board to
   report both costs separately by trust, which is the proper route to a number.</p>
@@ -1008,10 +1017,10 @@ HIC PV    = annual &times; PV factor &times; participants</code></pre>
     <thead><tr><th>Driver</th><th style="text-align:left">Low</th><th style="text-align:left">High</th></tr></thead>
     <tbody>
       <tr><td>Participant count (take-up)</td><td style="text-align:left">5%</td><td style="text-align:left">50%</td></tr>
-      <tr><td>Behavioural assumption &phi;</td><td style="text-align:left">0.75 &mdash; more work on</td><td style="text-align:left">0.25 &mdash; more leaving anyway</td></tr>
+      <tr><td>Behavioural assumption &phi;</td><td style="text-align:left">1.00 &mdash; control endpoint</td><td style="text-align:left">0.00 &mdash; control endpoint</td></tr>
       <tr><td>Average bridge amount</td><td style="text-align:left">1.0 year/point</td><td style="text-align:left">4.0 years/points</td></tr>
       <tr><td>Salary growth</td><td style="text-align:left">4.50%</td><td style="text-align:left">2.50%</td></tr>
-      <tr><td>Actuarial discount rate</td><td style="text-align:left">7.75%</td><td style="text-align:left">5.75%</td></tr>
+      <tr><td>Actuarial discount rate</td><td style="text-align:left">8.75%</td><td style="text-align:left">4.75%</td></tr>
       <tr><td>Veteran / purchasability funnel</td><td style="text-align:left">low case</td><td style="text-align:left">high case</td></tr>
       <tr><td>Replacement salary percentage</td><td style="text-align:left">100%</td><td style="text-align:left">75%</td></tr>
       <tr><td>Positions not replaced</td><td style="text-align:left">0%</td><td style="text-align:left">10%</td></tr>
@@ -1025,6 +1034,11 @@ HIC PV    = annual &times; PV factor &times; participants</code></pre>
   with their payroll swing reported instead of a pension swing it does not have. Showing
   them with a zero pension bar, unexplained, would invite the inference that they were
   tested and found not to matter.</p>
+  <p><strong>The drivers are not independent and their swings cannot be added.</strong>
+  Moving take-up and the population funnel together spans approximately 0.02 to 1.11 basis
+  points, outside every single bar. The &phi; control spans 0&ndash;1, beyond ASM-22&rsquo;s
+  documented 0.25&ndash;0.75 band, and the aggregate changes sign near &phi; = 0.84.
+  Purchaser counts are not re-estimated when &phi; moves.</p>
 </section>
 
 <!-- ----------------------------------------------------------------- 16 -->
@@ -1040,10 +1054,10 @@ HIC PV    = annual &times; PV factor &times; participants</code></pre>
         <td style="text-align:left">the committed model&rsquo;s own central case</td>
         <td style="text-align:left">Reproduces the published tables exactly. The reconciliation
           anchor.</td></tr>
-      <tr><td><strong>Conservative / Low Participation</strong></td>
+      <tr><td><strong>Low Participation (low-cost case)</strong></td>
         <td style="text-align:left">take-up 10%, &rho; = 100%, &nu; = 0%, no vacancy, &phi; = 0.75</td>
-        <td style="text-align:left">Low participation, no workforce reduction, and a high share who
-          would have worked on anyway.</td></tr>
+        <td style="text-align:left">The low-cost corner, not a prudence case. Use No Workforce
+          Savings as the money-committee starting point.</td></tr>
       <tr><td><strong>High Participation</strong></td>
         <td style="text-align:left">take-up 30% on the high funnel, &rho; = 90%, &nu; = 0%</td>
         <td style="text-align:left">High counts with central workforce assumptions.</td></tr>
@@ -1059,7 +1073,8 @@ HIC PV    = annual &times; PV factor &times; participants</code></pre>
         <td style="text-align:left">hybrid participants included</td>
         <td style="text-align:left">The bill <em>excludes</em> them. This prices the rejected
           alternative, which is close to nothing before FY2038 because hybrid members are
-          decades from a threshold.</td></tr>
+          decades from a threshold. The calibration output has no hybrid contribution-rate
+          fields, so contributions forgone use Plan 1 rates in this variant.</td></tr>
     </tbody>
   </table>
   </div>
@@ -1261,10 +1276,14 @@ open index.html                      # no server, no build, no dependencies</cod
       <tr><td><code>06-red-team-review.docx</code></td><td style="text-align:left">The internal
         adversarial review. <strong>No independent reviewer was available</strong>; the
         pass was run by the same team that drafted the package.</td></tr>
+      <tr><td><code>07-precedent-and-stakeholder-scan.docx</code></td><td style="text-align:left">
+        Precedent and stakeholder analysis</td></tr>
       <tr><td><code>08-fiscal-model-memo.docx</code></td><td style="text-align:left">The cost
         model&rsquo;s own memorandum &mdash; complete for version 1.1, version 1.2 refresh
         required before external use</td></tr>
       <tr><td><code>explorer/</code></td><td style="text-align:left">This tool</td></tr>
+      <tr><td><code>10-counsel-review-explorer.md</code></td><td style="text-align:left">
+        Independent adversarial review of the explorer</td></tr>
     </tbody>
   </table>
   </div>
