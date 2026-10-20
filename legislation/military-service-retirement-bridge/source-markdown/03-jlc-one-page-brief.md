@@ -13,9 +13,9 @@ Existing right untouched: first 24 months after hire, approximate normal cost, f
 
 **Protected** by express exclusions plus six conforming amendments: vesting · benefit formula · AFC · PLOP · disability · death-in-service · group life · portability.
 
-**Not protected — say so first.** Retiring up to four years earlier starts the **health insurance credit** and the **COLA** up to four years earlier. Both key off the retirement date, not service credit, so no exclusion clause reaches them — a real recurring cost on two separately funded trusts. The Council chose to **accept and disclose** these rather than delay them, which would give veterans worse ancillary treatment than other early retirees.
+**Not protected — say so first.** Retiring up to four years earlier starts the **health insurance credit** and the **COLA** up to four years earlier. Both key off the retirement date, not service credit, so no exclusion clause reaches them — a real recurring cost on two separately funded trusts. Resolved October 20, 2026: **accept and disclose** these rather than delay them, which would give veterans worse ancillary treatment than other early retirees.
 
-### Decisions JLCVSO made, October 19–20, 2026 — all seven are settled
+### Decisions resolved October 19–20, 2026 — all seven are settled
 
 Hybrid members **not** covered (Plan 1/Plan 2 only); no retired-pay-bar exception; **PLOP date frozen** and disclosed; **partial purchase capped at the shortfall**; credit counts **only if the member is still working at retirement**, closing a buy-resign-defer loophole worth ~15 years; health insurance credit and COLA costs **accepted and disclosed**; and B 4 "resolution" public-safety employees **first hired on or after January 1, 2014 excluded** — so the covered group is **closed and shrinking**.
 
