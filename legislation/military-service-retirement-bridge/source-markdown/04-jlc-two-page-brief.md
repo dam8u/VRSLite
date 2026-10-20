@@ -1,94 +1,58 @@
 # MILITARY SERVICE RETIREMENT BRIDGE
 ### Two-page brief for the Joint Leadership Council of Veterans Service Organizations
 
-**Prepared by:** VRS2 — Virginia Public Pension Benefits Attorney | **Date:** October 19, 2026
-**Target session:** 2027 General Assembly | **Code sections involved:** §§ 51.1-124.3, 51.1-142.2, 51.1-153, 51.1-155, 51.1-162, 51.1-165.01, 51.1-166 amended; new § 51.1-142.4
-**Companion materials:** draft bill, legal analysis memorandum, source appendix
-
----
+**VRS2 — Virginia Public Pension Benefits Attorney** | October 19, 2026 | 2027 General Assembly | Bill version 1.1 | Amends § 2.2-3204 and seven Title 51.1 sections; adds new § 51.1-142.4
 
 ## 1. The problem
 
-Virginia already lets public employees buy up to **four years** of prior active duty military service toward their VRS retirement. The right is real, it is generous on paper, and it is almost unusable by the people who need it most — because of **when** it is priced.
+Virginia already lets public employees buy up to **four years** of prior active duty military service. The right is generous on paper and nearly unusable by those who need it most, because of **when** it is priced. Under § 51.1-142.2 a member buying within the **first 24 months** of employment pays **approximate normal cost** — 12.50% of pay per year in Plan 1, 10.74% in Plan 2. After that the same service costs **actuarial equivalent cost**, several times higher.
 
-Under § 51.1-142.2, a member who buys (or signs a purchase contract) within the **first 24 months** of employment pays the **approximate normal cost**: 12.50% of salary per year purchased in Plan 1, 10.74% in Plan 2. After 24 months, the same service costs the **actuarial equivalent cost** — a figure that rises steeply with age, salary, and proximity to retirement, and that commonly runs to tens of thousands of dollars for four years.
-
-So the cheap price is offered to the new hire in their twenties, who usually has neither the money nor a reason to care. The expensive price is charged to the twenty-five-year veteran employee at age 52 who is three years short of an unreduced retirement and knows to the dollar what those three years are worth.
-
-**There is no second door.** The 24-month window is a pricing cliff. Current law contains no mechanism that lets a long-serving public employee use military service, at an affordable price, to finish a Virginia career on time. That is the gap.
-
----
+So the cheap price goes to the new hire in their twenties, who has neither the money nor a reason to care, and the expensive price to the 52-year-old three years short of an unreduced retirement, who knows exactly what those years are worth. **There is no second door.**
 
 ## 2. The proposal in one sentence
 
-Create a **narrow, second purchase right** — available after the 24-month window closes, at the same approximate normal cost — that lets a vested Plan 1 or Plan 2 member use prior active duty military service **only to qualify for an unreduced retirement**, with no increase in the pension amount and no effect on any other VRS benefit.
+Create a **narrow second purchase right** — after the 24-month window closes, at the same approximate normal cost — letting a vested Plan 1 or Plan 2 member use prior active duty military service **only to qualify for an unreduced retirement**, with no increase in the pension amount and no effect on any other VRS benefit.
 
-### How it works
+**Plan 1** (unreduced at **age 50 and 30 years**): bridge years count toward the 30-year test only. *Age 52 with 27 years — three bridge years satisfy it, so the member retires unreduced now rather than at 55, on a benefit still calculated on **27** years.* **Plan 2** (unreduced at the **Rule of 90**): bridge years count **one-for-one** as points, partial years proportionally. *Age 58 with 28 years = 86 points; four bridge years reach 90, two years early, benefit still on **28** years.*
 
-**Plan 1** — unreduced retirement requires **age 50 and 30 years** of service. Bridge years count toward the 30-year requirement only.
-*Example:* age 52, 27 years of service. Three bridge years satisfy the 30-year test. The member retires unreduced now instead of at 55. The monthly benefit is still calculated on **27** years.
+**Guardrails in the bill.** Must be vested (5 years); no purchase once you already qualify. Capped at the shortfall **and** at the acceleration actually achievable, so no one buys credit that moves their date by nothing. Counts inside the existing four-year military cap, never increases your age on paper, and is not creditable service for any other purpose. The full-value purchase at actuarial cost stays open and convertible later. A written VRS estimate is required before signing, with money back plus interest if the credit proves unusable.
 
-**Plan 2** — unreduced retirement requires the **Rule of 90** (age + service = 90). Bridge years count **one-for-one** as Rule-of-90 points; partial years count proportionally.
-*Example:* age 58, 28 years of service = 86 points. Four bridge years bring the total to 90. The member retires unreduced two years early. The monthly benefit is still calculated on **28** years.
+## 3. What stays untouched, and how the bill guarantees it
 
-### Guardrails built into the bill
+The pension amount is protected by one move: the bill **expressly excludes bridge credit from the statutory definition of "creditable service"** in § 51.1-124.3. Because every VRS benefit formula and service threshold runs on creditable service, that single amendment automatically protects the benefit formula, average final compensation, the health insurance credit's threshold and amount, group life thresholds, disability allowances and vesting.
 
-| Guardrail | Effect |
-|---|---|
-| Must be vested first (5 years of service) | No day-one eligibility purchasing |
-| Capped at the shortfall to the threshold | Never buy more than needed |
-| No purchase once you already qualify | No post-threshold stockpiling |
-| Counts inside the existing 4-year military cap | No expansion of the aggregate limit |
-| Never increases your age on paper | Rule of 90 still uses real age |
-| Not creditable service for any other purpose | No spillover into other benefits |
-| Full-value purchase at actuarial cost stays open | Members who want full credit keep that route |
-| New: convert later if you change your mind | Pay the actuarial difference, get full credit, with what you already paid applied |
+The definition alone was **not enough.** Several provisions key off the **date** of first unreduced eligibility, which the bridge moves, so each was closed by hand: **PLOP** (§ 51.1-165.01), by freezing that date; **death-in-service** (§ 51.1-162), whose survivor allowance turns on it; and **Workforce Transition Act severance** (**§ 2.2-3204, Title 2.2**), where severance years go to *age* unless the employee is "eligible for unreduced retirement" — in which case they go to *creditable service* and multiply straight into the pension. Every catch-all in the bill stopped at the Title 51.1 line, so that one was closed separately in version 1.1. **COLA** (§ 51.1-166) is amended too, but that door was essentially never open and the real exposure is **not** closed. The bill also amends **accumulated contributions** so a member's own payment is refundable rather than stranded.
 
----
+## 4. Decisions made, and what is open
 
-## 3. What stays untouched — and how the bill guarantees it
+**Decided by JLCVSO, October 19, 2026**, and implemented in the draft: hybrid plan members are **not** covered — Plan 1 and Plan 2 only (B 1, J); career military retirees are **not** excepted from the retired-pay bar, which the bill inherits (H 5), so the realistic beneficiaries are veterans who separated **without** retirement-eligible service plus reservists and Guard members protected by 10 U.S.C. § 12736 — the most important expectation to manage; the **PLOP eligibility date is frozen**, with the trade-off disclosed (§ 51.1-165.01; F 6); and a **partial purchase capped at the shortfall** is allowed (C 2).
 
-The pension amount is protected by a single move: the bill **expressly excludes bridge credit from the statutory definition of "creditable service"** in § 51.1-124.3. Because every VRS benefit formula and service threshold runs on creditable service, that one amendment protects the benefit formula, average final compensation, the health insurance credit (both its 15-year eligibility threshold and its per-year dollar amount), group life insurance thresholds, disability allowances, and vesting — automatically.
+**The PLOP trade-off, disclosed as directed.** PLOP eligibility turns on creditable service performed *after* first unreduced eligibility, and the bill freezes that date as though the bridge did not exist. **A member who buys bridge years and retires at the accelerated date will generally have no PLOP at all.** One who instead works through to normal retirement date keeps full PLOP under clause B 1(i). That is the deliberate price of leaving PLOP untouched, and VRS must say so in writing before a contract is signed.
 
-But the definition alone was **not enough**, and this is where the drafting work mattered. Three VRS provisions key off the **date a member first becomes eligible for an unreduced retirement**, not off creditable service. Left alone, the bridge would have moved that date earlier and leaked value into all three:
+### Still open — three blockers from independent review
 
-- **PLOP** (§ 51.1-165.01) — eligibility depends on service performed *after* the unreduced-eligibility date. Moving that date earlier would start the PLOP clock earlier.
-- **COLA** (§ 51.1-166) — for retirees with under 20 years of service, cost-of-living increases begin a year after the unreduced-eligibility date. Moving the date earlier would start COLA earlier.
-- **Death-in-service benefits** (§ 51.1-162) — the survivor allowance is computed on the pension the member "would have received," which turns on whether the member was unreduced-eligible.
+**1. Buy, resign, defer, collect unreduced at 50 — up to ~15 years of acceleration, not four.** § 51.1-153 C lets a member who terminates with five or more years retire under subsection B with no member-in-service requirement, and a deferred member's service is frozen. A member who buys four years at 44 with 26 years, resigns and defers can then take at 50 an unreduced allowance she could otherwise reach only at **65** — for about $35,000. This is the bill's largest unpriced exposure and the most quotable attack open to an opponent. **The Council must choose** among requiring service at retirement, forfeiture on termination, and pricing the deferred case deliberately.
 
-**Each of the three is closed by an express conforming amendment.** None of these three leaks appeared in the original concept paper; they were found by reading the statutes. A bill without them would have failed its own stated policy.
+**2. The health insurance credit and COLA both start up to four years earlier, and no exclusion clause can stop it.** Both key off the **date of retirement**. The bill bars bridge credit from establishing or increasing the health insurance credit, but neither verb reaches **duration** — about **$5,300** per state retiree with 26 years, on a separately funded trust — and ordinary COLA runs from the earlier retirement and compounds for life. **An earlier version of this brief listed both as protected. That was wrong.** Closing either means amending Chapter 14 and § 51.1-166; the alternative is to accept and price it.
 
-The bill also fixes a gap the concept paper left open: it makes a member's bridge payment part of their **accumulated contributions**, so the member's own money is refundable and is returned to a beneficiary on death — rather than being stranded because the credit is not "creditable service."
+**3. Local firefighters, police and EMS in "resolution" localities are inside the bill permanently — including 2026 hires.** Under § 51.1-153 B 4 a locality may irrevocably resolve that its public-safety employees are not post-2010 members; the third sentence of § 51.1-169 A then makes them **ineligible for the hybrid plan**, so none of the bill's three exclusions catches them and the pathway left open is its most generous. **Both briefs previously said hazardous-duty members were excluded; that was incorrect.** The population is permanent and growing rather than closing, and the equal-treatment line shifts to "resolution-locality public-safety employees vs. everyone hired since 2014" — unrelated to veteran status and far harder to defend. Exclude them expressly or include them knowingly.
 
----
+### What it costs
 
-## 4. Four things JLCVSO must decide or be ready to answer
+Approximate normal cost prices a year of *accrual*; the bridge sells removal of the actuarial reduction. The cost model (MOO-259) produces two findings that must always travel together.
 
-**1. The price does not match the value — and we should lead with that, not be caught by it.**
-Approximate normal cost is the price of one year of *pension accrual*. The bridge sells a different thing: removal of the actuarial early-retirement reduction. Illustratively, a Plan 1 member at $70,000 buying four bridge years pays roughly **$35,000** and receives four additional years of an unreduced pension worth roughly 44% of final average pay. VRS actuaries will likely find a shortfall charged to employer contribution rates. Every VRS bill triggers a mandatory Board of Trustees impact statement under **§ 30-19.1:7** that must address financial impact on the general fund and on participating localities. **The winning frame is a deliberate, quantified subsidy for Virginia's veterans — the same choice the General Assembly makes for other priorities — not a cost-neutral technical correction.** Our actuarial estimate is in progress and will carry the number.
+**Per member, the price does not cover the value** — it recovers **11%–78%**. The maximum-acceleration Plan 1 case pays **$42,500** for **$383,565**, a **$341,065 subsidy at 11.1% recovery**; an actuarially equivalent price would be about **112.8%** of salary per year, not 12.50%. The Plan 1 50/10 reduction is roughly **60%**, so the bridge turns a 40-cent benefit into a dollar benefit for life.
 
-**2. Career military retirees may be excluded by existing law.**
-§ 51.1-142.2 bars purchasing service already counted in another retirement allowance — which includes **military retired pay**. Reserve and National Guard service is protected by federal law (10 U.S.C. ch. 1223). As drafted, the bridge inherits this bar, so the realistic beneficiaries are veterans who served and separated **without** retirement-eligible service, plus reservists and Guard members. JLCVSO should decide whether to accept the bar, seek an express exception (which invites a double-dipping objection and a much larger fiscal number), or simply require VRS to state the rule plainly so members are not surprised.
+**In aggregate it is very small** — **0.22 bp** state, **0.20 bp** teacher, **0.14 bp** political subdivisions, **0.19 bp combined** over FY2029–FY2038, from about **222 purchasers** against **$26.05 billion** of covered payroll at a mean deficit of **2.2 years**, not four. **To the nearest basis point, no plan's rate changes.**
 
-**3. Hybrid plan members are excluded as drafted — this is the biggest open choice.**
-The hybrid retirement plan covers nearly everyone hired into a covered position on or after **January 1, 2014**. Those members are already subject to the Rule of 90, so including them is mechanically simple — but it raises the cost and it is a policy call, not a technical one. Excluding them means the bill helps today's late-career veterans and progressively fewer veterans each year. JLCVSO should make this call consciously.
+**Say both or neither.** "No cost" will be contradicted by the Board's § 30-19.1:7 statement; "$341,000 per veteran" without the denominator kills the bill. The frame is **a deliberate, quantified subsidy for a small and closing population, costing employers less than one basis point.** Three points help: the subsidy reaches only members leaving anyway, since one who would have worked on **overpays** in every profile modeled; Plan 1 and Plan 2 are closed, so the benefit **extinguishes itself**; and the Council's partial-purchase rule costs only **0.06 bp** more than the stricter alternative. One does not — no sensitivity makes this a saving, so cost neutrality is unavailable. On precedent, note that **§ 2.2-3204 already has the Commonwealth buy service credit to manufacture retirement eligibility, at 15% of compensation** — authority for the thing itself, but expect to be asked why veterans pay less.
 
-**4. PLOP and the bridge are practically either/or.**
-Keeping PLOP untouched means a member who retires at the accelerated date will usually have no PLOP eligibility, because PLOP requires service performed after the *unaffected* eligibility date. A member who uses the bridge and keeps working keeps the normal PLOP timetable. This is the correct trade given the stated policy, and it should be explained to members up front rather than discovered at retirement counseling.
-
----
+**What a member gives up by retiring earlier** — not drafting errors but consequences of leaving early, which members must hear before they buy: generally **no PLOP** at the accelerated date (§ 51.1-165.01 B); death-in-service coverage ends at retirement, so survivors fall under § 51.1-163 rather than the more generous § 51.1-162 B allowance; retiring with 26–29 actual years **loses the $8,000 group life floor**, which requires 30, and retiree group life starts its 25%-per-year reduction earlier on a lower salary (§ 51.1-505 B); and fewer years of accrual on a lower average final compensation (§ 51.1-155 A 1).
 
 ## 5. Status and next steps
 
-| Component | Status |
-|---|---|
-| Draft bill text with conforming amendments | **Complete** — ready for a patron and Division of Legislative Services |
-| Legal analysis: defined terms, conflicts, unintended-effects review, open questions | **Complete** |
-| Source appendix with pinpoint citations and retrieval dates | **Complete** |
-| Actuarial cost and affected-population estimate | **In progress** — delegated |
-| Independent adversarial legal and policy review | **In progress** — delegated |
-| JLCVSO decisions on the four items in Part 4 | **Pending** — these change the bill |
+Bill text is at **version 1.1 and is not ready for a patron.** The legal analysis, source appendix, adversarial review, precedent scan and cost model are **complete**. Outstanding: **the three Part 4 blockers**, which change the bill and are JLCVSO's to decide, and the **VRS Board statement under § 30-19.1:7**, not yet requested and not substituted for by the cost model.
 
-**Recommended sequence:** JLCVSO resolves the four Part 4 items → actuarial estimate and red-team review land → final sign-off on Title 51.1 language → patron identified → DLS drafting request → VRS pre-filing briefing so the § 30-19.1:7 statement is informed rather than adversarial.
+**Recommended sequence:** resolve the three blockers → re-cost for what those decisions change, the unpriced deferred-member case above all → final sign-off on Title 51.1 language → patron → DLS drafting request → VRS pre-filing briefing, so the § 30-19.1:7 statement is informed rather than adversarial. Two verification items also close first: the enactment clauses of 2026 c. 563, and an LIS search confirming no comparable bill exists.
 
-*All statutory text in this package was verified against the official Code of Virginia at law.lis.virginia.gov on October 19, 2026, including the 2026 amendments to § 51.1-142.2. No Code section was inferred. "Plan 1," "Plan 2," and "vesting" are VRS administrative labels that do not appear in Title 51.1; the bill operates on the statutory provisions that actually control.*
+*Statutory text verified against the official Code of Virginia at law.lis.virginia.gov on October 19, 2026, including the 2026 amendments to § 51.1-142.2. No Code section was inferred. "Plan 1," "Plan 2" and "vesting" are administrative labels absent from Title 51.1.*

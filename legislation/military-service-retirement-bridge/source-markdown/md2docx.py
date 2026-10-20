@@ -1,11 +1,31 @@
 #!/usr/bin/env python3
-"""Convert a Markdown file to a .docx with headings, tables, lists and inline formatting."""
+"""Convert a Markdown file to a .docx with headings, tables, lists and inline formatting.
+
+Usage: md2docx.py SOURCE.md OUTPUT.docx [brief]
+
+The optional third argument selects the compact "brief" layout used for the
+fixed-length JLC briefs (narrower margins, 9.5pt body, tight paragraph
+spacing). The page geometry it applies is mirrored numerically in
+pagecheck.py, which is what verifies that a one-page brief is one page.
+Without the argument the default memo layout is used for everything else.
+"""
 import re
 import sys
 
 from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.shared import Pt, RGBColor
+from docx.shared import Inches, Pt, RGBColor
+
+# Compact layout for the JLC briefs. Keep in sync with pagecheck.py BRIEF.
+BRIEF_MARGIN_TB = 0.6      # inches, top and bottom
+BRIEF_MARGIN_LR = 0.65     # inches, left and right
+BRIEF_BODY_PT = 9.5        # body font size
+BRIEF_LINE_PT = 11.5       # exact line height
+BRIEF_SPACE_AFTER_PT = 3.0 # space after a body paragraph
+BRIEF_TABLE_PT = 8.5       # table cell font size
+# Heading level -> (size pt, space before pt, space after pt)
+BRIEF_HEADINGS = {1: (15.0, 0.0, 4.0), 2: (11.5, 7.0, 3.0),
+                  3: (10.0, 6.0, 2.0), 4: (9.5, 5.0, 2.0)}
 
 INLINE = re.compile(
     r"(\*\*\*.+?\*\*\*|\*\*.+?\*\*|~~.+?~~|`[^`]+`|\*[^*]+?\*|\[[^\]]+\]\([^)]+\))",
@@ -58,7 +78,7 @@ def is_separator(line):
     return bool(re.fullmatch(r"\s*\|?[\s:|-]+\|?\s*", line)) and "-" in line
 
 
-def add_table(doc, rows):
+def add_table(doc, rows, brief=False):
     cols = max(len(r) for r in rows)
     table = doc.add_table(rows=0, cols=cols)
     table.style = "Table Grid"
@@ -67,11 +87,24 @@ def add_table(doc, rows):
         for j in range(cols):
             text = row[j] if j < len(row) else ""
             par = cells[j].paragraphs[0]
+            if brief:
+                par.paragraph_format.space_after = Pt(1)
+                par.paragraph_format.space_before = Pt(1)
             add_runs(par, text)
-            if i == 0:
-                for run in par.runs:
+            for run in par.runs:
+                if i == 0:
                     run.bold = True
-    doc.add_paragraph()
+                if brief:
+                    run.font.size = Pt(BRIEF_TABLE_PT)
+    if brief:
+        # A sized spacer rather than a full empty body paragraph.
+        spacer = doc.add_paragraph()
+        spacer.paragraph_format.space_after = Pt(0)
+        spacer.paragraph_format.space_before = Pt(0)
+        spacer.paragraph_format.line_spacing = Pt(4)
+        spacer.add_run("").font.size = Pt(4)
+    else:
+        doc.add_paragraph()
 
 
 def add_rule(doc):
@@ -82,12 +115,45 @@ def add_rule(doc):
     run.font.color.rgb = RGBColor(0x90, 0x90, 0x90)
 
 
-def convert(src, dst):
+def apply_brief_layout(doc):
+    """Compact page geometry and typography for the fixed-length JLC briefs."""
+    for section in doc.sections:
+        section.top_margin = Inches(BRIEF_MARGIN_TB)
+        section.bottom_margin = Inches(BRIEF_MARGIN_TB)
+        section.left_margin = Inches(BRIEF_MARGIN_LR)
+        section.right_margin = Inches(BRIEF_MARGIN_LR)
+
+    normal = doc.styles["Normal"]
+    normal.font.size = Pt(BRIEF_BODY_PT)
+    normal.paragraph_format.line_spacing = Pt(BRIEF_LINE_PT)
+    normal.paragraph_format.space_before = Pt(0)
+    normal.paragraph_format.space_after = Pt(BRIEF_SPACE_AFTER_PT)
+
+    for level, (size, before, after) in BRIEF_HEADINGS.items():
+        style = doc.styles[f"Heading {level}"]
+        style.font.name = "Calibri"
+        style.font.size = Pt(size)
+        style.font.bold = True
+        style.font.color.rgb = RGBColor(0x1F, 0x1F, 0x1F)
+        style.paragraph_format.space_before = Pt(before)
+        style.paragraph_format.space_after = Pt(after)
+        style.paragraph_format.line_spacing = Pt(size + 2)
+
+    for name in ("List Bullet", "List Bullet 2", "List Number", "List Number 2"):
+        style = doc.styles[name]
+        style.font.size = Pt(BRIEF_BODY_PT)
+        style.paragraph_format.line_spacing = Pt(BRIEF_LINE_PT)
+        style.paragraph_format.space_after = Pt(2)
+
+
+def convert(src, dst, brief=False):
     lines = open(src, encoding="utf-8").read().replace("\r\n", "\n").split("\n")
     doc = Document()
     style = doc.styles["Normal"]
     style.font.name = "Calibri"
     style.font.size = Pt(10.5)
+    if brief:
+        apply_brief_layout(doc)
 
     i = 0
     while i < len(lines):
@@ -119,7 +185,7 @@ def convert(src, dst):
             while i < len(lines) and lines[i].strip().startswith("|"):
                 rows.append(split_row(lines[i]))
                 i += 1
-            add_table(doc, rows)
+            add_table(doc, rows, brief=brief)
             continue
 
         # horizontal rule
@@ -148,11 +214,11 @@ def convert(src, dst):
                 if not qline.strip():
                     continue
                 par = doc.add_paragraph()
-                par.paragraph_format.left_indent = Pt(24)
-                par.paragraph_format.space_after = Pt(4)
+                par.paragraph_format.left_indent = Pt(12 if brief else 24)
+                par.paragraph_format.space_after = Pt(2 if brief else 4)
                 add_runs(par, qline.strip())
                 for run in par.runs:
-                    run.font.size = Pt(10)
+                    run.font.size = Pt(BRIEF_BODY_PT if brief else 10)
             continue
 
         # bullet list
@@ -192,5 +258,5 @@ def convert(src, dst):
 
 
 if __name__ == "__main__":
-    convert(sys.argv[1], sys.argv[2])
+    convert(sys.argv[1], sys.argv[2], brief=len(sys.argv) > 3 and sys.argv[3] == "brief")
     print("wrote", sys.argv[2])
