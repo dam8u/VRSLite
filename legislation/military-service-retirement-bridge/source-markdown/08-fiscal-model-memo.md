@@ -9,6 +9,15 @@
 **Model, tables and reproducible code:** `fiscal-model/` (methodology and reconciliation in `fiscal-model/README.md`; every table in `fiscal-model/out/`)
 
 > **Status.** This is an illustrative public-finance model built entirely from published VRS, Commonwealth and federal documents. **It is not an actuarial certification, not the VRS Board impact statement required by Va. Code § 30-19.1:7, and not a General Assembly fiscal impact statement.** Every figure is tagged as a published fact (`SRC-xx`), an analytical assumption (`ASM-xx`), or a scenario value. No member-level VRS data was used, because none is public.
+>
+> **Scope note added October 20, 2026 — this model prices bill version 1.1, and the bill is now at version 1.2.** Two policy decisions taken on October 20 change the population and the strategy set, and **both run in the favorable direction**, so no figure in this memorandum is an understatement on their account:
+>
+> 1. **DECISION 8 closed the deferred-member path.** New § 51.1-142.4 E 3 and the conforming amendment to § 51.1-153 C require member-in-service status at retirement. This model priced **four** years of acceleration and never priced the fifteen-year deferred case, which was the single largest known gap in it. That gap is now closed in the bill rather than in the model.
+> 2. **Clause B 1(iv) excluded post-2014 § 51.1-153 B 4 public-safety employees.** The population counts here include that group, so the modeled population is now **too large** rather than too small.
+>
+> **DECISION 9 accepted the health insurance credit and COLA commencement cost rather than curing it.** That exposure remains outside every contribution-rate figure in this memorandum, because both run on separately funded trusts; the per-member health insurance credit order of magnitude (≈ $5,300) is estimated in § 10 and **the COLA exposure is not quantified at all.** It is the one acknowledged gap in the fiscal case and should be raised before a committee finds it. Enactment clause 3(vi) directs the Board to report both, stated separately by trust.
+>
+> **The model should be re-run against version 1.2 before introduction**, so that what the money committees see describes the bill actually filed.
 
 ---
 
@@ -54,7 +63,7 @@ Those two statements are both true, and the brief has to carry both. A committee
 | Four-year military cap | Four years under § 51.1-142.2 B 2 | Combined four-year cap (§ 51.1-142.4 H 2); no period purchased twice (H 3) |
 | Attained age | — | Credit never increases attained age (§ 51.1-142.4 C 4), so the age-50 condition in B 2 still has to be met by waiting |
 | PLOP, group life, disability, death-in-service, Workforce Transition Act severance conversion | Keyed to creditable service or to the unreduced-eligibility date | Expressly excluded or frozen (§ 51.1-142.4 F; conforming amendments to §§ 51.1-162, 51.1-165.01, 51.1-166 and § 2.2-3204 A, C) |
-| Health insurance credit and post-retirement supplement **commencement** | Keyed to the **date of retirement** | **Not reached by the bill.** Both begin up to four years earlier. The § 51.1-166 D 4 amendment does not cure it (see § 10 below), and the § 51.1-142.4 F 8 bar reaches eligibility and amount but not duration. Costs sit on separately funded trusts and are **outside** the 0.19 bp figure — open blocker F-02 |
+| Health insurance credit and post-retirement supplement **commencement** | Keyed to the **date of retirement** | **Not reached by the bill.** Both begin up to four years earlier. The § 51.1-166 D 4 amendment does not cure it (see § 10 below), and the § 51.1-142.4 F 8 bar reaches eligibility and amount but not duration. Costs sit on separately funded trusts and are **outside** the 0.19 bp figure. **Resolved by DECISION 9 (October 20, 2026): accepted, priced and disclosed rather than cured**, with enactment clause 3(vi) requiring the Board to report both by trust |
 | Hybrid, SPORS, VaLORS, JRS, § 51.1-138 | n/a | Excluded (§ 51.1-142.4 B 1, J) — **DECISION 2** |
 
 ---

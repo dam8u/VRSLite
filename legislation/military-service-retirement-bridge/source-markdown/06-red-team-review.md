@@ -8,6 +8,21 @@
 
 > **Verdict.** The three-move architecture (new section + definitional carve-out + conforming amendments) is sound and does what the memo claims for *benefit-amount* protection. It fails in a different place: the bill controls what bridge credit **is**, but not what an **earlier retirement date** does. Four of the findings below are leaks of that second kind, and one of them (F-01) is an order of magnitude larger than anything in the memo's Part 5.1 pricing discussion. Twelve findings; five are blockers before introduction.
 
+> **Disposition, added October 20, 2026 — this review is a historical record and its findings are now closed.** The text below is preserved as written on October 19 against bill version 1.1; it has **not** been rewritten to match the current draft, so read it as the review that produced the changes rather than as a description of the bill. All five blockers are resolved in version 1.2:
+>
+> | Finding | Disposition |
+> |---|---|
+> | **F-01** deferred-member acceleration | **Closed by policy decision.** DECISION 8: member-in-service status required at retirement. New § 51.1-142.4 E 3 plus a conforming amendment to § 51.1-153 C — the second was necessary because that subsection's general in-service waiver would otherwise have consumed the condition, a point this review correctly anticipated |
+> | **F-02** health insurance credit and COLA commencement | **Closed by acceptance, not cure.** DECISION 9: accepted, priced and disclosed. This review was right that no exclusion clause can reach either, and the bill now says so affirmatively in a savings paragraph rather than leaving subdivision F 8 to be misread |
+> | **F-03** § 2.2-3204 Title 2.2 leak | **Closed in version 1.1** by amending § 2.2-3204 A and C and extending subdivision F 15 to Title 2.2 |
+> | **F-04** § 51.1-153 B 4 public-safety scope | **Closed, in narrower form than this review recommended.** DECISION 10 excludes only those whose first VRS membership began on or after January 1, 2014 (new clause B 1(iv)) |
+> | **F-05** purchases that provably buy nothing, with no refund path | **Closed in version 1.1** by the achievable-acceleration cap in subdivision C 2 d, the mandatory pre-purchase written estimate in subdivision I 2, and the cancellation-and-refund right in subsection K |
+> | **F-06 – F-12** (bare "service" in § 51.1-155 A 2; the F 10 / G contradiction; stranded money; unreachable provisions; the B 4 deficit formula; free military credit; federal tax) | **Closed in version 1.1 or 1.2**, except **F-12**, which is not a drafting defect and stays open as a pre-introduction item for counsel. **F-10**'s B 4 deficit-formula half is closed by new subdivision **C 1 c** in version 1.2 |
+>
+> **Two of this review's own conclusions were later shown to be incomplete**, and both are recorded rather than quietly fixed. The § 51.1-153 C paraphrase at F-01 omitted the subsection's second disjunct (five or more years of employer-paid non-withdrawable contributions); the verbatim text is now at S-42 in the source appendix. And the review did not notice that "member in service," the term F-01's own recommended fix depends on, is **not defined** in § 51.1-124.3 (S-46, drafting note 10).
+>
+> **Independence caveat, restated because it matters more than the findings.** This pass was run by the attorney who drafted the package, the independent Red Team / Counsel Reviewer being unavailable. The October 19 sign-off pass then found three stale cross-document statements that this review had missed. **Version 1.2 should be read by someone else before it reaches a patron.**
+
 ---
 
 ## Findings, ranked
