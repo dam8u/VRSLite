@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Methodology — Military Service Retirement Bridge Scenario Explorer</title>
+<meta name="description" content="Every formula used by the Military Service Retirement
+ Bridge Legislative Scenario Explorer, with its statutory or actuarial source and its
+ provenance. Illustrative; not an actuarial certification.">
+<link rel="stylesheet" href="css/explorer.css">
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-row">
+    <div>
+      <h1>Methodology</h1>
+      <p class="sub">
+        Military Service Retirement Bridge &mdash; Legislative Scenario Explorer
+        &middot; proposed new <strong>Va. Code &sect; 51.1-142.4</strong>
+        &middot; bill version 1.2, package version 1.3
+      </p>
+    </div>
+    <div class="masthead-actions">
+      <a class="btn btn-primary" href="index.html">&larr; Back to the dashboard</a>
+      <button class="btn" id="btn-print" type="button">Print / save as PDF</button>
+      <button class="btn" id="btn-theme" type="button" title="Switch between light and dark">Theme</button>
+    </div>
+  </div>
+
+  <div class="disclaimer">
+    <strong>This tool is an illustrative policy-analysis model. It is not an actuarial
+    certification, the VRS Board impact statement required under &sect; 30-19.1:7, or a
+    General Assembly fiscal impact statement.</strong>
+    It is not a savings calculator and does not advocate a result. Every figure is tagged
+    as a <span class="prov prov-fact"><span class="ic">&#9679;</span>Published&nbsp;Fact</span>,
+    a <span class="prov prov-derived"><span class="ic">&#9681;</span>Derived&nbsp;Estimate</span>,
+    or a <span class="prov prov-assumption"><span class="ic">&#9675;</span>Scenario&nbsp;Assumption</span>.
+    Prepared by Policy Development Team using legal, policy, and financial analysis tools,
+    pending review by veterans&rsquo; legal counsel.
+  </div>
+</header>
+
+<div class="shell">
+
+<!-- =============================================================== TOC -->
+<aside class="controls" aria-label="Contents">
+  <div class="ctrl-group">
+    <p class="gh">Contents</p>
+    <nav class="preset-grid" id="toc">
+      <a class="btn" href="#s1">1 &middot; What this model is</a>
+      <a class="btn" href="#s2">2 &middot; Provenance taxonomy</a>
+      <a class="btn" href="#s3">3 &middot; Architecture and verification</a>
+      <a class="btn" href="#s4">4 &middot; Population and exposure</a>
+      <a class="btn" href="#s5">5 &middot; Statutory eligibility</a>
+      <a class="btn" href="#s6">6 &middot; The price</a>
+      <a class="btn" href="#s7">7 &middot; Benefit mechanics</a>
+      <a class="btn" href="#s8">8 &middot; Mortality and annuity factors</a>
+      <a class="btn" href="#s9">9 &middot; The two baselines and &phi;</a>
+      <a class="btn" href="#s10">10 &middot; Aggregation and scaling</a>
+      <a class="btn" href="#s11">11 &middot; Liability to basis points</a>
+      <a class="btn" href="#s12">12 &middot; Payroll and workforce</a>
+      <a class="btn" href="#s13">13 &middot; HIC and COLA</a>
+      <a class="btn" href="#s14">14 &middot; Panel D combined view</a>
+      <a class="btn" href="#s15">15 &middot; Sensitivity (Panel F)</a>
+      <a class="btn" href="#s16">16 &middot; Preset scenarios</a>
+      <a class="btn" href="#s17">17 &middot; Official VRS data mode</a>
+      <a class="btn" href="#s18">18 &middot; Palette and accessibility</a>
+      <a class="btn" href="#s19">19 &middot; Known limitations</a>
+      <a class="btn" href="#s20">20 &middot; Reproducing every figure</a>
+    </nav>
+  </div>
+  <div class="ctrl-group">
+    <p class="gh">Notation</p>
+    <p class="ctrl-note">
+      <code>S</code> salary &middot; <code>g</code> salary growth &middot;
+      <code>d</code> discount rate &middot; <code>c</code> COLA &middot;
+      <code>v = 1/(1+d)</code> &middot; <code>k</code> eligibility credit purchased
+      &middot; <code>a</code> attained age &middot; <code>n</code> creditable service
+      &middot; <code>&phi;</code> work-to-eligibility share &middot;
+      <code>&rho;</code> replacement salary share &middot;
+      <code>&nu;</code> share of positions not replaced.
+    </p>
+  </div>
+</aside>
+
+<!-- ============================================================== BODY -->
+<main class="panels">
+
+<!-- ------------------------------------------------------------------ 1 -->
+<section class="card prose" id="s1">
+  <h2 style="margin-top:0">1 &middot; What this model is, and what it is not</h2>
+
+  <p>This page states every formula the Explorer uses, in the order the calculation
+  actually runs, with the statutory provision or published source behind it. It is written
+  so that a VRS actuary, a Division of Legislative Services drafter, or money-committee
+  staff can check the arithmetic without reading JavaScript &mdash; and so that anyone who
+  disagrees with a number can see exactly which assumption to argue with.</p>
+
+  <p>The model answers one question: <strong>if a stated number of Plan 1 and Plan 2
+  veterans purchase eligibility credit under the proposed bridge, what is the modeled
+  change in pension liability, in the employer contribution rate, and &mdash; separately
+  &mdash; in employer payroll?</strong> It does not answer whether the bridge is good
+  policy, and it is not built to produce a favourable total.</p>
+
+  <blockquote>
+    <p><strong>It is not an actuarial certification</strong>, it is not the VRS Board
+    impact statement required by <strong>Va. Code &sect; 30-19.1:7</strong> (which is
+    mandatory for this bill and has not been requested), and it is not a General Assembly
+    fiscal impact statement. Where this model and an official VRS statement disagree, the
+    official statement governs and this model is wrong.</p>
+  </blockquote>
+
+  <h3>Bill version modelled</h3>
+  <p>The eligibility, purchase-cap and scope mechanics in &sect;&sect; 5 and 6 below
+  implement the <strong>bill version 1.2 operative text</strong>: partial purchase capped
+  at the deficit (rule D4a), hybrid participants excluded, and the PLOP and COLA
+  eligibility dates frozen. The <em>aggregate tables</em> this engine is calibrated
+  against were produced for bill version 1.1 &mdash;
+  <strong>complete for version 1.1; version 1.2 refresh required before external
+  use.</strong></p>
+  <p>Both version 1.2 decisions of October 20, 2026 move the modeled result
+  <strong>downward</strong>: the in-service-at-retirement condition closes an acceleration
+  path the model never priced, and clause B 1(iv) removes a population the model counted.
+  No figure here is therefore an understatement on their account. That is a direction, not
+  a quantification, and it is not a substitute for the refresh.</p>
+
+  <h3>The one-sentence warning that matters most</h3>
+  <p>The <strong>behavioural assumption &phi;</strong> (&sect; 9) decides the
+  <em>sign</em> of the per-member result, and <strong>no published data bears on
+  it</strong>. A reader who takes one number away from this tool should take the range
+  across &phi;, not the central case.</p>
+</section>
+
+<!-- ------------------------------------------------------------------ 2 -->
+<section class="card prose" id="s2">
+  <h2>2 &middot; Provenance taxonomy</h2>
+  <p>Every input carries one of three tags, and the tag travels with the number into every
+  panel, tooltip, funnel step and download. The distinction is the fiscal model&rsquo;s
+  own and is preserved unchanged here.</p>
+
+  <div class="table-wrap">
+  <table class="dt">
+    <caption>Provenance tags. The credibility of an output is the credibility of its
+    weakest input, not its average input.</caption>
+    <thead><tr><th>Tag</th><th style="text-align:left">Meaning</th><th style="text-align:left">Example</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="prov prov-fact"><span class="ic">&#9679;</span>Published&nbsp;Fact</span></td>
+        <td style="text-align:left">Appears in a VRS valuation, a VRS Board action, DHRM
+          testimony, or the Code of Virginia. Cited to a page or slide.</td>
+        <td style="text-align:left">6.75% discount rate (SRC-01); 12.50% Plan 1 approximate
+          normal cost (SRC-08); $26.05bn covered payroll (SRC-15)</td>
+      </tr>
+      <tr>
+        <td><span class="prov prov-derived"><span class="ic">&#9681;</span>Derived&nbsp;Estimate</span></td>
+        <td style="text-align:left">Computed from published data by a stated method. Reproducible;
+          only as good as the method.</td>
+        <td style="text-align:left">The near-threshold exposure grid, rolled forward from the
+          published age&nbsp;&times;&nbsp;service distribution (SRC-18)</td>
+      </tr>
+      <tr>
+        <td><span class="prov prov-assumption"><span class="ic">&#9675;</span>Scenario&nbsp;Assumption</span></td>
+        <td style="text-align:left">Chosen because no data exists. Moves with the sliders. Not a
+          finding and not evidence.</td>
+        <td style="text-align:left">Take-up rate (ASM-19); &phi; (ASM-22); qualifying-service
+          share (ASM-16); retired-pay-bar share (ASM-17)</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>Identifiers are stable: <code>SRC-nn</code> is a published source,
+  <code>ASM-nn</code> is a modelling assumption. Both lists are exported from the fiscal
+  model&rsquo;s own <code>inputs.py</code> into the dashboard&rsquo;s
+  <strong>Source &amp; assumption registry</strong> panel, so the registry cannot drift
+  from the code that produced the numbers.</p>
+</section>
+
+<!-- ------------------------------------------------------------------ 3 -->
+<section class="card prose" id="s3">
+  <h2>3 &middot; Architecture, and how the engine is verified</h2>
+
+  <p>The calculation engine and the presentation layer are separate files, and the
+  separation is enforced rather than merely intended: <code>js/engine.js</code> contains
+  no reference to the DOM, to <code>window</code> events, or to any formatting concern,
+  and can be loaded under Node. <code>js/ui.js</code> contains no formula.</p>
+
+  <div class="table-wrap">
+  <table class="dt">
+    <caption>Files, and what each one is responsible for.</caption>
+    <thead><tr><th>File</th><th style="text-align:left">Role</th><th>Lines</th></tr></thead>
+    <tbody>
+      <tr><td><code>js/engine.js</code></td><td style="text-align:left">The model. A port of the
+        committed Python fiscal model: <code>actuarial.py</code>,
+        <code>price_vs_value.py</code>, <code>aggregate.py</code>,
+        <code>population.py</code>.</td><td>~1,100</td></tr>
+      <tr><td><code>js/ui.js</code></td><td style="text-align:left">Presentation only: controls,
+        charts, tables, tooltips, downloads.</td><td>~1,150</td></tr>
+      <tr><td><code>js/registry.js</code></td><td style="text-align:left">Plain-language glossary
+        and the outstanding-confirmation list.</td><td>~225</td></tr>
+      <tr><td><code>data/baseline.js</code></td><td style="text-align:left">Published inputs,
+        actuarial tables, representative profiles, and the Python model&rsquo;s own answers
+        for reconciliation. <strong>Generated</strong>, never hand-edited.</td><td>~1,045</td></tr>
+      <tr><td><code>data/cells.js</code></td><td style="text-align:left">The exposure grid:
+        employer&nbsp;&times;&nbsp;plan&nbsp;&times;&nbsp;age&nbsp;&times;&nbsp;service&nbsp;&times;&nbsp;fiscal
+        year headcounts. <strong>Generated.</strong></td><td>generated</td></tr>
+      <tr><td><code>fiscal-model/calibrate_explorer.py</code></td><td style="text-align:left">Re-runs
+        the committed Python model and writes the two generated files.</td><td>~480</td></tr>
+      <tr><td><code>test/reconcile.js</code></td><td style="text-align:left">The regression
+        harness. Loads the engine under Node and checks it against the Python
+        model&rsquo;s published tables.</td><td>~220</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Verification is a reconciliation, not an assertion</h3>
+  <p>The engine is not asserted to agree with the fiscal model; it is <em>checked</em>
+  against it. <code>node test/reconcile.js</code> runs <strong>98 checks</strong> in eight
+  groups and currently passes all of them:</p>
+
+  <div class="table-wrap">
+  <table class="dt">
+    <caption>What the regression harness checks. Each group ties to a committed CSV table
+    in <code>fiscal-model/out/</code>.</caption>
+    <thead><tr><th>Group</th><th style="text-align:left">Checked against</th><th style="text-align:left">What it proves</th></tr></thead>
+    <tbody>
+      <tr><td>1 Per-member price and value</td><td style="text-align:left"><code>T1-price-vs-value.csv</code></td>
+        <td style="text-align:left">Seven representative profiles reproduce the Python price, both
+          baseline values, the acceleration and the reduction rule</td></tr>
+      <tr><td>2 Central aggregate</td><td style="text-align:left"><code>T4-rate-impact.csv</code></td>
+        <td style="text-align:left">Purchasers, price, SUB and WTE value, net liability and basis
+          points, by employer plan and combined</td></tr>
+      <tr><td>3 Sensitivities</td><td style="text-align:left"><code>T5-sensitivity.csv</code></td>
+        <td style="text-align:left">&phi;, take-up, purchase rule, discount rate, salary growth,
+          mortality improvement, hybrid variant and the funnel low/high cases</td></tr>
+      <tr><td>4 Workforce</td><td style="text-align:left"><code>T8-workforce.csv</code></td>
+        <td style="text-align:left">PV of departing payroll, employer DB contributions, and the
+          differential at 90% replacement</td></tr>
+      <tr><td>5 Guardrails</td><td style="text-align:left">&sect; 12 of this page</td>
+        <td style="text-align:left">100% replacement gives a zero payroll effect; no Panel C
+          control moves any pension figure; hybrid excluded by default; COLA never
+          quantified</td></tr>
+      <tr><td>6 Direct entry</td><td style="text-align:left">&sect; 10</td>
+        <td style="text-align:left">A directly entered participant count preserves the modeled
+          age/service/salary mix rather than replacing it with a flat average member</td></tr>
+      <tr><td>7 Salary override</td><td style="text-align:left">&sect; 10</td>
+        <td style="text-align:left">Monetary outputs are exactly homogeneous of degree one in
+          salary, and a Plan 1 override leaves Plan 2 untouched</td></tr>
+      <tr><td>8 Performance</td><td style="text-align:left">&mdash;</td>
+        <td style="text-align:left">Cold run ~230&nbsp;ms, post-hoc re-scaling ~0&nbsp;ms, full
+          16-run tornado ~90&nbsp;ms</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>Two implementation details exist only to make that reconciliation exact. Python&rsquo;s
+  <code>round()</code> is banker&rsquo;s rounding and JavaScript&rsquo;s
+  <code>Math.round</code> is not, so the engine implements banker&rsquo;s rounding for the
+  one place it is observable &mdash; the &sect; 51.1-166 D 4 COLA delay. And survival and
+  annuity factors are memoised, which is what makes a slider feel immediate without
+  approximating anything.</p>
+</section>
+
+<!-- ------------------------------------------------------------------ 4 -->
+<section class="card prose" id="s4">
+  <h2>4 &middot; Population and exposure</h2>
+
+  <p>The model is a <strong>cell model</strong>, not an average-member model. Every
+  calculation happens inside a cell and is only then weighted up, which is what lets the
+  tool keep Plan 1 and Plan 2 separate and keep the age/service composition of purchasers
+  intact when a user types in a participant count.</p>
+
+  <p>A cell is a tuple
+  <code>(employer plan, benefit structure, age, creditable service, fiscal year)</code>
+  with an exposed headcount. The three employer plans are
+  <strong>ST</strong> (VRS State Employees), <strong>TC</strong> (VRS Teachers) and
+  <strong>PS</strong> (Participating Political Subdivisions, aggregate). The benefit
+  structures are <strong>P1</strong>, <strong>P2</strong> and <strong>HY</strong> (hybrid,
+  excluded by default per the decision resolved October 19, 2026).</p>
+
+  <h3>How the grid is built</h3>
+  <ol>
+    <li>Start from the published active-member distribution by age band and service band
+      (SRC-18), and the published headcount and covered payroll by employer plan
+      (SRC-15). <span class="prov prov-fact"><span class="ic">&#9679;</span>Published&nbsp;Fact</span></li>
+    <li>Allocate each age&nbsp;&times;&nbsp;service band to a benefit structure from service
+      length, because VRS does not publish the age&nbsp;&times;&nbsp;service grid by plan:
+      hybrid below 11.5 years, Plan 2 from 11.5 to 17.5, Plan 1 at 17.5 and above (ASM-10),
+      with tenure dispersion over a five-point kernel (ASM-23) and the derived split
+      calibrated to the published plan split (ASM-11, SRC-16). The proxy
+      <strong>fails</strong> for members with purchased, non-contiguous or part-time
+      service, whose total service does not match tenure; this is the
+      <strong>largest single source of uncertainty in the population estimate.</strong>
+      <span class="prov prov-derived"><span class="ic">&#9681;</span>Derived&nbsp;Estimate</span></li>
+    <li>Construct the political-subdivision grid from the state grid&rsquo;s shape, scaled
+      to the published political-subdivision active count (SRC-15) and adjusted by the
+      ratio of published average service &mdash; 8.3 years against 10.1 for state
+      employees &mdash; so the constructed mean matches the published mean (ASM-12). VRS
+      publishes no political-subdivision grid, so there is nothing to check this against:
+      <strong>direction of error unquantified.</strong>
+      <span class="prov prov-derived"><span class="ic">&#9681;</span>Derived&nbsp;Estimate</span></li>
+    <li>Roll each cell forward across <strong>FY2029&ndash;FY2038</strong> &mdash; ten
+      cohort years, the fiscal model&rsquo;s horizon &mdash; deterministically (age + 1,
+      service + 1 per year), removing members who reach an unreduced threshold at the
+      published retirement rates (SRC-23) and applying a flat 3.00% per annum for all other
+      exits, with 2.00% and 5.00% as the sensitivity (ASM-13). No new entrants are added to
+      either structure, because both are closed: Plan 1 on July 1, 2010 and Plan 2 on
+      January 1, 2014. <strong>The beneficiary class of this bill is closed and
+      shrinking</strong> &mdash; which is the single most useful fact the package has for
+      the money committees.</li>
+    <li>Keep a cell only if it is <em>exposed to a purchase opportunity</em>: within four
+      years or four Rule-of-90 points of an unreduced threshold, and
+      <strong>not already eligible</strong>, because &sect; 51.1-142.4 B 5 bars a member
+      who has already attained eligibility from purchasing at all.</li>
+  </ol>
+
+  <blockquote>
+    <p><strong>Every count in this tool is a cumulative ten-year cohort total, not an
+    annual rate.</strong> &ldquo;220 participants&rdquo; means 220 members across
+    FY2029&ndash;FY2038, roughly 22 a year. Reading it as an annual figure overstates the
+    bill by a factor of ten.</p>
+  </blockquote>
+
+  <h3>The salary curve</h3>
+  <p>A cell&rsquo;s pay is read from the published age-banded payroll curve (SRC-19) at the
+  member&rsquo;s age in the base year and rolled forward at salary growth <code>g</code>:</p>
+  <pre><code>S(emp, a, f) = curve[emp](a &minus; f) &times; (1 + g)^f
+
+curve[ST], curve[TC] = published payroll per active member by age band   (SRC-18, SRC-19)
+curve[PS]            = curve[ST] &times; 0.8394
+                       0.8394 = published PS average compensation / ST average compensation (SRC-15)</code></pre>
+  <p>where <code>f</code> is years from the base date (FY2025) to the cell&rsquo;s fiscal
+  year. Pay is a property of the cell, so the model never applies one average salary to
+  everybody.</p>
+
+  <h3>The veteran funnel &mdash; Panel G</h3>
+  <p>Exposure is not participation. Four multiplicative screens convert an exposed cell
+  into a <em>purchasable</em> pool:</p>
+  <pre><code>purchasableShare(emp) = veteranShare[emp]
+                      &times; qualifyingShare
+                      &times; (1 &minus; retiredPayBar)
+                      &times; notAlreadyBought</code></pre>
+
+  <div class="table-wrap">
+  <table class="dt">
+    <caption>The four screens. Only the first value in the first row is published; the rest
+    are the largest single uncertainty in the model.</caption>
+    <thead><tr><th>Screen</th><th>Default</th><th style="text-align:left">Basis</th></tr></thead>
+    <tbody>
+      <tr><td>Veteran share &mdash; state</td><td>6.0%</td>
+        <td style="text-align:left">SRC-24: 6% of the classified state workforce at June 30, 2024
+          (DHRM presentation to Senate Finance and Appropriations, January 21, 2025,
+          slide 8). <strong>The only published anchor.</strong></td></tr>
+      <tr><td>Veteran share &mdash; teachers</td><td>2.5%</td>
+        <td style="text-align:left">ASM-15 &mdash; <strong>assumed.</strong> No published figure
+          exists.</td></tr>
+      <tr><td>Veteran share &mdash; political subdivisions</td><td>7.0%</td>
+        <td style="text-align:left">ASM-15 &mdash; <strong>assumed.</strong></td></tr>
+      <tr><td>With qualifying active duty service</td><td>80%</td>
+        <td style="text-align:left">ASM-16 &mdash; at least 180 consecutive days, not dishonorably
+          discharged. No VRS or Virginia data published.</td></tr>
+      <tr><td>Excluded by the military retired pay bar</td><td>18%</td>
+        <td style="text-align:left">ASM-17 &mdash; &sect; 51.1-142.2 B, inherited by
+          &sect; 51.1-142.4 B 4 and H 5. Federal law protects qualifying service associated
+          with non-regular Reserve-component retired pay under 10 U.S.C. ch. 1223, with
+          <strong>&sect; 12736 application to the bridge subject to counsel
+          confirmation.</strong></td></tr>
+      <tr><td>Did not already purchase in the 24-month window</td><td>70%</td>
+        <td style="text-align:left">ASM-18 &mdash; VRS does not publish purchase-of-prior-service
+          take-up.</td></tr>
+      <tr class="total"><td>Take-up among those eligible</td><td>20%</td>
+        <td style="text-align:left">ASM-19 &mdash; low 10% / moderate 20% / high 30%, extendable to
+          5&ndash;50% in the tool. <strong>No evidence base.</strong></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>Moving the funnel screens alone takes the combined aggregate impact from
+  <strong>0.07 to 0.44 basis points</strong>. That spread is the honest measure of how much
+  the model does not know, and it is why Panel G shows provenance on every step rather than
+  only a total.</p>
+</section>
+
+<!-- ------------------------------------------------------------------ 5 -->
+<section class="card prose" id="s5">
+  <h2>5 &middot; Statutory eligibility &mdash; the formulas the bill actually operates on</h2>
+
+  <p>The bridge credit counts toward <strong>two</strong> pathways to an unreduced
+  allowance and nothing else: <strong>&sect; 51.1-153 B 2</strong> (age 50 with 30 years of
+  creditable service) and <strong>&sect; 51.1-153 B 3</strong> (the Rule of 90). The
+  Explorer labels these <code>B2</code> and <code>B3</code> throughout, and maps Plan 1
+  members to B 2 and Plan 2 members to B 3.</p>
+
+  <blockquote>
+    <p>&ldquo;Plan 1&rdquo; and &ldquo;Plan 2&rdquo; are <strong>not statutory
+    terms.</strong> Title 51.1 speaks of a &ldquo;person who becomes a member on or after
+    July 1, 2010&rdquo; and of the 60-months-as-of-January-1-2013 test. The bill operates
+    on &sect; 51.1-153 B 2 and B 3; the plan names are used here only because that is what
+    a member and a VRS counsellor say.</p>
+  </blockquote>
+
+  <h3>5.1 Eligibility deficit &mdash; &sect; 51.1-142.4 C 1</h3>
+  <pre><code>deficit_B2(a, n) = max(0, 30 &minus; n)              years of creditable service
+deficit_B3(a, n) = max(0, 90 &minus; (a + n))        Rule-of-90 points</code></pre>
+
+  <h3>5.2 Purchase amount &mdash; &sect; 51.1-142.4 C 2</h3>
+  <p>Three caps bind simultaneously: the deficit, the remaining room under the existing
+  four-year aggregate military maximum, and the qualifying service the member actually
+  has.</p>
+  <pre><code>k = min( deficit,  max(0, 4 &minus; prior &sect; 51.1-142.2 purchase),  qualifying available )
+
+rule D4a (the bill as drafted) : buy k
+rule D4b (rejected alternative): buy k only if k &ge; deficit, else buy nothing</code></pre>
+  <p>Rule D4a &mdash; partial purchase capped at the deficit &mdash; is the rule resolved on
+  October 19, 2026 and is the default. D4b is retained in Advanced Assumptions only so the
+  rejected alternative can be priced. A member who has already attained eligibility has
+  <code>deficit = 0</code> and therefore buys nothing, which is &sect; 51.1-142.4 B 5
+  operating arithmetically.</p>
+
+  <h3>5.3 First age of unreduced eligibility, with credit <code>k</code></h3>
+  <pre><code>B2:  A(a, n, k) = min( max( a + max(0, 30 &minus; n &minus; k),  50 ),  65 )
+B3:  A(a, n, k) = min( a + max(0, (90 &minus; (a + n + k)) / 2),  SSA NRA )</code></pre>
+  <p>Three features of these two lines carry the whole design of the bill.</p>
+  <ul>
+    <li><strong>The credit never increases attained age</strong> (&sect; 51.1-142.4 C 4).
+      In B 2, <code>k</code> reduces the service shortfall but the <code>max(&middot;, 50)</code>
+      stands: a member at 44 with 26 years who buys four years still waits until 50.</li>
+    <li><strong>The divisor of 2 in B 3 is the asymmetry nobody expects.</strong> Age and
+      service each accrue a year per year worked, so the Rule-of-90 sum grows
+      <em>two</em> points a year. One Plan 2 point therefore buys <strong>half</strong> a
+      year of acceleration. Four bridge years buy up to four years of acceleration under
+      B 2 but only two under B 3.</li>
+    <li><strong>Acceleration</strong> is the difference the bill creates:
+      <code>acceleration = max(0, A(a, n, 0) &minus; A(a, n, k))</code>. This is the quantity
+      the bridge actually sells.</li>
+  </ul>
+
+  <h3>5.4 Normal retirement ages</h3>
+  <pre><code>Plan 1 normal retirement age        = 65                  (&sect; 51.1-153 A; SRC-13)
+Plan 2 / hybrid normal retirement   = Social Security NRA  (&sect; 51.1-153 A; SRC-14)
+SSA NRA, birth year &ge; 1960         = 67
+SSA NRA, 1954&ndash;1959                 = 66 + 2 months per year after 1954</code></pre>
+  <p>Where a cell has no birth year &mdash; which is every aggregate cell &mdash; SSA NRA is
+  taken as 67.</p>
+
+  <h3>5.5 Early-retirement reduction factors &mdash; SRC-12</h3>
+  <p>These are the factors the bridge <em>removes</em>, so they are the price of the thing
+  being sold. VRS publishes the construction rather than a numeric table:</p>
+  <pre><code>months = (first unreduced age &minus; a) &times; 12
+reduction = 0.005 &times; min(months, 60) + 0.004 &times; max(0, months &minus; 60)
+  if a &lt; 55 (Plan 1 only):  reduction += 0.006 &times; (55 &minus; a) &times; 12
+factor = max(0, 1 &minus; reduction)</code></pre>
+  <p>With the statutory gates on whether the member may retire early at all:</p>
+  <ul>
+    <li><strong>Plan 1:</strong> ineligible if service &lt; 5, or age &lt; 50, or
+      (age &lt; 55 and service &lt; 10) &mdash; the 55/5 and 50/10 rules.</li>
+    <li><strong>Plan 2:</strong> ineligible if age &lt; 60 or service &lt; 5 &mdash; the
+      60/5 rule. VRS does <strong>not</strong> publish the numeric Plan 2 / hybrid factor
+      table, so ASM-09 applies the Plan 1 construction as a proxy. This is safe in
+      practice: below 60 a Plan 2 member cannot retire at all, so for this population no
+      factor is needed and none is used.</li>
+  </ul>
+  <p>Where the factor is zero &mdash; the member cannot retire under current law at the
+  accelerated date at all &mdash; the comparison baseline becomes a deferred unreduced
+  allowance from normal retirement age (SRC-07), not a reduced allowance. That case is the
+  one where the bridge is worth the most.</p>
+</section>
+
+<!-- ------------------------------------------------------------------ 6 -->
+<section class="card prose" id="s6">
+  <h2>6 &middot; The price &mdash; approximate normal cost</h2>
+
+  <p>&sect; 51.1-142.4 D prices the purchase at <strong>approximate normal cost</strong>
+  applied to creditable compensation or average final compensation at the time of
+  purchase, whichever is higher:</p>
+  <pre><code>price = ANC[plan] &times; k &times; max( S,  AFC_now )</code></pre>
+
+  <div class="table-wrap">
+  <table class="dt">
+    <caption>Approximate normal cost rates, effective July 1, 2025 (SRC-08). These are the
+    rates for <strong>ordinary non-hazardous</strong> members.</caption>
+    <thead><tr><th>Benefit structure</th><th>ANC rate</th><th style="text-align:left">Note</th></tr></thead>
+    <tbody>
+      <tr><td>Plan 1</td><td>12.50%</td><td style="text-align:left">per year of service purchased</td></tr>
+      <tr><td>Plan 2</td><td>10.74%</td><td style="text-align:left">per year/point purchased</td></tr>
+      <tr><td>Hybrid</td><td>6.68%</td><td style="text-align:left">excluded from the primary model</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <blockquote>
+    <p>The applicable approximate-normal-cost rate for <strong>eligible pre-2014
+    &sect; 51.1-153 B 4 public-safety members</strong> &mdash; local firefighters, police
+    and EMS in resolution localities, who remain potentially eligible under the bill
+    &mdash; <strong>requires VRS confirmation.</strong> The tool prices them at the ordinary
+    non-hazardous rate, which is the wrong rate if VRS certifies a hazardous-duty normal
+    cost. This is an open item, not a modelling choice.</p>
+  </blockquote>
+
+  <h3>Why the price is the wrong price, structurally</h3>
+  <p>Approximate normal cost is the price of a year of <strong>accrual</strong> &mdash; it
+  is calibrated to the cost of one more year in the benefit formula. The bridge sells
+  something else entirely: removal of the actuarial early-retirement reduction, with
+  <strong>no</strong> increase in benefit-calculation service. The model therefore prices
+  the purchase at ANC because that is what the bill says, and separately measures what the
+  member receives (&sect; 9). <strong>The gap between those two is the subsidy, and
+  surfacing it is the main purpose of this tool.</strong></p>
+</section>
+
+<!-- ------------------------------------------------------------------ 7 -->
+<section class="card prose" id="s7">
+  <h2>7 &middot; Benefit mechanics</h2>
+
+  <h3>7.1 Average final compensation &mdash; ASM-08</h3>
+  <p>AFC is the average of the highest consecutive months of creditable compensation: 36
+  months for Plan 1, 60 for Plan 2 and hybrid (SRC-11). Rolling a current salary forward
+  <code>f</code> years and averaging backwards over <code>m</code> months:</p>
+  <pre><code>S_at = S &times; (1 + g)^f
+
+AFC(S, f, m, g) = (1/m) &times; &Sigma;<sub>mo=0..m&minus;1</sub>  S_at &times; (1 + g)^<sup>&minus;(mo + 0.5)/12</sup></code></pre>
+  <p>The half-month offset places each month&rsquo;s pay at its midpoint. With
+  <code>g = 0</code> the expression collapses to <code>S_at</code>, as it should.</p>
+
+  <h3>7.2 The multiplier &mdash; SRC-09, SRC-10</h3>
+  <pre><code>Plan 1   1.70%
+Hybrid   1.00%
+Plan 2   service-weighted blend:
+         pre  = min(service before January 1, 2013, n)
+         post = max(0, n &minus; pre)
+         multiplier = (pre &times; 1.70% + post &times; 1.65%) / n</code></pre>
+  <p>For aggregate Plan 2 cells, service before January 1, 2013 is taken as
+  <strong>2.5 years</strong> (ASM-24): Plan 2 membership dates run from January 1, 2008 to
+  December 31, 2013, so pre-2013 service lies between 0 and 5 years, and the midpoint is
+  used. Representative profiles carry their own figure.</p>
+
+  <h3>7.3 The allowance &mdash; &sect; 51.1-155 A 1, and the line that makes this an
+    eligibility benefit</h3>
+  <pre><code>allowance = multiplier(plan, n) &times; n &times; AFC</code></pre>
+  <p>Here <code>n</code> is <strong>actual creditable service only</strong>. The purchased
+  eligibility credit <code>k</code> appears nowhere in this formula. That is not a
+  simplification &mdash; it is the bill:</p>
+  <ul>
+    <li>the <strong>&sect; 51.1-124.3</strong> amendment carves eligibility credit out of
+      the definition of &ldquo;creditable service,&rdquo; which protects the benefit
+      formula, AFC, the health insurance credit threshold and amount, group life service
+      thresholds, disability allowances and the five-year vesting analogue in one
+      stroke;</li>
+    <li><strong>&sect; 51.1-142.4 E</strong> and <strong>F 3</strong> say so again
+      expressly for the credit itself.</li>
+  </ul>
+  <p>If a future draft let <code>k</code> into this one line, the bill would become an
+  accrual benefit and every figure in this tool would understate it.</p>
+
+  <blockquote>
+    <p><strong>What the bridge does not increase:</strong> benefit-calculation service, the
+    pension formula, or any service-credit-based benefit. <strong>What remains
+    applicable:</strong> the ordinary consequences of an earlier retirement date. Those
+    consequences are real, and &sect;&sect; 13 and 19 state them rather than claiming the
+    bridge has no effect on any other VRS benefit.</p>
+  </blockquote>
+</section>
+
+<!-- ------------------------------------------------------------------ 8 -->
+<section class="card prose" id="s8">
+  <h2>8 &middot; Mortality, survival and annuity factors</h2>
+
+  <h3>8.1 Base mortality</h3>
+  <p>Published quinquennial rates are used for each employer plan, sex, and status: healthy
+  post-retirement (SRC-20) and pre-retirement (SRC-21), from the VRS valuation&rsquo;s
+  Pub-2010 based tables. Between published ages, rates are interpolated
+  <strong>log-linearly</strong> (ASM-01), which preserves the geometric shape of a
+  mortality curve where linear interpolation would not:</p>
+  <pre><code>w    = (x &minus; a<sub>i</sub>) / (a<sub>i+1</sub> &minus; a<sub>i</sub>)
+q(x) = q(a<sub>i</sub>) &times; ( q(a<sub>i+1</sub>) / q(a<sub>i</sub>) )^w</code></pre>
+  <p>Above the top published age &mdash; 90 &mdash; the last log-slope is extended and the
+  rate is capped at 0.60, with a terminal age of 115 (ASM-02). Pub-2010 actually
+  decelerates at the oldest ages, so this is mildly conservative:</p>
+  <pre><code>slope = ln( q(a<sub>top</sub>) / q(a<sub>top&minus;1</sub>) ) / (a<sub>top</sub> &minus; a<sub>top&minus;1</sub>)
+q(x)  = min( 0.60,  q(a<sub>top</sub>) &times; e^<sup>slope &times; (x &minus; a<sub>top</sub>)</sup> )</code></pre>
+
+  <h3>8.2 Mortality improvement &mdash; ASM-05</h3>
+  <p>A flat annual improvement from the Pub-2010 base year, used as a tractable proxy for
+  75% of scale MP-2021:</p>
+  <pre><code>q(x, Y) = min( 0.60,  q_base(x) &times; (1 &minus; i)^<sup>max(0, Y &minus; 2010)</sup> )      i = 0.75% central</code></pre>
+  <p>Sex is blended 50/50 (ASM-03), because the cell grid carries no sex split.</p>
+
+  <h3>8.3 Survival</h3>
+  <pre><code>p<sub>0</sub> = 1 ;   p<sub>t+1</sub> = p<sub>t</sub> &times; ( 1 &minus; q(x + t, Y + t) )      to terminal age 115</code></pre>
+  <p>Pre-retirement rates apply while the member is assumed still active, that is up to the
+  assumed commencement age; healthy post-retirement rates apply thereafter.</p>
+
+  <h3>8.4 The annuity factor</h3>
+  <p>Present value at commencement of 1 per annum payable for life, COLA-indexed,
+  monthly-in-advance approximated as an annuity-due with a half-year timing adjustment
+  (ASM-04):</p>
+  <pre><code>v = 1 / (1 + d)
+
+&auml;  =  (1 + d)^<sup>&minus;0.5</sup>  &times;  &Sigma;<sub>t&ge;0</sub>  p<sub>t</sub> &times; (1 + c)^<sup>N(t)</sup> &times; v^t
+
+N(t) = max( 0,  (t + 1) &minus; (colaFirstYear &minus; 1) &minus; delay )</code></pre>
+  <p><code>colaFirstYear = 3</code> by default (ASM-06): the statutory supplement is granted
+  on July 1 of the second calendar year after retirement, so the model applies the first
+  increase at the start of annuity year 3 and compounds annually. COLA rates are 2.50% for
+  Plan 1 and 2.25% for Plan 2 and hybrid (SRC-05).</p>
+
+  <h3>8.5 The COLA delay under &sect; 51.1-166 D 4 &mdash; and why it is frozen</h3>
+  <p>For a retiree with <strong>fewer than 20 years</strong> of creditable service, the
+  post-retirement supplement begins a year after the date the member would first have been
+  eligible for an unreduced allowance. Left alone, the bridge would have moved that date
+  earlier and started the COLA earlier &mdash; one of three leaks the concept paper did not
+  identify. The conforming amendment freezes the date, and the model implements the freeze
+  rather than the leak:</p>
+  <pre><code>delay = (service at retirement &lt; 20)  ?  acceleration  :  0
+      rounded with banker's rounding, to match the Python model exactly</code></pre>
+  <p>In practice almost no purchaser has fewer than 20 years of creditable service, so this
+  term is usually zero. That is itself the finding recorded in &sect; 13: the
+  &sect; 51.1-166 D 4 amendment protects a class this population is essentially never in,
+  which is why the COLA <em>commencement</em> exposure for everyone else remains open and
+  unquantified.</p>
+
+  <h3>8.6 Deferred annuity factor</h3>
+  <p>For a benefit commencing <code>n</code> years in the future, with survival to
+  commencement interpolated geometrically between integral ages:</p>
+  <pre><code>n       = commencement age &minus; current age
+p_defer = p<sub>&lfloor;n&rfloor;</sub> &times; ( p<sub>&lfloor;n&rfloor;+1</sub> / p<sub>&lfloor;n&rfloor;</sub> )^<sup>n &minus; &lfloor;n&rfloor;</sup>
+
+factor  = p_defer &times; &auml;(commencement) / (1 + d)^n</code></pre>
+</section>
+
+<!-- ------------------------------------------------------------------ 9 -->
+<section class="card prose" id="s9">
+  <h2>9 &middot; What the member receives &mdash; two baselines, and &phi;</h2>
+
+  <p>&ldquo;Value&rdquo; is meaningless without stating what it is value <em>against</em>.
+  The model computes <strong>one</strong> proposed outcome and <strong>two</strong>
+  counterfactuals, and never averages them silently.</p>
+
+  <h3>9.1 The proposed outcome</h3>
+  <p>The member retires as soon as the purchased credit confers eligibility, at age
+  <code>a&#8321; = A(a, n, k)</code>:</p>
+  <pre><code>f               = a&#8321; &minus; a                                  years worked to that date
+service         = n + f                                   actual creditable service
+AFC             = AFC(S, f, m, g)
+annual          = multiplier &times; service &times; AFC
+PV<sub>prop</sub>         = annual &times; deferred annuity factor to a&#8321;, with the COLA delay</code></pre>
+
+  <h3>9.2 Baseline SUB &mdash; &ldquo;frozen service / leaving anyway&rdquo;</h3>
+  <p>The member leaves on the <em>same date</em> with the <em>same service</em> and the
+  <em>same AFC</em>, but under current law takes the actuarially reduced allowance:</p>
+  <pre><code>PV<sub>sub</sub> = annual &times; reductionFactor(a&#8321;, service) &times; (same annuity factor)
+
+value<sub>SUB</sub> = PV<sub>prop</sub> &minus; PV<sub>sub</sub></code></pre>
+  <p>This isolates exactly what the bridge sells: removal of the reduction, nothing else.
+  Where the member could not retire at all at that date, the baseline becomes a deferred
+  unreduced allowance from normal retirement age instead (SRC-07), which is a larger
+  value.</p>
+
+  <h3>9.3 Baseline WTE &mdash; &ldquo;work to eligibility&rdquo;</h3>
+  <p>The member works on under current law to first unreduced eligibility at
+  <code>a&#8320; = A(a, n, 0)</code> and retires then &mdash; earning more service, a higher
+  AFC, and a larger allowance:</p>
+  <pre><code>f&#8320;            = a&#8320; &minus; a
+PV<sub>wte</sub>        = multiplier &times; (n + f&#8320;) &times; AFC(S, f&#8320;, m, g) &times; annuity factor at a&#8320;
+
+value<sub>WTE</sub> = PV<sub>prop</sub> &minus; PV<sub>wte</sub></code></pre>
+  <p>Against this baseline the member gives up accrual, AFC growth and years of
+  contributions, so the value of the bridge is far smaller &mdash; and frequently
+  <em>negative</em> net of the price.</p>
+
+  <h3>9.4 The blend, and what &phi; means</h3>
+  <pre><code>value = &phi; &times; value<sub>WTE</sub>  +  (1 &minus; &phi;) &times; value<sub>SUB</sub>
+
+net liability = value &minus; price</code></pre>
+
+  <div class="table-wrap">
+  <table class="dt">
+    <caption>&phi; (ASM-22) is the share of purchasers who would otherwise have worked on to
+    unreduced eligibility. Central 50%; the slider spans 0&ndash;100%.</caption>
+    <thead><tr><th>Who</th><th style="text-align:left">Weight</th><th style="text-align:left">Consequence</th></tr></thead>
+    <tbody>
+      <tr><td>Frozen-service / leaving anyway</td><td style="text-align:left"><code>1 &minus; &phi;</code></td>
+        <td style="text-align:left">May receive a <strong>substantial subsidy</strong> from accelerated
+          unreduced retirement &mdash; the reduction is removed from an allowance they would
+          have taken anyway.</td></tr>
+      <tr><td>Work-to-eligibility</td><td style="text-align:left"><code>&phi;</code></td>
+        <td style="text-align:left">May pay <strong>more than the additional actuarial value
+          received</strong>, because they forgo accrual and AFC growth they would have
+          earned.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <blockquote>
+    <p><strong>&phi; is an assumption, not a finding, and it decides the sign of the
+    per-member result.</strong> No published data bears on it. Worse, it is not even
+    exogenous: a member decides whether to buy <em>after</em> knowing which type they are,
+    and self-selection runs toward the subsidised end. <strong>Self-selection is not
+    modeled.</strong> A reader who wants one number should take the range across &phi;,
+    and should treat the central case as the optimistic end of it.</p>
+  </blockquote>
+
+  <h3>9.5 Contributions and payroll forgone</h3>
+  <p>Over the acceleration window the employer loses the member&rsquo;s payroll and the
+  contributions on it. Present-valued at the scenario discount rate:</p>
+  <pre><code>PV payroll forgone = &Sigma;<sub>t=0..&lfloor;w&rfloor;&minus;1</sub>  S &times; (1+g)^<sup>f+t</sup> / (1+d)^<sup>f+t</sup>
+                   + (w &minus; &lfloor;w&rfloor;) &times; S &times; (1+g)^<sup>f+&lfloor;w&rfloor;</sup> / (1+d)^<sup>f+&lfloor;w&rfloor;</sup>
+                                                     where w = acceleration years
+
+total normal cost forgone     = PV payroll forgone &times; total normal cost rate
+member contributions forgone  = PV payroll forgone &times; member contribution rate
+employer DB contrib. forgone  = PV payroll forgone &times; employer DB rate</code></pre>
+  <p>These feed Panel C. They are <strong>payroll</strong> quantities and never enter the
+  contribution-rate arithmetic in &sect; 11.</p>
+
+  <h3>9.6 The $341,065 figure, used correctly</h3>
+  <p>The cost model&rsquo;s headline per-member figure of <strong>$341,065</strong> is the
+  <strong>maximum modeled net value above the member purchase price under the
+  frozen-service / subsidy (SUB) scenario</strong> &mdash; the most favourable profile at
+  the most favourable baseline. It is <strong>not</strong> a universal cost per veteran and
+  must not be multiplied by a participant count. The model&rsquo;s companion finding is
+  equally part of the result: members who otherwise would have worked to unreduced
+  eligibility <strong>overpay</strong> in the modeled WTE scenarios. Panel E reports both
+  signs for both example members, at the selected &phi;, for exactly this reason.</p>
+</section>
+
+<!-- ----------------------------------------------------------------- 10 -->
+<section class="card prose" id="s10">
+  <h2>10 &middot; Aggregation and scaling</h2>
+
+  <h3>10.1 Probability-weighted cell result</h3>
+  <p>How much qualifying service a member has is unknown, so each cell is evaluated over a
+  distribution (ASM-25) rather than at a point:</p>
+  <pre><code>1 year  10%        2 years 15%        3 years 20%        4 years 55%</code></pre>
+  <p>Each branch is evaluated separately and weighted. Branches where the member would buy
+  nothing are dropped, and the surviving weight becomes <code>pBuy</code>, the probability
+  that a member of this cell purchases at all. Selecting <em>Fixed average</em> in the
+  dashboard replaces the distribution with a single stated amount, separately for Plan 1
+  years and Plan 2 points.</p>
+
+  <h3>10.2 From exposure to participants</h3>
+  <pre><code>pool                = exposed headcount &times; purchasableShare(employer)
+purchasable         = &Sigma;<sub>cells</sub>  pool &times; pBuy
+participants        = purchasable &times; take-up</code></pre>
+  <p>Every monetary quantity is accumulated on the <strong>purchasable</strong> pool and
+  scaled once at the end, which is what keeps Plan 1 and Plan 2 separate until the last
+  step.</p>
+
+  <h3>10.3 Direct participant entry preserves the mix</h3>
+  <p>When a legislator types &ldquo;400 Plan 1 participants,&rdquo; the tool does
+  <strong>not</strong> build an average member and multiply by 400. It rescales the existing
+  age&nbsp;&times;&nbsp;service&nbsp;&times;&nbsp;salary mix:</p>
+  <pre><code>scale[plan] = requested count / purchasable[plan]</code></pre>
+  <p>The composition of purchasers &mdash; and so the mean deficit, mean acceleration and
+  price per participant &mdash; is unchanged. Group 6 of the regression harness checks
+  exactly this.</p>
+
+  <h3>10.4 A salary override is an exact multiplier, not an approximation</h3>
+  <p>Every monetary output of a case is <strong>homogeneous of degree one in
+  salary</strong>: the purchase amount, every age, and every reduction factor are
+  independent of pay. So an average-salary override can be applied post hoc, exactly:</p>
+  <pre><code>multiplier[plan] = requested mean salary / modeled mean salary
+
+price, value<sub>SUB</sub>, value<sub>WTE</sub>, payroll forgone, contributions  &times;= multiplier
+participants, years purchased, acceleration                   unchanged</code></pre>
+  <p>This is why the dashboard responds instantly to a salary change, and why a Plan 1
+  override provably leaves every Plan 2 figure untouched (harness group 7). It is an
+  algebraic identity, not a shortcut.</p>
+</section>
+
+<!-- ----------------------------------------------------------------- 11 -->
+<section class="card prose" id="s11">
+  <h2>11 &middot; From liability to an employer contribution rate</h2>
+
+  <p>A liability is amortised into a rate by VRS&rsquo;s layered level-percent-of-payroll
+  method. ASM-20 <strong>mirrors</strong> that method; it is not VRS&rsquo;s
+  calculation.</p>
+  <pre><code>net   = (1 + d) / (1 + j) &minus; 1                 j = payroll growth (3.00%, SRC-04)
+v     = 1 / (1 + net)
+F(N)  = (1 &minus; v^N) / net &times; (1 + net)            N = published amortisation period
+                                              (SRC-15; 20 years for state, teacher
+                                               and the political subdivision aggregate)
+
+basis points = 10,000 &times; ( &Delta;L / F(N) ) / covered payroll</code></pre>
+
+  <h3>11.1 Two different basis-point figures, and which one is which</h3>
+  <div class="table-wrap">
+  <table class="dt">
+    <caption>A contribution rate is certified per <strong>employer plan</strong>, not per
+    benefit structure. Both views are shown because they answer different questions.</caption>
+    <thead><tr><th>View</th><th style="text-align:left">Payroll base</th><th style="text-align:left">Reading</th></tr></thead>
+    <tbody>
+      <tr><td>By benefit structure (Plan 1 / Plan 2)</td>
+        <td style="text-align:left">Combined covered payroll of all three employer plans,
+          $26.05bn, 20 years</td>
+        <td style="text-align:left">That structure&rsquo;s <strong>additive contribution</strong> to the
+          combined aggregate. These figures sum to the combined figure.</td></tr>
+      <tr><td>By employer plan (ST / TC / PS)</td>
+        <td style="text-align:left">That plan&rsquo;s own payroll, own amortisation period, own
+          payroll growth</td>
+        <td style="text-align:left">The rate a payroll office would actually see, added to the
+          published employer DB rate.</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>11.2 Why the discount rate and the amortisation rate are separate controls</h3>
+  <p>By default the liability layer is amortised at the Board&rsquo;s
+  <strong>published</strong> 6.75% even when the user moves the discount rate. That is what
+  the committed model does in its own discount-rate sensitivity, and it is the right
+  treatment: moving the discount rate is a sensitivity on how the liability is
+  <em>measured</em>, not a change in the Board&rsquo;s funding policy. A user who wants
+  both to move can tick the box in Advanced Assumptions &mdash; at which point the tool
+  stops reproducing the published sensitivity table, which is why it is off by default and
+  labelled.</p>
+
+  <h3>11.3 The 0.19 basis-point figure</h3>
+  <blockquote>
+    <p>The central-case figure of <strong>0.19 basis points</strong> is the
+    <strong>modeled retirement-plan employer contribution impact</strong>. It
+    <strong>excludes separately funded health insurance credit and COLA effects, including
+    unquantified COLA exposure.</strong> It is complete for bill version 1.1; a version 1.2
+    refresh is required before external use.</p>
+  </blockquote>
+  <p>That qualifier travels with the figure everywhere it appears in this package &mdash;
+  in the dashboard, in the downloadable handout, and here. A basis-point number quoted
+  without it is being quoted wrongly.</p>
+</section>
+
+<!-- ----------------------------------------------------------------- 12 -->
+<section class="card prose" id="s12">
+  <h2>12 &middot; Payroll and workforce effects &mdash; and the guardrails</h2>
+
+  <p>Panel C quantities arise from a <strong>hiring decision</strong>, not from the pension
+  change. They are labelled <strong>employer workforce/payroll effects, not pension
+  savings</strong>, and they are kept out of every contribution-rate figure.</p>
+
+  <pre><code>departing        = PV payroll forgone                   (&sect; 9.5)
+not replaced     = departing &times; &nu;
+refilled base    = departing &times; (1 &minus; &nu;)
+replacement      = refilled base &times; &rho;
+lower-paid diff  = refilled base &minus; replacement  =  refilled base &times; (1 &minus; &rho;)
+vacancy          = min( refilled base &times; &rho; &times; months/12,  replacement )
+
+employer DB on departing    = departing &times; employer DB rate
+employer DB on replacement  = (replacement &minus; vacancy) &times; employer DB rate
+employer DB differential    = the difference of those two
+
+payroll / workforce effect  = lower-paid diff + not replaced + vacancy
+                            + employer DB differential</code></pre>
+
+  <h3>12.1 The guardrails, stated as the tests that enforce them</h3>
+  <ol>
+    <li><strong>A refilled position never produces a full-salary saving.</strong> Only the
+      differential counts. At <code>&rho; = 90%</code>, 10% of compensation counts, not
+      100%.</li>
+    <li><strong>At <code>&rho; = 100%</code> the payroll effect is exactly zero</strong>
+      &mdash; by construction, not by rounding. Harness group 5 asserts it.</li>
+    <li><strong>No Panel C control moves any pension figure.</strong> The harness checks
+      the net pension liability is bit-identical at <code>&rho;</code> = 100%, 75%, and at
+      <code>&nu;</code> = 10%. A legislator can verify this live by dragging the
+      replacement slider and watching Panel B not move.</li>
+    <li><strong>A non-replaced position is reported separately</strong> from lower-paid
+      replacements, because it is a workforce-reduction decision with different evidence
+      behind it &mdash; and it is still not pension savings.</li>
+    <li><strong>A vacancy is a one-off timing effect</strong>, valued on the
+      replacement&rsquo;s own compensation and capped at it, and reported separately from
+      permanent reductions.</li>
+    <li><strong>Nothing is included that is not supported by data.</strong> Recruiting
+      cost, onboarding cost, productivity ramp-up, institutional-knowledge loss and
+      service-delivery effects are <em>not</em> modeled. Their absence does not mean they
+      are zero; it means the model has no basis for a number, and a figure invented for
+      them would be the easiest thing in this package to attack.</li>
+  </ol>
+
+  <h3>12.2 The replacement ladder</h3>
+  <p>Panel C reports the payroll effect at <strong>75%, 80%, 85%, 90%, 95% and
+  100%</strong> replacement simultaneously, with the selected setting marked. Showing the
+  whole ladder rather than one point is deliberate: it makes the linearity of the
+  assumption visible, and it makes a 100%-replacement reading &mdash; zero effect &mdash;
+  impossible to miss.</p>
+</section>
+
+<!-- ----------------------------------------------------------------- 13 -->
+<section class="card prose" id="s13">
+  <h2>13 &middot; Health insurance credit and COLA &mdash; outside every rate figure</h2>
+
+  <blockquote>
+    <p><strong>HIC and COLA follow the retirement date, so preventing earlier commencement
+    would require separate statutory changes outside the bridge.</strong> The proposal
+    deliberately accepts and discloses the earlier commencement rather than adding separate
+    delay provisions &mdash; the decision resolved October 20, 2026.</p>
+  </blockquote>
+
+  <p>Both run on <strong>separately funded trusts</strong> and therefore sit
+  <strong>outside</strong> every basis-point figure in this tool. The bill&rsquo;s
+  exclusion architecture reaches the <em>threshold and amount</em> of the health insurance
+  credit &mdash; via the &sect; 51.1-124.3 carve-out and &sect; 51.1-142.4 F 8 &mdash; but
+  neither verb reaches <strong>duration</strong>, and commencement follows the retirement
+  date rather than creditable service.</p>
+
+  <h3>13.1 The health insurance credit estimate</h3>
+  <p>&sect; 51.1-1400 sets the state credit at $4.25 per month per year of creditable
+  service. An earlier retirement starts it earlier:</p>
+  <pre><code>annual    = service at retirement &times; $4.25 &times; 12
+PV factor = &Sigma;<sub>t=0..&lfloor;w&rfloor;&minus;1</sub> v^t  +  (w &minus; &lfloor;w&rfloor;) &times; v^<sup>&lfloor;w&rfloor;</sup>        w = mean acceleration
+HIC PV    = annual &times; PV factor &times; participants</code></pre>
+  <p>Illustratively about <strong>$5,300</strong> for a state retiree with 26 years over a
+  four-year acceleration. This is a simple commencement-window present value at the
+  scenario discount rate, not a trust valuation.</p>
+
+  <h3>13.2 The COLA exposure is not quantified, and the tool says so</h3>
+  <p>No figure in this model, and no figure in the fiscal model it is built on, quantifies
+  the cost of commencing the post-retirement supplement up to four years earlier. The
+  engine carries an explicit <code>colaQuantified = false</code> flag, and harness group 5
+  asserts the tool never reports a COLA number. <strong>This is the single largest
+  disclosed gap in the package.</strong> Enactment clause 3(vi) requires the Board to
+  report both costs separately by trust, which is the proper route to a number.</p>
+</section>
+
+<!-- ----------------------------------------------------------------- 14 -->
+<section class="card prose" id="s14">
+  <h2>14 &middot; Panel D &mdash; three totals, deliberately not merged</h2>
+  <pre><code>1. Modeled pension impact        = net liability change  (&sect; 9.4),  and its bp (&sect; 11)
+2. Modeled payroll/workforce     = the Panel C total     (&sect; 12)
+3. Combined scenario effect      = (2) &minus; (1)</code></pre>
+  <p>The combined figure is shown <strong>last and smallest</strong> on purpose. It is the
+  least reliable of the three, because it adds a pension measurement to a workforce
+  assumption &mdash; two quantities with different units of credibility. The panel carries
+  the required warning verbatim:</p>
+  <blockquote>
+    <p><strong>Combined fiscal effect is a scenario result, not an actuarial certification
+    or VRS fiscal impact statement.</strong></p>
+  </blockquote>
+  <p>No output anywhere in the tool is labelled &ldquo;Savings.&rdquo; The permitted labels
+  are <em>Modeled pension impact</em>, <em>Modeled payroll effect</em>, <em>Modeled
+  workforce effect</em> and <em>Combined scenario effect</em>.</p>
+</section>
+
+<!-- ----------------------------------------------------------------- 15 -->
+<section class="card prose" id="s15">
+  <h2>15 &middot; Sensitivity &mdash; how Panel F is constructed</h2>
+
+  <p>Each driver is swung <strong>one at a time</strong> around the <em>currently
+  selected</em> scenario &mdash; not around the central case &mdash; so the tornado always
+  describes the scenario on screen. Eight drivers, sixteen full model re-runs, about
+  90&nbsp;ms.</p>
+
+  <div class="table-wrap">
+  <table class="dt">
+    <caption>Drivers tested, and the low/high endpoints used.</caption>
+    <thead><tr><th>Driver</th><th style="text-align:left">Low</th><th style="text-align:left">High</th></tr></thead>
+    <tbody>
+      <tr><td>Participant count (take-up)</td><td style="text-align:left">5%</td><td style="text-align:left">50%</td></tr>
+      <tr><td>Behavioural assumption &phi;</td><td style="text-align:left">0.75 &mdash; more work on</td><td style="text-align:left">0.25 &mdash; more leaving anyway</td></tr>
+      <tr><td>Average bridge amount</td><td style="text-align:left">1.0 year/point</td><td style="text-align:left">4.0 years/points</td></tr>
+      <tr><td>Salary growth</td><td style="text-align:left">4.50%</td><td style="text-align:left">2.50%</td></tr>
+      <tr><td>Actuarial discount rate</td><td style="text-align:left">7.75%</td><td style="text-align:left">5.75%</td></tr>
+      <tr><td>Veteran / purchasability funnel</td><td style="text-align:left">low case</td><td style="text-align:left">high case</td></tr>
+      <tr><td>Replacement salary percentage</td><td style="text-align:left">100%</td><td style="text-align:left">75%</td></tr>
+      <tr><td>Positions not replaced</td><td style="text-align:left">0%</td><td style="text-align:left">10%</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>Rows are ordered by <code>|&Delta;bp|</code>, the swing in the modeled pension impact.
+  The last two drivers are <strong>pension-neutral by construction</strong>: they move the
+  payroll effect and nothing in Panel B. They are sorted to the bottom and flagged as such,
+  with their payroll swing reported instead of a pension swing it does not have. Showing
+  them with a zero pension bar, unexplained, would invite the inference that they were
+  tested and found not to matter.</p>
+</section>
+
+<!-- ----------------------------------------------------------------- 16 -->
+<section class="card prose" id="s16">
+  <h2>16 &middot; Preset scenarios</h2>
+  <div class="table-wrap">
+  <table class="dt">
+    <caption>One-click presets. Each sets only the parameters listed; everything else stays
+    at the committed model&rsquo;s central value.</caption>
+    <thead><tr><th>Preset</th><th style="text-align:left">Parameters</th><th style="text-align:left">Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Central</strong></td>
+        <td style="text-align:left">the committed model&rsquo;s own central case</td>
+        <td style="text-align:left">Reproduces the published tables exactly. The reconciliation
+          anchor.</td></tr>
+      <tr><td><strong>Conservative / Low Participation</strong></td>
+        <td style="text-align:left">take-up 10%, &rho; = 100%, &nu; = 0%, no vacancy, &phi; = 0.75</td>
+        <td style="text-align:left">Low participation, no workforce reduction, and a high share who
+          would have worked on anyway.</td></tr>
+      <tr><td><strong>High Participation</strong></td>
+        <td style="text-align:left">take-up 30% on the high funnel, &rho; = 90%, &nu; = 0%</td>
+        <td style="text-align:left">High counts with central workforce assumptions.</td></tr>
+      <tr><td><strong>Workforce Turnover</strong></td>
+        <td style="text-align:left">take-up 20%, &rho; = 85%, &nu; = 5%, vacancy 3 months</td>
+        <td style="text-align:left">Central participation with replacement compensation in the
+          80&ndash;90% range and a modest non-replacement rate.</td></tr>
+      <tr><td><strong>No Workforce Savings</strong></td>
+        <td style="text-align:left">&rho; = 100%, &nu; = 0%, no vacancy</td>
+        <td style="text-align:left"><strong>Read this one first.</strong> The pension impact standing
+          alone, with no workforce offset at all.</td></tr>
+      <tr><td><strong>Hybrid Variant (not the bill)</strong></td>
+        <td style="text-align:left">hybrid participants included</td>
+        <td style="text-align:left">The bill <em>excludes</em> them. This prices the rejected
+          alternative, which is close to nothing before FY2038 because hybrid members are
+          decades from a threshold.</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p><strong>Reset to Baseline</strong> returns every control, including everything in
+  Advanced Assumptions, to the committed model&rsquo;s central case &mdash; which is the
+  <em>Central</em> preset plus the default workforce settings.</p>
+</section>
+
+<!-- ----------------------------------------------------------------- 17 -->
+<section class="card prose" id="s17">
+  <h2>17 &middot; Official VRS data mode</h2>
+  <p>Several of the most important inputs are estimated because VRS does not publish them.
+  The model is built so that each can be <strong>replaced</strong> by VRS member-level
+  aggregate data <em>without rewriting the model</em>. Ticking <em>Official VRS data
+  mode</em> displays the data contract: for each estimated input, what is currently assumed
+  and precisely what aggregate would supersede it.</p>
+  <div class="table-wrap">
+  <table class="dt">
+    <caption>The data contract. Each row is a request that can be put to VRS directly, and
+    each is a drop-in replacement for an estimate.</caption>
+    <thead><tr><th>Currently estimated</th><th style="text-align:left">What would replace it</th></tr></thead>
+    <tbody>
+      <tr><td>Age &times; service grid by benefit structure (ASM-10, ASM-23)</td>
+        <td style="text-align:left">Active counts by employer plan &times; benefit structure &times; age
+          band &times; service band</td></tr>
+      <tr><td>Political subdivision grid (ASM-12)</td>
+        <td style="text-align:left">The same grid for participating political subdivisions, rather
+          than one scaled from the state grid</td></tr>
+      <tr><td>Veteran share &mdash; teachers and political subdivisions (ASM-15)</td>
+        <td style="text-align:left">Veteran counts among active members by employer plan</td></tr>
+      <tr><td>Qualifying military service share (ASM-16)</td>
+        <td style="text-align:left">Among veteran members, the share with &ge; 180 consecutive days
+          of qualifying active duty</td></tr>
+      <tr><td>Retired-pay-bar share (ASM-17)</td>
+        <td style="text-align:left">Share of veteran members in receipt of military retired pay,
+          split regular vs. non-regular</td></tr>
+      <tr><td>Prior-purchase share (ASM-18)</td>
+        <td style="text-align:left">Historic &sect; 51.1-142.2 B 3 purchase take-up in the 24-month
+          window</td></tr>
+      <tr><td>Take-up (ASM-19)</td>
+        <td style="text-align:left">Observed take-up on a comparable optional purchase</td></tr>
+      <tr><td>&phi; (ASM-22)</td>
+        <td style="text-align:left">Retirement-decision behaviour for members near an unreduced
+          threshold</td></tr>
+      <tr><td>Approximate normal cost for B 4 public-safety members</td>
+        <td style="text-align:left">The applicable ANC rate for eligible pre-2014 B 4 members
+          &mdash; <strong>required, not optional</strong></td></tr>
+      <tr><td>HIC and COLA commencement cost</td>
+        <td style="text-align:left">Cost of commencing both up to four years earlier, stated
+          separately by trust, as enactment clause 3(vi) requires</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>The identifiers are the same in the tool, in the fiscal model and in the source
+  appendix, so a VRS response can be mapped to an input without translation.</p>
+</section>
+
+<!-- ----------------------------------------------------------------- 18 -->
+<section class="card prose" id="s18">
+  <h2>18 &middot; Palette, charts and accessibility</h2>
+  <p>Colour carries three distinct kinds of meaning and the roles are never mixed:</p>
+  <ul>
+    <li><strong>Categorical &mdash; identity.</strong> Three slots only: Plan 1, Plan 2,
+      combined/hybrid. Plan 1 is the same blue in every panel, every chart and every
+      table.</li>
+    <li><strong>Diverging &mdash; polarity.</strong> The tornado arms only, where the two
+      ends mean opposite directions.</li>
+    <li><strong>Status &mdash; provenance.</strong> Published Fact, Derived Estimate,
+      Scenario Assumption. <strong>Always shipped with an icon and a text label</strong>,
+      never colour alone, so the distinction survives greyscale printing and colour
+      vision deficiency.</li>
+  </ul>
+  <h3>18.1 The palette is measured, not eyeballed</h3>
+  <p>Both the three categorical slots and the two diverging arms were checked
+  computationally in <strong>both</strong> light and dark mode, against their own surface,
+  on five measures: OKLCH lightness band, OKLCH chroma floor, OKLab &Delta;E separation
+  under simulated protanopia and deuteranopia, the normal-vision separation floor, and WCAG
+  contrast against the chart surface. <strong>All five pass in both modes.</strong></p>
+  <p>One result changed the design rather than being written up as acceptable: the
+  combined/hybrid green measured <strong>2.74:1</strong> against the light surface, below
+  the 3:1 floor. The dashboard does supply the required relief &mdash; every chart has a
+  legend and a text table carrying the same values &mdash; but relief is a mitigation, not
+  a fix, so the colour was darkened to <code>#18a06f</code>, which clears 3:1 while keeping
+  &Delta;E 8.6 against the Plan 2 orange under protanopia and 27.2 under normal vision.
+  Worst-case colour-vision separation across the categorical slots is &Delta;E 8.6&ndash;9.4,
+  inside the floor band, which is legal <em>only</em> with the secondary encoding the
+  dashboard already carries.</p>
+  <p>Light and dark are each defined explicitly rather than derived by inversion. Numbers
+  use tabular figures so columns align. Every chart has a text table beside it carrying the
+  same values, so nothing is available only as a picture &mdash; which also means the whole
+  dashboard prints usefully. The print stylesheet drops the controls and the tab strip and
+  keeps the panels, and both pages are laid out single-column below 1080&nbsp;px for use on
+  a tablet in a committee room.</p>
+</section>
+
+<!-- ----------------------------------------------------------------- 19 -->
+<section class="card prose" id="s19">
+  <h2>19 &middot; Known limitations</h2>
+  <p>Stated plainly, because a reviewer who finds these unaided discounts everything
+  else.</p>
+  <ol>
+    <li><strong>&phi; is unknowable and self-selection is not modeled.</strong> It decides
+      the sign of the per-member result, and selection runs toward the subsidised end. The
+      central case is the optimistic end of the range (&sect; 9.4).</li>
+    <li><strong>The veteran funnel rests on one published number.</strong> Only the 6%
+      state share is published; the teacher and political-subdivision shares are assumed.
+      The funnel alone spans 0.07&ndash;0.44 basis points.</li>
+    <li><strong>The COLA commencement exposure is unquantified</strong> by any figure in
+      this package (&sect; 13.2).</li>
+    <li><strong>The approximate normal cost rate for eligible pre-2014 B 4 public-safety
+      members is unconfirmed.</strong> They are priced at the ordinary non-hazardous rate
+      (&sect; 6).</li>
+    <li><strong>The fiscal model is complete for bill version 1.1; a version 1.2 refresh is
+      required before external use</strong> (&sect; 1).</li>
+    <li><strong>The Plan 2 reduction factor table is a proxy</strong> (ASM-09). It does not
+      bind for this population, but it is still a proxy.</li>
+    <li><strong>Mortality improvement is a flat-rate proxy</strong> for a two-dimensional
+      scale (ASM-05), and sex is blended 50/50 (ASM-03) because the grid carries no sex
+      split.</li>
+    <li><strong>Amortisation mirrors VRS&rsquo;s method but is not VRS&rsquo;s
+      calculation</strong> (ASM-20), and the horizon is FY2029&ndash;FY2038 only &mdash;
+      a ten-year cohort window, not a projection to the end of the liability.</li>
+    <li><strong>Second-order workforce costs are excluded</strong>, not valued at zero
+      (&sect; 12.1 item 6).</li>
+    <li><strong>Federal tax treatment is unresolved.</strong> IRC &sect; 415(n)(3)(A) may
+      not reach this credit <em>because</em> it buys no accrual, which raises
+      &sect; 415(c) exposure and removes 403(b)/457(b) trustee-to-trustee funding; and
+      10 U.S.C. &sect; 12736 bars excluding non-regular-retirement service &ldquo;in
+      determining his <em>eligibility</em>&rdquo; for a state benefit, which is this
+      bill&rsquo;s entire subject. Both belong in front of veterans&rsquo; legal counsel
+      with the text.</li>
+    <li><strong>One narrow policy question is open:</strong> how the
+      in-service-at-retirement requirement applies to a member on approved leave or
+      receiving long-term disability benefits at the moment of retirement. As drafted,
+      subdivision E 3 would disregard her credit. That is flagged for decision, not
+      resolved here.</li>
+  </ol>
+  <blockquote>
+    <p><strong>All principal policy questions are settled.</strong> The seven decisions of
+    October 19&ndash;20, 2026 are drafted into the bill. What remains is confirmation work
+    &mdash; VRS, the actuary, DLS and veterans&rsquo; legal counsel &mdash; plus the narrow
+    approved-leave / long-term-disability question above.</p>
+  </blockquote>
+</section>
+
+<!-- ----------------------------------------------------------------- 20 -->
+<section class="card prose" id="s20">
+  <h2>20 &middot; Reproducing every figure</h2>
+  <p>Nothing here needs a toolchain, a build step or a network connection.</p>
+  <pre><code># 1. Re-run the committed Python fiscal model and regenerate the browser inputs
+cd legislation/military-service-retirement-bridge/fiscal-model
+python3 calibrate_explorer.py        # writes out/explorer-baseline.json,
+                                     # explorer/data/baseline.js, explorer/data/cells.js
+
+# 2. Reconcile the browser engine against the Python model's published tables
+cd ../explorer
+node test/reconcile.js               # 98 checks, 8 groups
+
+# 3. Open the dashboard
+open index.html                      # no server, no build, no dependencies</code></pre>
+  <p>The two generated files carry a &ldquo;do not edit by hand&rdquo; header for a reason:
+  the only way to change a number in this tool is to change the Python model and
+  regenerate, which is what keeps the dashboard and the committed fiscal model from
+  drifting apart.</p>
+
+  <h3>Downloads from the dashboard</h3>
+  <ul>
+    <li><strong>Download scenario summary</strong> &mdash; a self-contained HTML handout of
+      the scenario on screen: every input with its provenance, all three Panel D totals,
+      the Panel A&ndash;C figures, the required warnings and the pre-use checklist. Prints
+      to a legislative handout and opens in Word.</li>
+    <li><strong>CSV</strong> &mdash; the same scenario as rows, for anyone who wants to
+      check the arithmetic in a spreadsheet.</li>
+  </ul>
+
+  <h3>Where this sits in the package</h3>
+  <div class="table-wrap">
+  <table class="dt">
+    <caption>The Military Service Retirement Bridge package, version 1.3.</caption>
+    <thead><tr><th>Document</th><th style="text-align:left">What it is</th></tr></thead>
+    <tbody>
+      <tr><td><code>01-bill-draft.docx</code></td><td style="text-align:left">The operative bill text,
+        version 1.2 &mdash; new &sect; 51.1-142.4, the &sect; 51.1-124.3 definitional
+        carve-out, six conforming amendments across five sections, the enacting clause plus
+        two further enactment clauses (a July 1, 2028 effective date and an eleven-item
+        Board reporting requirement), and drafting notes for DLS</td></tr>
+      <tr><td><code>02-legal-analysis-memo.docx</code></td><td style="text-align:left">Terminology
+        discipline, statutory conflicts, the unintended-effects table, and the open
+        items</td></tr>
+      <tr><td><code>03/04-jlc-brief.docx</code></td><td style="text-align:left">The one-page and
+        two-page briefs, with the pre-patron checklist</td></tr>
+      <tr><td><code>05-source-appendix.docx</code></td><td style="text-align:left">Sourced claims with
+        pinpoint citations and retrieval dates &mdash; and an explicit list of what is
+        <em>not</em> sourced</td></tr>
+      <tr><td><code>06-red-team-review.docx</code></td><td style="text-align:left">The internal
+        adversarial review. <strong>No independent reviewer was available</strong>; the
+        pass was run by the same team that drafted the package.</td></tr>
+      <tr><td><code>08-fiscal-model-memo.docx</code></td><td style="text-align:left">The cost
+        model&rsquo;s own memorandum &mdash; complete for version 1.1, version 1.2 refresh
+        required before external use</td></tr>
+      <tr><td><code>explorer/</code></td><td style="text-align:left">This tool</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <blockquote>
+    <p><strong>Before external or patron use</strong>, the package requires: the fiscal
+    model rerun against bill version 1.2; completion of outstanding source verifications;
+    federal tax review by veterans&rsquo; legal counsel; resolution or explicit deferral of
+    the approved-leave / long-term-disability question; and the VRS impact statement under
+    &sect; 30-19.1:7 at the appropriate stage.</p>
+  </blockquote>
+
+  <p class="muted" style="margin-top:22px">Prepared by Policy Development Team using legal,
+  policy, and financial analysis tools, pending review by veterans&rsquo; legal counsel.
+  &middot; Package version 1.3 &mdash; External-Review Cleanup &middot; bill version 1.2.</p>
+</section>
+
+</main>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  /* Theme toggle, shared with the dashboard. */
+  var KEY = 'vrs-explorer-theme';
+  try {
+    var saved = localStorage.getItem(KEY);
+    if (saved) document.documentElement.setAttribute('data-theme', saved);
+  } catch (e) { /* storage unavailable; system preference applies */ }
+
+  var btn = document.getElementById('btn-theme');
+  if (btn) btn.addEventListener('click', function () {
+    var el = document.documentElement;
+    var cur = el.getAttribute('data-theme');
+    /* The same dark -> light -> follow-the-system cycle as the dashboard. */
+    var next = cur === 'dark' ? 'light' : cur === 'light' ? '' : 'dark';
+    el.setAttribute('data-theme', next);
+    try { localStorage.setItem(KEY, next); } catch (e) { /* no storage */ }
+  });
+
+  var pr = document.getElementById('btn-print');
+  if (pr) pr.addEventListener('click', function () { window.print(); });
+
+  /* Mark the section currently in view in the contents list. Section 1 is marked
+     up front so the list is never blank before the first scroll. */
+  var links = Array.prototype.slice.call(document.querySelectorAll('#toc a'));
+  var targets = links.map(function (a) {
+    return document.getElementById(a.getAttribute('href').slice(1));
+  });
+  if (links.length) links[0].classList.add('btn-primary');
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        var i = targets.indexOf(en.target);
+        if (i < 0) return;
+        links.forEach(function (a, j) {
+          a.classList.toggle('btn-primary', j === i);
+        });
+      });
+    }, { rootMargin: '-140px 0px -70% 0px' });
+    targets.forEach(function (t) { if (t) io.observe(t); });
+  }
+})();
+</script>
+</body>
+</html>

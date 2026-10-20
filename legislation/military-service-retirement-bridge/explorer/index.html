@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Military Service Retirement Bridge — Legislative Scenario Explorer</title>
+<meta name="description" content="Interactive policy-analysis model for the proposed
+ Virginia Military Service Retirement Bridge (new Va. Code § 51.1-142.4). Illustrative;
+ not an actuarial certification.">
+<link rel="stylesheet" href="css/explorer.css">
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-row">
+    <div>
+      <h1>Military Service Retirement Bridge — Legislative Scenario Explorer</h1>
+      <p class="sub">
+        Proposed new <strong>Va. Code § 51.1-142.4</strong> &middot; bill version 1.2,
+        package version 1.3 &middot; built on the FY2029&ndash;FY2038 cohort fiscal model
+        &middot; <span id="scenario-chip" class="pill live">Central case</span>
+      </p>
+    </div>
+    <div class="masthead-actions">
+      <button class="btn" id="btn-reset" type="button" title="Return every input to the committed fiscal model's central case">Reset to Baseline</button>
+      <button class="btn" id="btn-handout" type="button">Download scenario summary</button>
+      <button class="btn" id="btn-csv" type="button">CSV</button>
+      <a class="btn" href="methodology.html">Methodology</a>
+      <button class="btn" id="btn-theme" type="button" title="Switch between light and dark">Theme</button>
+    </div>
+  </div>
+
+  <div class="disclaimer">
+    <strong>This tool is an illustrative policy-analysis model. It is not an actuarial
+    certification, the VRS Board impact statement required under § 30-19.1:7, or a
+    General Assembly fiscal impact statement.</strong>
+    It is not a savings calculator and does not advocate a result. Every figure is tagged
+    as a <span class="prov prov-fact"><span class="ic">&#9679;</span>Published&nbsp;Fact</span>,
+    a <span class="prov prov-derived"><span class="ic">&#9681;</span>Derived&nbsp;Estimate</span>,
+    or a <span class="prov prov-assumption"><span class="ic">&#9675;</span>Scenario&nbsp;Assumption</span>.
+    Prepared by Policy Development Team using legal, policy, and financial analysis tools,
+    pending review by veterans&rsquo; legal counsel.
+  </div>
+
+  <nav class="tabstrip" aria-label="Dashboard panels">
+    <a href="#panel-a">A &middot; Participants</a>
+    <a href="#panel-b">B &middot; Pension impact</a>
+    <a href="#panel-c">C &middot; Workforce / payroll</a>
+    <a href="#panel-d">D &middot; Combined view</a>
+    <a href="#panel-e">E &middot; Member examples</a>
+    <a href="#panel-f">F &middot; Sensitivity</a>
+    <a href="#panel-g">G &middot; Population funnel</a>
+    <a href="#panel-ancillary">HIC &amp; COLA</a>
+    <a href="#panel-registry">Registry</a>
+  </nav>
+</header>
+
+<div class="shell">
+
+<!-- ============================================================ CONTROLS -->
+<aside class="controls" aria-label="Scenario assumptions">
+
+  <div class="ctrl-group">
+    <p class="gh">Preset scenarios</p>
+    <div class="preset-grid" id="presets"></div>
+  </div>
+
+  <!-- 1 & 2 & 11 — participants and take-up -->
+  <div class="ctrl-group">
+    <p class="gh">Participants</p>
+    <div class="ctrl">
+      <div class="ctrl-label"><span>How participants are set</span></div>
+      <div class="seg" id="seg-participant-mode" role="group">
+        <button type="button" data-v="model" aria-pressed="true">Participation rate</button>
+        <button type="button" data-v="direct" aria-pressed="false">Enter counts</button>
+      </div>
+      <p class="ctrl-note" id="note-participant-mode"></p>
+    </div>
+
+    <div class="ctrl" data-when="model">
+      <div class="ctrl-label">
+        <span>Take-up rate among eligible veterans
+          <abbr class="tipped" title="ASM-19. No evidence base: low 10%, moderate 20%, high 30% are the model's own scenarios.">(ASM-19)</abbr>
+        </span>
+        <span class="val" id="v-takeup">20%</span>
+      </div>
+      <input type="range" id="i-takeup" min="5" max="50" step="1" value="20">
+      <p class="ctrl-note" id="note-takeup"></p>
+    </div>
+
+    <div class="ctrl" data-when="direct">
+      <div class="ctrl-label"><span>Participating <strong>Plan 1</strong> veterans</span></div>
+      <input type="number" id="i-p1n" min="0" max="20000" step="1">
+      <p class="ctrl-note" id="note-p1n"></p>
+    </div>
+    <div class="ctrl" data-when="direct">
+      <div class="ctrl-label"><span>Participating <strong>Plan 2</strong> veterans</span></div>
+      <input type="number" id="i-p2n" min="0" max="20000" step="1">
+      <p class="ctrl-note" id="note-p2n"></p>
+    </div>
+  </div>
+
+  <!-- 3 — average bridge years / points -->
+  <div class="ctrl-group">
+    <p class="gh">Bridge amount purchased</p>
+    <div class="ctrl">
+      <div class="seg" id="seg-bridge-mode" role="group">
+        <button type="button" data-v="dist" aria-pressed="true">Model distribution</button>
+        <button type="button" data-v="fixed" aria-pressed="false">Fixed average</button>
+      </div>
+      <p class="ctrl-note" id="note-bridge-mode"></p>
+    </div>
+    <div class="ctrl" data-when="fixed">
+      <div class="ctrl-label">
+        <span><strong>Plan 1</strong> bridge years available</span>
+        <span class="val" id="v-p1y">3.1</span>
+      </div>
+      <input type="range" id="i-p1y" min="1" max="4" step="0.1" value="3.1">
+    </div>
+    <div class="ctrl" data-when="fixed">
+      <div class="ctrl-label">
+        <span><strong>Plan 2</strong> Rule-of-90 points available</span>
+        <span class="val" id="v-p2y">3.6</span>
+      </div>
+      <input type="range" id="i-p2y" min="1" max="4" step="0.1" value="3.6">
+      <p class="ctrl-note">One Plan 2 point buys only <strong>half</strong> a year of
+        acceleration, because age plus service grows two points a year. Plan 1 and
+        Plan 2 are therefore never combined before the end.</p>
+    </div>
+  </div>
+
+  <!-- 7 — behavioural assumption -->
+  <div class="ctrl-group">
+    <p class="gh">Behavioural assumption <span class="pill">major uncertainty</span></p>
+    <div class="ctrl">
+      <div class="ctrl-label">
+        <span>Share who would otherwise have worked to unreduced eligibility (&phi;)</span>
+        <span class="val" id="v-phi">50%</span>
+      </div>
+      <input type="range" id="i-phi" min="0" max="100" step="5" value="50">
+      <div class="adv-warn" style="margin-top:9px">
+        <strong>This is an assumption, not a finding. No published data bears on it,
+        and it decides the sign of the per-member result.</strong>
+        <br>&bull; The <strong>frozen-service / leaving-anyway</strong> share
+        (<span id="phi-sub">50%</span>) may receive a substantial subsidy from
+        accelerated unreduced retirement.
+        <br>&bull; The <strong>work-to-eligibility</strong> share
+        (<span id="phi-wte">50%</span>) may pay <em>more</em> than the additional
+        actuarial value received.
+        <br>Self-selection is not modeled and runs toward the subsidised end.
+      </div>
+    </div>
+  </div>
+
+  <!-- 4, 5, 6 — workforce -->
+  <div class="ctrl-group">
+    <p class="gh">Workforce &amp; payroll</p>
+    <div class="ctrl">
+      <div class="ctrl-label">
+        <span>Replacement salary, % of departing compensation</span>
+        <span class="val" id="v-repl">90%</span>
+      </div>
+      <input type="range" id="i-repl" min="75" max="100" step="1" value="90">
+      <p class="ctrl-note">At 100% the payroll effect is <strong>zero by
+        construction</strong> &mdash; only the differential ever counts.</p>
+    </div>
+    <div class="ctrl">
+      <div class="ctrl-label">
+        <span>Positions not replaced, % of bridge retirements</span>
+        <span class="val" id="v-notrepl">0%</span>
+      </div>
+      <input type="range" id="i-notrepl" min="0" max="10" step="0.5" value="0">
+      <p class="ctrl-note">A workforce-reduction decision, kept separate from
+        lower-paid replacements and from any pension figure.</p>
+    </div>
+    <div class="ctrl">
+      <div class="ctrl-label">
+        <span>Average vacancy before refill, months</span>
+        <span class="val" id="v-vac">0</span>
+      </div>
+      <input type="range" id="i-vac" min="0" max="12" step="1" value="0">
+      <p class="ctrl-note">A one-off timing effect, reported separately from
+        permanent workforce reductions.</p>
+    </div>
+  </div>
+
+  <!-- 8, 9, 10, 12 — advanced -->
+  <details class="adv" id="adv-panel">
+    <summary>Advanced assumptions</summary>
+    <div class="adv-warn">
+      Changing anything in this panel produces a <strong>scenario</strong>. The
+      defaults are the VRS Board&rsquo;s published assumptions or the fiscal
+      model&rsquo;s documented estimates; a changed value is <strong>not</strong> an
+      official VRS assumption.
+    </div>
+
+    <p class="gh">Average departing salary</p>
+    <div class="ctrl">
+      <div class="seg" id="seg-salary-mode" role="group">
+        <button type="button" data-v="model" aria-pressed="true">Model distribution</button>
+        <button type="button" data-v="scaled" aria-pressed="false">Scale to an average</button>
+      </div>
+      <p class="ctrl-note" id="note-salary-mode"></p>
+    </div>
+    <div class="ctrl" data-when="scaled">
+      <div class="ctrl-label"><span><strong>Plan 1</strong> average salary</span></div>
+      <input type="number" id="i-p1sal" min="20000" max="400000" step="1000">
+    </div>
+    <div class="ctrl" data-when="scaled">
+      <div class="ctrl-label"><span><strong>Plan 2</strong> average salary</span></div>
+      <input type="number" id="i-p2sal" min="20000" max="400000" step="1000">
+    </div>
+
+    <p class="gh">Actuarial assumptions</p>
+    <div class="ctrl">
+      <div class="ctrl-label">
+        <span>Annual salary growth <span class="muted">(ASM-07; default = published 3.50% wage inflation)</span></span>
+        <span class="val" id="v-growth">3.50%</span>
+      </div>
+      <input type="range" id="i-growth" min="1.5" max="5.5" step="0.25" value="3.5">
+    </div>
+    <div class="ctrl">
+      <div class="ctrl-label">
+        <span>Discount rate <span class="muted">(SRC-01; published Board assumption 6.75%)</span></span>
+        <span class="val" id="v-disc">6.75%</span>
+      </div>
+      <input type="range" id="i-disc" min="4.75" max="8.75" step="0.25" value="6.75">
+      <p class="ctrl-note" id="note-disc"></p>
+      <label class="ctrl-note" style="display:flex;gap:7px;align-items:flex-start;margin-top:7px">
+        <input type="checkbox" id="i-amort" style="margin-top:2px">
+        <span>Also amortize at the scenario rate. Off by default, because ASM-20
+          amortizes at the Board&rsquo;s published assumption &mdash; which is what
+          the committed model does even in its own discount sensitivity.
+          Turning this on stops the tool reproducing the published table.</span>
+      </label>
+    </div>
+    <div class="ctrl">
+      <div class="ctrl-label">
+        <span>Mortality improvement <span class="muted">(ASM-05 proxy for 75% of MP-2021)</span></span>
+        <span class="val" id="v-impr">0.75%</span>
+      </div>
+      <input type="range" id="i-impr" min="0" max="1.5" step="0.25" value="0.75">
+    </div>
+
+    <p class="gh">Eligible veteran population</p>
+    <p class="ctrl-note" style="margin:-4px 0 10px">
+      Several of these are <strong>estimated, not published</strong>. Together they are
+      the largest single uncertainty in the model &mdash; they alone move the aggregate
+      from 0.07 to 0.44 basis points.</p>
+    <div class="ctrl">
+      <div class="ctrl-label">
+        <span>Veteran share &mdash; state employees
+          <abbr class="tipped" title="SRC-24: 6% of the Virginia classified state workforce at June 30, 2024 (DHRM presentation to Senate Finance and Appropriations, January 21, 2025, slide 8). This is the only published anchor.">published</abbr>
+        </span>
+        <span class="val" id="v-vst">6.0%</span>
+      </div>
+      <input type="range" id="i-vst" min="1" max="16" step="0.5" value="6">
+    </div>
+    <div class="ctrl">
+      <div class="ctrl-label">
+        <span>Veteran share &mdash; teachers <span class="muted">(assumed)</span></span>
+        <span class="val" id="v-vtc">2.5%</span>
+      </div>
+      <input type="range" id="i-vtc" min="0.5" max="12" step="0.5" value="2.5">
+    </div>
+    <div class="ctrl">
+      <div class="ctrl-label">
+        <span>Veteran share &mdash; political subdivisions <span class="muted">(assumed)</span></span>
+        <span class="val" id="v-vps">7.0%</span>
+      </div>
+      <input type="range" id="i-vps" min="1" max="18" step="0.5" value="7">
+    </div>
+    <div class="ctrl">
+      <div class="ctrl-label">
+        <span>With qualifying active duty service <span class="muted">(ASM-16)</span></span>
+        <span class="val" id="v-qual">80%</span>
+      </div>
+      <input type="range" id="i-qual" min="50" max="100" step="1" value="80">
+    </div>
+    <div class="ctrl">
+      <div class="ctrl-label">
+        <span>Excluded by the military retired pay bar <span class="muted">(ASM-17)</span></span>
+        <span class="val" id="v-bar">18%</span>
+      </div>
+      <input type="range" id="i-bar" min="0" max="50" step="1" value="18">
+      <p class="ctrl-note">Federal law protects qualifying service associated with
+        non-regular Reserve-component retired pay under 10 U.S.C. ch. 1223, with
+        &sect;&nbsp;12736 application to the bridge <strong>subject to counsel
+        confirmation</strong>.</p>
+    </div>
+    <div class="ctrl">
+      <div class="ctrl-label">
+        <span>Did not already purchase in the 24-month window <span class="muted">(ASM-18)</span></span>
+        <span class="val" id="v-notbought">70%</span>
+      </div>
+      <input type="range" id="i-notbought" min="30" max="100" step="1" value="70">
+    </div>
+
+    <p class="gh">Scope and purchase rule</p>
+    <div class="ctrl">
+      <div class="ctrl-label"><span>Purchase rule (DECISION 4)</span></div>
+      <select id="i-rule">
+        <option value="D4a">D4a &mdash; partial purchase capped at the deficit (the bill as drafted)</option>
+        <option value="D4b">D4b &mdash; only where the deficit is fully coverable (rejected)</option>
+      </select>
+    </div>
+    <div class="ctrl">
+      <label class="ctrl-note" style="display:flex;gap:7px;align-items:flex-start">
+        <input type="checkbox" id="i-hybrid" style="margin-top:2px">
+        <span><strong>Separate Hybrid scenario.</strong> The bill
+          <strong>excludes</strong> hybrid participants (DECISION 2, resolved
+          October 19, 2026), so they are out of the primary model. Tick this only to
+          test the alternative.</span>
+      </label>
+    </div>
+  </details>
+
+  <details class="adv" id="official-panel">
+    <summary>Official VRS data mode</summary>
+    <div class="ctrl">
+      <label class="ctrl-note" style="display:flex;gap:7px;align-items:flex-start">
+        <input type="checkbox" id="i-official" style="margin-top:2px">
+        <span>Show the data contract. Estimated inputs are designed to be
+          <strong>replaced</strong> by VRS member-level aggregates without
+          rewriting the model.</span>
+      </label>
+    </div>
+    <div id="official-spec"></div>
+  </details>
+</aside>
+
+<!-- ============================================================== PANELS -->
+<main class="panels">
+
+  <section class="card" id="panel-a">
+    <h2>Panel A &middot; Participants</h2>
+    <p class="card-sub">Plan 1 and Plan 2 are modeled separately throughout and
+      combined only at the end. Counts are the <strong>cumulative FY2029&ndash;FY2038
+      cohort</strong>, matching the fiscal model's horizon &mdash; not an annual rate.</p>
+    <div class="tiles" id="a-tiles"></div>
+    <div class="table-wrap" style="margin-top:14px"><div id="a-table"></div></div>
+  </section>
+
+  <section class="card" id="panel-b">
+    <h2>Panel B &middot; Modeled pension impact</h2>
+    <p class="card-sub">Payroll and workforce effects are <strong>never</strong> folded
+      into the contribution-rate calculation. Nothing in Panel C moves any number here
+      &mdash; a claim you can test with the replacement slider.</p>
+    <div class="hero" id="b-hero"></div>
+    <h3>By benefit structure</h3>
+    <div id="b-plan-chart"></div>
+    <div class="table-wrap"><div id="b-plan-table"></div></div>
+    <h3>By employer plan &mdash; where a contribution rate is actually certified</h3>
+    <div class="table-wrap"><div id="b-emp-table"></div></div>
+    <div class="note" id="b-note"></div>
+  </section>
+
+  <section class="card" id="panel-c">
+    <h2>Panel C &middot; Modeled payroll &amp; workforce effect</h2>
+    <p class="card-sub"><strong>These are employer workforce/payroll effects, not
+      pension savings.</strong> They arise from a hiring decision, not from the
+      pension change, and they are shown separately for that reason.</p>
+    <div class="tiles" id="c-tiles"></div>
+    <h3>Payroll effect across the replacement range</h3>
+    <div id="c-chart"></div>
+    <div class="table-wrap"><div id="c-ladder-table"></div></div>
+    <h3>By employer plan</h3>
+    <div class="table-wrap"><div id="c-table"></div></div>
+    <div class="note warn" id="c-note"></div>
+  </section>
+
+  <section class="card" id="panel-d">
+    <h2>Panel D &middot; Combined fiscal view</h2>
+    <p class="card-sub">Three totals, kept separate. The combined figure is shown last
+      and smallest on purpose: it is the least reliable of the three, because it adds a
+      pension measurement to a workforce assumption.</p>
+    <div class="hero" id="d-hero"></div>
+    <div class="note stop" id="d-note"></div>
+  </section>
+
+  <section class="card" id="panel-e">
+    <h2>Panel E &middot; Member examples</h2>
+    <p class="card-sub">One illustrative Plan 1 member and one Plan 2 member, at the
+      assumptions now selected. These are the fiscal model's own profiles A and D.</p>
+    <div id="e-body"></div>
+  </section>
+
+  <section class="card" id="panel-f">
+    <h2>Panel F &middot; Assumption sensitivity</h2>
+    <p class="card-sub">Each driver swung one at a time around the current scenario.
+      Ordered by how much it moves the modeled pension impact.</p>
+    <div id="f-chart"></div>
+    <div class="table-wrap"><div id="f-table"></div></div>
+    <div class="note" id="f-note"></div>
+  </section>
+
+  <section class="card" id="panel-g">
+    <h2>Panel G &middot; Population funnel</h2>
+    <p class="card-sub">From every active member in the three VRS plans down to expected
+      participants. Each step carries its provenance, because the credibility of the
+      whole model rests on the weakest step.</p>
+    <div class="funnel" id="g-funnel"></div>
+    <div class="note warn" id="g-note"></div>
+  </section>
+
+  <section class="card" id="panel-ancillary">
+    <h2>Health insurance credit &amp; COLA</h2>
+    <p class="card-sub">Shown separately from the retirement-plan contribution-rate
+      impact, because both run on separately funded trusts and sit outside every
+      basis-point figure in this tool.</p>
+    <div class="tiles" id="hc-tiles"></div>
+    <div class="note stop" id="hc-note"></div>
+  </section>
+
+  <section class="card" id="panel-registry">
+    <h2>Source &amp; assumption registry</h2>
+    <p class="card-sub">Exported from the fiscal model's own <code>inputs.py</code>, so
+      what is shown here cannot drift from what produced the numbers.</p>
+    <div id="reg-body"></div>
+  </section>
+
+</main>
+</div>
+
+<div class="tooltip" id="tooltip" role="status" aria-live="polite"></div>
+
+<script src="data/baseline.js"></script>
+<script src="data/cells.js"></script>
+<script src="js/registry.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/ui.js"></script>
+</body>
+</html>
