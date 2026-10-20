@@ -491,6 +491,19 @@ abbr.tipped { text-decoration: none; }
 }
 .prose pre code { background: none; padding: 0; }
 .prose table.dt { margin: 12px 0; }
+
+/* A table footnote. Tables are what get screenshotted and pasted, so a
+   qualifier that lives only in surrounding prose does not travel with the
+   figure. `.fn` keeps it attached to the table. MOO-271 finding S-07. */
+.prose p.fn {
+  margin: -6px 0 14px; font-size: 11.5px; line-height: 1.45; color: var(--text-secondary);
+}
+/* A caption inside a table cell, carrying the panel's own warning into the
+   row rather than leaving it in prose below. MOO-271 finding M-02. */
+.prose table.dt .cap {
+  display: block; margin-top: 3px; font-size: 11px; line-height: 1.4;
+  font-weight: 400; color: var(--text-secondary);
+}
 .prose blockquote {
   margin: 12px 0; padding: 9px 13px; border-left: 3px solid var(--axis);
   background: var(--surface-2); border-radius: var(--radius-sm);
@@ -503,6 +516,20 @@ abbr.tipped { text-decoration: none; }
   .shell { grid-template-columns: 1fr; padding: 0; }
   .card { break-inside: avoid; border: 1px solid #999; }
   body { background: #fff; }
+
+  /* `print-required` is a guarantee, so it has to carry a rule that delivers
+     one. Anything marked with it must survive printing — which means it must
+     not be nested inside an element this block hides, because `display: block`
+     on a descendant of a `display: none` ancestor restores nothing. The
+     outline is a deliberate tripwire: if a print-required block is ever
+     visible on screen with it, it has been placed somewhere it does not
+     belong. MOO-271 finding S-01. */
+  .print-required {
+    display: block !important;
+    visibility: visible !important;
+    break-inside: avoid;
+  }
+  .masthead .print-required { outline: 2px dashed #c00; }
 }
 
 /* ============================================================ walk-through

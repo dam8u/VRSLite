@@ -470,7 +470,7 @@ ASSUMPTIONS = {
 
 "ASM-18": """Share that did not already purchase in the 24-month window. Members who
     purchased prior active duty service at approximate normal cost within the
-    § 51.1-142.2 B 3 window already hold it as creditable service and gain nothing
+    § 51.1-142.2 B window already hold it as creditable service and gain nothing
     from the bridge. VRS does not publish purchase-of-prior-service take-up.
     Assumed 70% did not purchase (low 55%, high 85%).""",
 

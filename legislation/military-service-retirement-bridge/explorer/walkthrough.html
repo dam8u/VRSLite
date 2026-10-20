@@ -18,7 +18,7 @@
       <p class="sub">
         Military Service Retirement Bridge &mdash; Legislative Scenario Explorer
         &middot; proposed new <strong>Va. Code &sect; 51.1-142.4</strong>
-        &middot; bill version 1.4, package version 1.5
+        &middot; bill version 1.4, package version 1.6
       </p>
     </div>
     <div class="masthead-actions">
@@ -29,18 +29,26 @@
     </div>
   </div>
 
-  <div class="disclaimer print-required">
-    <strong>This tool is an illustrative policy-analysis model. It is not an actuarial
-    certification, the VRS Board impact statement required under &sect; 30-19.1:7, or a
-    General Assembly fiscal impact statement.</strong>
-    It is not a savings calculator and does not advocate a result. Every figure is tagged
-    as a <span class="prov prov-fact"><span class="ic">&#9679;</span>Published&nbsp;Fact</span>,
-    a <span class="prov prov-derived"><span class="ic">&#9681;</span>Derived&nbsp;Estimate</span>,
-    or a <span class="prov prov-assumption"><span class="ic">&#9675;</span>Scenario&nbsp;Assumption</span>.
-    Prepared by Policy Development Team using legal, policy, and financial analysis tools,
-    pending review by veterans&rsquo; legal counsel.
-  </div>
 </header>
+
+<!-- Outside </header> deliberately. @media print hides .masthead, and
+     display:block on a descendant of a display:none ancestor does not restore
+     layout — so a .disclaimer nested in the masthead vanishes from every
+     printed and PDF-exported copy, taking the version stamp, the provenance
+     legend and the attribution line with it. index.html was fixed for this in
+     MOO-265; this page was not. MOO-271 finding S-01. -->
+<div class="disclaimer print-required">
+  <strong>This tool is an illustrative policy-analysis model. It is not an actuarial
+  certification, the VRS Board impact statement required under &sect; 30-19.1:7, or a
+  General Assembly fiscal impact statement.</strong>
+  It is not a savings calculator and does not advocate a result. This document narrates
+  <strong>bill version 1.4, package version 1.6</strong>. Every figure is tagged
+  as a <span class="prov prov-fact"><span class="ic">&#9679;</span>Published&nbsp;Fact</span>,
+  a <span class="prov prov-derived"><span class="ic">&#9681;</span>Derived&nbsp;Estimate</span>,
+  or a <span class="prov prov-assumption"><span class="ic">&#9675;</span>Scenario&nbsp;Assumption</span>.
+  Prepared by Policy Development Team using legal, policy, and financial analysis tools,
+  pending review by veterans&rsquo; legal counsel.
+</div>
 
 <div class="shell">
 
@@ -93,6 +101,8 @@
     WT.orientation.items.map(function (it) {
       return '<li><strong>' + it[0] + '</strong> ' + it[1] + '</li>';
     }).join('') + '</ol>' +
+    (WT.orientation.shortPath
+      ? '<div class="note"><p>' + WT.orientation.shortPath + '</p></div>' : '') +
     '<blockquote><p><strong>How to use this document.</strong> Each step below names ' +
     'the settings to choose, says where to look, and then explains what you are ' +
     'seeing, why the tool works that way, and why it matters for a decision. You can ' +

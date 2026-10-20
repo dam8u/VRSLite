@@ -204,7 +204,7 @@ window.VRS_REGISTRY = {
            'reserve-component retired pay, which is protected.' },
     { field: 'priorPurchaseShare',
       replaces: 'ASM-18 — assumed 70% did not already purchase',
-      ask: 'Take-up of the existing § 51.1-142.2 B 3 24-month ' +
+      ask: 'Take-up of the existing § 51.1-142.2 B 24-month ' +
            'approximate-normal-cost military purchase window.' },
     { field: 'qualifyingServiceDistribution',
       replaces: 'ASM-25 — assumed distribution of purchasable years',

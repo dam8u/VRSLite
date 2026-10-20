@@ -686,9 +686,11 @@
     $('f-note').innerHTML =
       '<p><strong>Only assumptions about people matter.</strong> At these settings ' +
       'the two largest drivers are <strong>' + topTwo.map(function (r) {
-        return esc(r.label); }).join('</strong> and <strong>') + '</strong>. Every ' +
-      'classical actuarial lever — discount rate, mortality improvement, ' +
-      'salary growth — moves the answer far less. That is why the ' +
+        return esc(r.label); }).join('</strong> and <strong>') + '</strong>. The ' +
+      'classical actuarial levers tested here — discount rate and salary ' +
+      'growth — move the answer far less. (Mortality improvement is not one of ' +
+      'this chart’s bars; the fiscal model tests it separately at 0.00% and ' +
+      '1.25%, where it moves the result by about 0.01 bp.) That is why the ' +
       'pre-introduction asks are for VRS <em>member-level data</em>, not for a ' +
       'different actuarial method.</p>' +
       '<p>The two workforce drivers move the payroll effect substantially and the ' +
@@ -696,7 +698,14 @@
       'the second is misleading.</p><p><strong>φ guard band:</strong> ASM-22’s ' +
       'documented range is 0.25–0.75, while the control and this tornado span 0–1 ' +
       'and expose the sign change near φ = 0.84. Purchaser counts are not ' +
-      're-estimated as φ moves.</p>';
+      're-estimated as φ moves.</p>' +
+      '<p><strong>The bars are not swung over commensurable bases, so the ' +
+      'ordering is not a ranking by likelihood.</strong> Each driver is swung ' +
+      'over its own control range — φ over 0–1, take-up over 5–50% — while the ' +
+      'funnel uses its documented low and high cases. Restricted to ASM-22’s ' +
+      'documented 0.25–0.75, φ swings about 0.28 bp and ranks third, behind ' +
+      'take-up and the funnel. Read the ordering as where to look, not as which ' +
+      'assumption is most likely to be wrong.</p>';
   }
 
   /* ==================================================================== */
@@ -997,9 +1006,14 @@
     if (!$('i-p2sal').value) $('i-p2sal').placeholder = Math.round(P2.modelMeanSalary);
   }
 
+  /* Some preset names already end in "case)" — appending " case" unconditionally
+     produced "Low Participation (low-cost case) case" in the scenario chip.
+     MOO-271 finding m-02. */
   function presetLabel() {
     var pr = E.presets();
-    return activePreset && pr[activePreset] ? pr[activePreset].name + ' case' : 'Custom scenario';
+    if (!activePreset || !pr[activePreset]) return 'Custom scenario';
+    var n = pr[activePreset].name;
+    return /case\)?$/i.test(n) ? n : n + ' case';
   }
 
   /* -------------------------------------------------------------- presets */
@@ -1094,6 +1108,13 @@
     };
   }
 
+  /* One definition, used by every export. Both the scenario handout and the CSV
+     must carry it, because an exported file travels without the page around it.
+     MOO-271 finding M-07. */
+  var ATTRIBUTION =
+    'Prepared by Policy Development Team using legal, policy, and financial ' +
+    'analysis tools, pending review by veterans’ legal counsel.';
+
   var QUALIFIER =
     'Every basis-point figure is the modeled retirement-plan employer contribution ' +
     'impact and excludes the separately funded health insurance credit and COLA ' +
@@ -1143,7 +1164,7 @@
       '@page{margin:0.6in}</style></head><body>' +
       '<h1>Military Service Retirement Bridge — scenario summary</h1>' +
       '<p class="sub">Proposed new Va. Code § 51.1-142.4 &middot; bill version 1.4, ' +
-      'package version 1.5 &middot; ' + esc(presetLabel()) + ' &middot; generated ' +
+      'package version 1.6 &middot; ' + esc(presetLabel()) + ' &middot; generated ' +
       esc(when) + '</p>' +
       '<div class="warn"><strong>This is an illustrative policy-analysis model. It is ' +
       'not an actuarial certification, the VRS Board impact statement required under ' +
@@ -1166,8 +1187,7 @@
       '10 U.S.C. ch. 1223. § 12736 does not preempt the bill — it reaches only ' +
       'service a plan otherwise properly credits, and Virginia credits this ' +
       'service only on purchase.</div>' +
-      '<div class="note">Prepared by Policy Development Team using legal, policy, and ' +
-      'financial analysis tools, pending review by veterans’ legal counsel.</div>' +
+      '<div class="note">' + esc(ATTRIBUTION) + '</div>' +
       '</body></html>';
   }
 
@@ -1177,12 +1197,17 @@
     var out = [['Section', 'Item', 'Value']];
     out.push([q('Header'), q('Scenario'), q(presetLabel())]);
     out.push([q('Header'), q('Generated'), q(new Date().toISOString())]);
-    out.push([q('Header'), q('Bill / package version'), q('bill 1.4 / package 1.5')]);
+    out.push([q('Header'), q('Bill / package version'), q('bill 1.4 / package 1.6')]);
     out.push([q('Header'), q('Status'), q('Illustrative policy-analysis model. Not an ' +
       'actuarial certification, not the VRS Board statement under Sec. 30-19.1:7, not ' +
       'a General Assembly fiscal impact statement.')]);
     out.push([q('Header'), q('Required qualifier'), q(QUALIFIER)]);
     out.push([q('Header'), q('Behavioural assumption basis'), q(BEHAVIOURAL_BASIS)]);
+    /* The scenario handout carried the attribution line and the CSV did not,
+       while the walk-through told the reader both exports carry it. An export
+       travels without the page around it, so it carries its own attribution.
+       MOO-271 finding M-07. */
+    out.push([q('Header'), q('Attribution'), q(ATTRIBUTION)]);
     s.inputs.forEach(function (r) { out.push([q('Input'), q(r[0]), q(r[1])]); });
     s.outputs.forEach(function (r) { out.push([q('Output'), q(r[0]), q(r[1])]); });
     R.panelG.steps.forEach(function (st) {
@@ -1313,6 +1338,8 @@
         '<ol>' + WT.orientation.items.map(function (it) {
           return '<li><strong>' + it[0] + '</strong> ' + it[1] + '</li>';
         }).join('') + '</ol>' +
+        (WT.orientation.shortPath
+          ? '<div class="note"><p>' + WT.orientation.shortPath + '</p></div>' : '') +
         '<p class="muted" style="font-size:11.5px">' + esc(WT.meta.audience) +
         ' &middot; about ' + WT.meta.minutes + ' minutes.</p>'
     };

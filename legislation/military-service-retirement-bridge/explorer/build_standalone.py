@@ -126,13 +126,42 @@ def inline(page: str, embedded_pages: dict[str, str] | None = None,
 
     for old, new in RENAME.items():
         if disable_cross_links:
-            html = html.replace('href="%s"' % old,
-                                'href="#" title="Cross-page navigation is disabled in this embedded copy"')
+            # A title tooltip never appears on a touch device, and a reader who
+            # arrived here through a blob: URL has no bookmarkable address to
+            # return to. The route back is the browser's Back button, so say so
+            # in visible text rather than in an attribute. MOO-271 finding m-04.
+            html = html.replace(
+                'href="%s"' % old,
+                'href="#" class="xlink-disabled" title="Cross-page navigation is '
+                'disabled in this embedded copy — use your browser\'s Back button '
+                'to return to the walk-through"')
         elif embedded_pages and old in embedded_pages:
             html = html.replace('href="%s"' % old,
                                 'href="#" data-xpage="%s"' % old)
         else:
             html = html.replace('href="%s"' % old, 'href="%s"' % new)
+
+    if disable_cross_links:
+        # Visible, not a tooltip. This copy is reached through a blob: URL that
+        # cannot be bookmarked or re-shared, and its own cross-links are dead,
+        # so the only route onward is Back. MOO-271 finding m-04.
+        note = (
+            '<div class="disclaimer print-required" style="border-color:var(--axis);'
+            'background:var(--surface-2)">'
+            '<strong>Embedded copy.</strong> You reached this page from the guided '
+            'walk-through. Its own Methodology and walk-through links are disabled '
+            'here, and this address cannot be bookmarked &mdash; use your '
+            'browser&rsquo;s <strong>Back</strong> button to return to the '
+            'walk-through.</div>'
+        )
+        at = html.find("<div class=\"disclaimer")
+        if at < 0:
+            at = html.find("</header>")
+            if at < 0:
+                raise SystemExit(
+                    "%s has nowhere to put the embedded-copy note" % page)
+            at += len("</header>")
+        html = html[:at] + note + html[at:]
 
     if embedded_pages and not disable_cross_links:
         payloads = ",".join(

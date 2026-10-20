@@ -898,6 +898,14 @@ async function main() {
         && /not re-estimated/i.test(csv.text));
       check('CSV marks the combined scenario result READ LAST',
         csv.text.includes('READ LAST'));
+      /* The walk-through tells the reader that BOTH exports carry the
+         attribution line. The handout did and the CSV did not.
+         MOO-271 finding M-07. */
+      check('CSV carries the attribution line, as the walk-through says it does',
+        /Policy Development Team/.test(csv.text) &&
+        /pending review by veterans/i.test(csv.text),
+        'an export travels without the page around it, so it has to carry its ' +
+        'own attribution');
     }
     const hand = await page.evaluate("return window.__T.capture('handout')");
     check('scenario summary downloads with a sensible filename',
@@ -926,7 +934,7 @@ async function main() {
         && /unquantified COLA exposure/i.test(hand.text)
         && /modeled retirement-plan employer contribution impact/i.test(hand.text));
       check('scenario summary states the current bill and package version',
-        /bill version 1\.4/i.test(hand.text) && /package version 1\.5/i.test(hand.text));
+        /bill version 1\.4/i.test(hand.text) && /package version 1\.6/i.test(hand.text));
     }
     await page.evaluate("window.__T.setRange('i-phi',90); return 1");
     await sleep(90); /* main render done; the 220ms chart debounce is intentionally pending */
@@ -1025,7 +1033,7 @@ async function main() {
        quotes to be ON SCREEN. Prose is read from js/walkthrough.js and the
        screen is read from the panels only — never from the drawer — so the
        check cannot pass by finding the sentence that makes the claim. */
-    startGroup('20. The guided walk-through, and every figure it quotes');
+    startGroup('19. The guided walk-through, and every figure it quotes');
     await page.evaluate("window.__T.click('btn-reset'); return 1");
     await settle(page, true);
 
@@ -1146,7 +1154,7 @@ async function main() {
         else if (k === 'p1Participants') { acts.push(['setNum', 'i-p1n', v]); }
         else if (k === 'p2Participants') { acts.push(['setNum', 'i-p2n', v]); }
         else if (k === 'bridgeYearsMode') { acts.push(['clickSeg', 'seg-bridge-mode', v]); }
-        else { throw new Error('group 20 cannot drive parameter: ' + k); }
+        else { throw new Error('group 19 cannot drive parameter: ' + k); }
       }
       return acts;
     }
@@ -1172,8 +1180,137 @@ async function main() {
     await page.evaluate("window.__T.click('btn-reset'); return 1");
     await settle(page, true);
 
+    /* ----------------------------------------------------------------
+       Group 18 proves every quoted figure is one the model actually
+       produces. It cannot prove a figure is quoted WITH the qualifier the
+       package requires, because that is a property of the prose and not of
+       the panels — and a qualifier dropped from the narration is this
+       document's characteristic failure. MOO-271 found three instances of
+       it, including $341,065 travelling bare on page 4 with every component
+       of a ten-fold error available.
+
+       So this group reads the content module as text, section by section,
+       and asserts the rules the package states for itself. The section is
+       the unit because a section is what the drawer shows at once and what
+       prints as a block: a qualifier two sections away does not travel with
+       a screenshot. Recommended by the MOO-271 review, section 6 item 9. */
+    startGroup('20. Qualifier-bound figures carry their qualifiers');
+
+    const sections = await page.evaluate(
+      'var W = window.VRS_WALKTHROUGH, out = [];' +
+      'function strip(h) { var d = document.createElement("div");' +
+      '  d.innerHTML = h; return d.innerText || d.textContent || ""; }' +
+      'out.push({ name: "introduction", text: strip(W.intro.join(" ")) });' +
+      'out.push({ name: "orientation", text: strip(' +
+      '  W.orientation.items.map(function (i) { return i[0] + " " + i[1]; })' +
+      '    .join(" ") + " " + (W.orientation.shortPath || "")) });' +
+      'W.steps.forEach(function (s, i) {' +
+      '  out.push({ name: "step " + (i + 1),' +
+      '    text: strip([s.title, s.seeing, s.why, s.significance, s.caution || ""]' +
+      '      .join(" ")) });' +
+      '});' +
+      'W.closing.items.forEach(function (it, i) {' +
+      '  out.push({ name: "closing point " + (i + 1), text: strip(it) });' +
+      '});' +
+      'out.push({ name: "closing footer", text: strip(W.closing.footer) });' +
+      'return JSON.stringify(out);').then(JSON.parse);
+
+    check('the content module exposes every section as readable prose',
+      sections.length === 1 + 1 + 10 + 5 + 1, `${sections.length} sections`);
+
+    /* A basis-point figure must never appear without the exclusion. */
+    const BP = /\d+\.\d+\s*(?:bp\b|basis point)/i;
+    for (const s of sections.filter((x) => BP.test(x.text))) {
+      const t = s.text.toLowerCase();
+      check(`${s.name}: its basis-point figures state what they exclude`,
+        /exclud/.test(t) && t.includes('health insurance credit') &&
+        t.includes('cola'),
+        'this section quotes a basis-point figure but does not say it is the ' +
+        'modeled retirement-plan impact excluding the separately funded HIC ' +
+        'and COLA effects — the package rule requires that on every public use');
+    }
+
+    /* $341,065 must never appear without the whole qualifier. It is the one
+       figure in the package that produces a ten-fold error when multiplied. */
+    for (const s of sections.filter((x) => x.text.includes('341,065'))) {
+      const t = s.text.toLowerCase();
+      check(`${s.name}: $341,065 is not presented as a cost per veteran`,
+        t.includes('not a cost per veteran'),
+        'the figure is the net value in the single most favourable published ' +
+        'profile; multiplying it by a participant count overstates the ' +
+        'model’s own aggregate roughly tenfold');
+      check(`${s.name}: $341,065 is identified as the most favourable profile`,
+        /most favourable|most favorable/.test(t) && /seven|profile/.test(t),
+        'without this the figure reads as typical rather than extreme');
+      check(`${s.name}: $341,065 is not called a maximum`,
+        !/maximum/.test(t) || /not a (model-wide )?maximum|not a maximum/.test(t),
+        'the cell grid reaches about $419,000, so "maximum" is falsifiable ' +
+        'against the committed data');
+    }
+
+    /* The no-rate-change conclusion is true single-driver and false on the
+       published compound-adverse case. It must not be stated unrestricted. */
+    for (const s of sections.filter((x) => /nearest basis point/i.test(x.text))) {
+      const t = s.text.toLowerCase();
+      check(`${s.name}: the no-rate-change claim is restricted to where it holds`,
+        /single-driver|central case|compound/.test(t),
+        'the fiscal model states that at 1.16 bp a plan’s rate does change ' +
+        'to the nearest basis point, so an unrestricted claim contradicts the ' +
+        'package’s own model');
+    }
+
+    /* Labels and readings the package formally withdrew must not reappear.
+
+       Two scopes, because one of these is a term of art rather than an error.
+       "frozen-service baseline" is the fiscal model's own name for the SUB
+       baseline and the dashboard DEFINES it — registry.js carries a glossary
+       entry stating it is the same-date, same-service, reduced-allowance
+       counterfactual, which is exactly right. What package version 1.4
+       withdrew was that label applied to the $341,065 FIGURE in a document
+       with no glossary, which is the circulated walk-through. So the phrase is
+       barred from the prose and permitted on the panels. The other three are
+       simply wrong wherever they appear. */
+    const WITHDRAWN_PROSE = [
+      ['frozen-service', 'withdrawn as a label for the $341,065 figure, and ' +
+        'undefined in a document with no glossary; it is a same-date, ' +
+        'same-service reduced-allowance counterfactual']
+    ];
+    const WITHDRAWN_EVERYWHERE = [
+      ['closed and shrinking', 'withdrawn in package version 1.4 in favour of ' +
+        '"substantially closing, with named exceptions under review"'],
+      ['51.1-142.2 b 3', 'the 24-month period is in an unnumbered concluding ' +
+        'paragraph of subsection B, not in subdivision B 3'],
+      ['state or federal', 'the inserted words are not in 10 U.S.C. § 12736']
+    ];
+    for (const [phrase, why] of WITHDRAWN_PROSE.concat(WITHDRAWN_EVERYWHERE)) {
+      const hits = sections.filter((x) => x.text.toLowerCase().includes(phrase));
+      check(`no section reintroduces "${phrase}"`, hits.length === 0,
+        `${hits.map((h) => h.name).join(', ')} — ${why}`);
+    }
+
+    /* Panel labels and registry rows get quoted exactly as prose does, and the
+       § 51.1-142.2 B 3 pinpoint survived in three of them after being
+       corrected in the narration — including a Panel G funnel step a VRS
+       reviewer reads directly. So the rule reaches the rendered dashboard too. */
+    const pageText = await page.evaluate(
+      'return (document.querySelector(".panels").innerText || "") + " " + ' +
+      '(document.querySelector(".disclaimer").innerText || "")');
+    for (const [phrase, why] of WITHDRAWN_EVERYWHERE) {
+      check(`no panel or registry label reintroduces "${phrase}"`,
+        !pageText.toLowerCase().includes(phrase), why);
+    }
+
+    /* The version stamp has to survive printing, which means it cannot live
+       only in the masthead. MOO-271 finding S-01. */
+    const footer = sections.find((s) => s.name === 'closing footer');
+    check('the closing footer carries the bill and package version',
+      !!footer && /version 1\.4/.test(footer.text) &&
+      /package version 1\.6/.test(footer.text),
+      'the masthead is display:none in print, so the footer is the only place ' +
+      'a printed copy can be matched to the bill it narrates');
+
     /* ---------------------------------------------------------------- */
-    startGroup('19. No page errors across the whole sweep');
+    startGroup('21. No page errors across the whole sweep');
     const errs = page.errors();
     check('no uncaught page exception during any state tested',
       errs.length === 0, errs.slice(0, 4).join('\n          '));

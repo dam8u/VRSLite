@@ -20,9 +20,17 @@
    page prints them as the settings to choose by hand. A step's prose and its
    settings therefore cannot disagree either.
 
+   `preset` is DECLARATIVE, not a runtime input. wtApply() deliberately reads
+   only `params`, so a step applies the same absolute settings whether or not
+   it names a preset. The field exists to be CHECKED: test/standalone.js
+   group 19 asserts that a step naming a preset carries exactly that preset's
+   parameters, so a step whose prose says "click Central" while its params say
+   something else fails the harness. Changing `preset` alone therefore does
+   not silently change behaviour — it fails a test.
+
    NOTHING HERE COMPUTES A FIGURE. Every number quoted in the prose is
    reproduced by the step's own settings and is asserted against the engine by
-   test/standalone.js group 20, so a changed model fails the harness instead of
+   test/standalone.js group 19, so a changed model fails the harness instead of
    silently contradicting the narration.
 
    Illustrative policy-analysis model. Not an actuarial certification, not the
@@ -40,10 +48,29 @@
 
   /* The central-case participant split, used to express "400 participants"
      without silently flattening the Plan 1 / Plan 2 mix. 74% of modeled
-     purchasers are Plan 1. Asserted in test/standalone.js group 20. */
+     purchasers are Plan 1. Asserted in test/standalone.js group 19. */
   var Q_P1 = 296, Q_P2 = 104;
 
+  /* The package rule is that EVERY public use of a basis-point figure states
+     what it excludes. A qualifier that lives in prose two paragraphs away does
+     not travel with a screenshotted table, so it is defined once here and
+     attached to every table that quotes basis points.
+
+     test/standalone.js group 20 enforces the rule structurally: any section of
+     this document containing a basis-point figure must also contain the
+     exclusion of the separately funded HIC and COLA effects. That is the check
+     group 19 cannot make — group 19 proves a quoted figure is real, not that it
+     is quoted with its qualifier. MOO-271 finding S-07. */
+  var BP_FOOTNOTE =
+    '<p class="fn"><strong>Basis points</strong> are the modeled ' +
+    'retirement-plan employer contribution impact only; the separately funded ' +
+    'health insurance credit and COLA effects, including unquantified COLA ' +
+    'exposure, are excluded (step 7). The fiscal model is complete for bill ' +
+    'version 1.1 and requires a refresh against the bill as introduced.</p>';
+
   return {
+    BP_FOOTNOTE: BP_FOOTNOTE,
+
     meta: {
       title: 'Guided walk-through',
       subtitle: 'What to choose in the Scenario Explorer, in order — and what ' +
@@ -71,15 +98,17 @@
         'service, and would not increase the allowance by a dollar.',
 
       'The <strong>gap it fills</strong>: under current law that same veteran ' +
-        'can buy military service only in her <em>first 24 months</em> of ' +
-        'VRS-covered employment (Va. Code § 51.1-142.2 B 3) — a window that ' +
-        'closes decades before retirement is on her mind, and long before she ' +
-        'can afford it. After it closes, the only route left is purchase at ' +
-        'full <em>actuarial equivalent cost</em>, which is far more expensive. ' +
-        'The low-cost window therefore falls early in a career, when disposable ' +
-        'income is typically lower and retirement eligibility is remote. The ' +
-        'bridge would reopen a narrow, eligibility-only purchase at approximate ' +
-        'normal cost after that window has closed.',
+        'can buy military service <strong>at approximate normal cost</strong> ' +
+        'only in her <em>first 24 months</em> of VRS-covered employment ' +
+        '(Va. Code § 51.1-142.2 B, concluding paragraph) — a window that closes ' +
+        'decades before retirement is on her mind, and long before she can ' +
+        'afford it. <strong>Her right to purchase does not expire; what expires ' +
+        'is the price.</strong> After the window closes the service remains ' +
+        'purchasable, but only at full <em>actuarial equivalent cost</em>, which ' +
+        'is far more expensive. So the low-cost window falls early in a career, ' +
+        'when disposable income is typically lower and retirement eligibility is ' +
+        'remote. The bridge would reopen a narrow, eligibility-only purchase at ' +
+        'approximate normal cost after that window has closed.',
 
       'What the <strong>tool</strong> adds is the price of that, under ' +
         'assumptions you set yourself. It is an <strong>illustrative ' +
@@ -97,7 +126,13 @@
         ['Every count is a ten-year total, not an annual rate.',
          'The model runs the FY2029–FY2038 cohort. “222 participants” means 222 ' +
          'members across ten years — roughly 22 a year. Reading any count here ' +
-         'as an annual figure overstates the bill by a factor of ten.'],
+         'as an annual figure overstates the bill by a factor of ten. ' +
+         '<strong>Disclosed, because an actuary will find it:</strong> ' +
+         'DECISION 14 moved the act’s effective date to July 1, 2029, so the ' +
+         'correct window is <strong>FY2030–FY2039</strong>. FY2029 ends three ' +
+         'weeks before the act would take effect. The shift is part of the ' +
+         'fiscal refresh step 10 requires and is <strong>not yet in these ' +
+         'figures</strong>.'],
         ['Three kinds of number, and the tool labels every one.',
          'A <em>Published Fact</em> comes from a VRS valuation, a Board action, ' +
          'DHRM testimony or the Code of Virginia. A <em>Derived Estimate</em> is ' +
@@ -110,9 +145,17 @@
          '<em>Modeled payroll effect</em>, <em>Modeled workforce effect</em> and ' +
          '<em>Combined scenario effect</em>. That is not delicacy. A pension ' +
          'liability and a payroll decision are different kinds of claim with ' +
-         'different evidence behind them, and step 7 is the thirty seconds that ' +
+         'different evidence behind them, and step 6 is the thirty seconds that ' +
          'proves the tool keeps them apart.']
-      ]
+      ],
+      shortPath:
+        '<strong>If you have ten minutes rather than twenty,</strong> read this ' +
+        'orientation, then <strong>step 1</strong> (the fiscal case), ' +
+        '<strong>step 3</strong> (the assumption that decides the sign of the ' +
+        'answer), <strong>step 7</strong> (the unquantified COLA exposure) and ' +
+        'the <strong>five pre-patron conditions in step 10</strong>. Those four ' +
+        'carry every disclosure that matters; the rest is how to reproduce them ' +
+        'yourself.'
     },
 
     /* ------------------------------------------------------------- steps */
@@ -146,20 +189,37 @@
           'a property of the bill; the other is a property of a decision nobody ' +
           'has made yet.</p>',
         significance:
-          '<p>0.19 basis points is 0.0019% of covered payroll. On the state ' +
-          'plan’s published 11.07% employer rate it is the difference between ' +
-          '11.07% and about 11.0722% — <strong>to the nearest basis point, no ' +
-          'employer’s contribution rate changes.</strong> That is the fiscal case ' +
-          'at the central assumptions, stated without any workforce offset ' +
-          'helping it.</p>' +
+          '<p>0.19 basis points is 0.0019% of covered payroll. The state plan’s ' +
+          'own figure is <strong>0.22 bp</strong>, which takes its published ' +
+          '11.07% employer rate to about <strong>11.0722%</strong> — so ' +
+          '<strong>on this central case, to the nearest basis point, no ' +
+          'employer’s contribution rate changes.</strong> (The per-plan figures ' +
+          'differ; 0.19 bp is the combined result and on the state rate alone it ' +
+          'would read 11.0719%.) That is the fiscal case at the central ' +
+          'assumptions, stated without any workforce offset helping it.</p>' +
+          '<p><strong>State the restriction with the claim.</strong> That ' +
+          'conclusion holds on the central case and on every single-driver ' +
+          'excursion. It does <em>not</em> hold on the fiscal model’s published ' +
+          'compound-adverse case, where <strong>1.16 bp does move a plan’s rate ' +
+          'by one basis point</strong>. Step 9 gives that figure. Anyone who ' +
+          'repeats the no-rate-change sentence without the exception is ' +
+          'overstating this analysis, and the package’s own fiscal model says ' +
+          'so.</p>' +
           '<p><strong>Required qualifier, and it travels with the figure ' +
           'everywhere:</strong> 0.19 bp is the modeled <em>retirement-plan</em> ' +
           'employer contribution impact. It <strong>excludes</strong> the ' +
           'separately funded health insurance credit and COLA effects, including ' +
-          'unquantified COLA exposure (step 8). The fiscal model is complete for ' +
+          'unquantified COLA exposure (step 7). The fiscal model is complete for ' +
           'bill version 1.1 and requires a refresh against the bill as ' +
           'introduced. A basis-point figure quoted without that sentence is being ' +
-          'quoted wrongly.</p>'
+          'quoted wrongly.</p>' +
+          '<p><strong>And one thing more, which step 3 is entirely about.</strong> ' +
+          'This central figure rests on a behavioural assumption with no ' +
+          'published evidence behind it, which decides the <em>sign</em> of the ' +
+          'per-member result and on which self-selection runs the unfavourable ' +
+          'way. <strong>Read 0.19 bp as the optimistic end of a range, not its ' +
+          'middle.</strong> If you read no further than this step, that sentence ' +
+          'is the one to carry.</p>'
       },
 
       {
@@ -189,8 +249,19 @@
           'years) and <strong>B 3</strong> (the Rule of 90) and nowhere else. The ' +
           'bill carves it out of the definition of “creditable service” in ' +
           '§ 51.1-124.3, so it cannot enter the benefit formula, average final ' +
-          'compensation, the health insurance credit threshold, group life ' +
-          'service thresholds, or the five-year vesting analogue.</p>' +
+          'compensation, the health insurance credit threshold, the group life ' +
+          '<em>service threshold</em> — though not the § 51.1-505 B step-down, ' +
+          'which follows the separation date; see step 7 — or the five-year ' +
+          'vesting analogue.</p>' +
+          '<p><strong>The carve-out is necessary and not sufficient.</strong> ' +
+          'Version 1.4 adds two enabling amendments — subdivision B 4 of ' +
+          '§ 51.1-153 and the parallel paragraph of subdivision A 3 of ' +
+          '§ 51.1-155 — because without them the credit leaks into <strong>PLOP, ' +
+          'the death-in-service benefit and deferred retirement</strong>, and ' +
+          'produces an employer-funded increase in the allowance itself, even ' +
+          'though it is not creditable service. Containment took three ' +
+          'amendments, not one. That is the first question a VRS reviewer ' +
+          'asks.</p>' +
           '<p>The 4-versus-2 asymmetry is arithmetic, not drafting. Under the ' +
           'Rule of 90 age and service <em>each</em> accrue a year per year ' +
           'worked, so the sum grows <strong>two points a year</strong>. Closing a ' +
@@ -232,6 +303,7 @@
           '<tr><td>75% — ASM-22 high</td><td>$1.86M</td><td>0.05 bp</td></tr>' +
           '<tr><td>100% — everyone would have worked on</td><td>&minus;$3.43M</td><td>&minus;0.09 bp</td></tr>' +
           '</tbody></table>' +
+          BP_FOOTNOTE +
           '<p>The aggregate crosses zero at about <strong>&phi; = 0.84</strong>. ' +
           'Above that the bill is modeled as a <em>gain</em> to the plan, because ' +
           'purchasers pay in more than the value they receive.</p>',
@@ -240,18 +312,34 @@
           'worked on to unreduced eligibility anyway</strong>. It decides which ' +
           'counterfactual each purchaser is measured against, and the two ' +
           'counterfactuals are not close:</p>' +
-          '<ul><li>A <strong>frozen-service</strong> purchaser (weight ' +
-          '1&nbsp;&minus;&nbsp;&phi;) was leaving regardless. The bridge removes ' +
-          'the actuarial reduction from an allowance she would have taken anyway, ' +
-          'and she receives a <strong>substantial subsidy</strong>.</li>' +
+          '<ul><li>A <strong>“leaving anyway”</strong> purchaser (weight ' +
+          '1&nbsp;&minus;&nbsp;&phi;) was going regardless. She is measured ' +
+          'against <em>retiring on the same date with the same service under the ' +
+          'current-law reduced allowance</em>. The bridge removes the actuarial ' +
+          'reduction from an allowance she would have taken anyway, and she ' +
+          'receives a <strong>substantial subsidy</strong>.</li>' +
           '<li>A <strong>work-to-eligibility</strong> purchaser (weight &phi;) ' +
+          'is measured against <em>working on to unreduced eligibility</em>. She ' +
           'gives up years of accrual, AFC growth and contributions by leaving ' +
-          'early. She frequently <strong>pays more than the additional actuarial ' +
+          'early, and frequently <strong>pays more than the additional actuarial ' +
           'value she receives.</strong></li></ul>' +
-          '<p>Panel E shows the same split for one member: illustrative profile A ' +
-          'nets <strong>+$341,065</strong> on the frozen-service baseline and ' +
-          '<strong>&minus;$21,500</strong> on the work-to-eligibility baseline. ' +
-          'Same member, same purchase, opposite conclusion.</p>',
+          '<p>Panel E shows the same split for one member. Illustrative ' +
+          'profile A — <strong>the most favourable of the seven published ' +
+          'profiles, not a cost per veteran, and never to be multiplied by a ' +
+          'participant count</strong> — nets <strong>+$341,065</strong> measured ' +
+          'against retiring on the same date with the same service under the ' +
+          'current-law reduced allowance, and <strong>&minus;$21,500</strong> ' +
+          'measured against working on to unreduced eligibility. Same member, ' +
+          'same purchase, opposite conclusion.</p>' +
+          '<p>The qualifier on that figure is not decoration. The next most ' +
+          'favourable published profile nets <strong>$101,480</strong>, the mean ' +
+          'across the six non-hybrid profiles on this baseline is about ' +
+          '<strong>$93,000</strong>, and the model’s own cell grid reaches about ' +
+          '<strong>$419,000</strong> in its single most favourable cell — so the ' +
+          'figure is not a maximum either. Multiplying $341,065 by a participant ' +
+          'count produces a figure roughly <strong>ten times</strong> the ' +
+          'model’s own aggregate, and it is the most likely way this analysis ' +
+          'gets misquoted.</p>',
         significance:
           '<p><strong>No published data bears on &phi;.</strong> Not VRS, not ' +
           'DHRM, not the valuation. The central 50% is a modelling choice, not a ' +
@@ -297,6 +385,7 @@
           '<tr><td>30% — model high</td><td>333</td><td>0.28 bp</td></tr>' +
           '<tr><td>50% — the tool’s ceiling</td><td>555</td><td>0.47 bp</td></tr>' +
           '</tbody></table>' +
+          BP_FOOTNOTE +
           '<p>Then Panel G shows where those people come from: ' +
           '<strong>366,289</strong> active members in the three VRS employer ' +
           'plans, narrowing through six screens to about <strong>222</strong> ' +
@@ -313,8 +402,9 @@
           'bar lengths. Step 1 is a Published Fact. Step 2 is a Derived Estimate. ' +
           '<strong>Steps 3 through 8 are Scenario Assumptions</strong>, and the ' +
           'only published anchor anywhere in them is that veterans are 6.0% of ' +
-          'the Virginia classified <em>state</em> workforce (DHRM to Senate ' +
-          'Finance and Appropriations, January 21, 2025, slide 8). The teacher ' +
+          'the Virginia classified <em>state</em> workforce <strong>as of ' +
+          'June 30, 2024</strong>, presented to Senate Finance and Appropriations ' +
+          'on January 21, 2025, slide 8. The teacher ' +
           'share of 2.5% and the political-subdivision share of 7.0% are ' +
           '<strong>assumed. No published figure exists for either.</strong></p>',
         significance:
@@ -362,10 +452,21 @@
           'entering counts <strong>rescales the modeled age, service and salary ' +
           'mix</strong> rather than inventing an average member.</p>' +
           '<table class="dt"><thead><tr><th>Panel D total</th><th>Amount</th></tr></thead><tbody>' +
-          '<tr><td>1. Modeled pension impact</td><td>$12.88M &nbsp;(0.34 bp)</td></tr>' +
-          '<tr><td>2. Modeled payroll / workforce effect</td><td>$15.80M</td></tr>' +
-          '<tr class="total"><td>3. Combined scenario effect</td><td>+$2.92M</td></tr>' +
-          '</tbody></table>',
+          '<tr><td>1. Modeled pension impact<br><span class="cap">a cost to the ' +
+          'retirement plan — the only one of the three that follows from the ' +
+          'bill</span></td><td>$12.88M &nbsp;(0.34 bp)</td></tr>' +
+          '<tr><td>2. Modeled payroll / workforce effect<br><span class="cap">an ' +
+          'employer compensation effect — <strong>not a pension ' +
+          'saving</strong></span></td><td>$15.80M</td></tr>' +
+          '<tr class="total"><td>3. Combined scenario effect<br><span class="cap">' +
+          '<strong>the least reliable of the three</strong>; follows from two ' +
+          'hiring assumptions you typed in, not from the bill</span></td>' +
+          '<td>+$2.92M</td></tr>' +
+          '</tbody></table>' +
+          '<p class="fn">“Combined fiscal effect is a scenario result, not an ' +
+          'actuarial certification or VRS fiscal impact statement.” Basis points ' +
+          'exclude the separately funded health insurance credit and COLA ' +
+          'effects, including unquantified COLA exposure (step 7).</p>',
         why:
           '<p><strong>Stop at that third row.</strong> It is positive. Read ' +
           'carelessly, this screen says the bill pays for itself and leaves $2.9M ' +
@@ -464,7 +565,9 @@
         seeing:
           '<p>Two figures and a flat statement. The health insurance credit ' +
           'effect of commencing earlier is estimated at about ' +
-          '<strong>$404,000</strong> — illustrative only. The COLA effect reads ' +
+          '<strong>$404,000</strong> — illustrative only, and an <strong>upper ' +
+          'bound</strong> for the political-subdivision cohort, because ' +
+          'participation there is employer-elective. The COLA effect reads ' +
           '<strong>“Not quantified.”</strong> And both are reported as ' +
           '<strong>outside</strong> every basis-point figure in the tool.</p>',
         why:
@@ -487,7 +590,22 @@
           '<p>Both run on <strong>separately funded trusts</strong>, which is why ' +
           'they sit outside the retirement-plan contribution rate rather than ' +
           'inside it. Enactment clause 3(vi) directs the VRS Board to report both ' +
-          'costs, stated separately by trust.</p>',
+          'costs, stated separately by trust.</p>' +
+          '<p><strong>The same mechanism runs against the member, in three ways, ' +
+          'and the bill requires her to be told so in writing.</strong> Clause ' +
+          'I 2(viii) requires each purchaser to be disclosed, before she signs, ' +
+          'that retiring earlier <strong>(a)</strong> begins the § 51.1-505 B ' +
+          'group life step-down — 25% a year, measured from the date of ' +
+          'separation — up to four years earlier; <strong>(b)</strong> ends ' +
+          'eligibility for the § 51.1-162 B death-before-retirement allowance; ' +
+          'and <strong>(c)</strong> produces fewer years of creditable service ' +
+          'and a lower average final compensation than working on would have. ' +
+          'None of these is caused by the credit; all three follow the ' +
+          '<em>separation date</em>, exactly as the health insurance credit and ' +
+          'COLA follow the retirement date. So the honest answer to “does this ' +
+          'cost the veteran anything?” is <strong>yes, three things</strong> — ' +
+          'which is why the bill makes the disclosure mandatory rather than ' +
+          'leaving it to a counselling conversation.</p>',
         significance:
           '<p><strong>The COLA commencement exposure is the single largest ' +
           'disclosed gap in the fiscal case, and no figure anywhere in this ' +
@@ -518,12 +636,23 @@
           'top of the chart is <strong>the behavioural assumption and the ' +
           'population funnel</strong>. The bottom two bars — replacement salary ' +
           'and positions not replaced — are faded and labelled <em>no pension ' +
-          'effect</em>, with their payroll swing reported instead.</p>',
+          'effect</em>, with their payroll swing reported instead.</p>' +
+          '<p><strong>Read the ordering with its bases, which are not ' +
+          'commensurable.</strong> Each bar is swung over its own control range, ' +
+          'not over a documented band: &phi; over 0–1 and take-up over 5–50%, ' +
+          'while the funnel uses its documented low and high cases. Restricted to ' +
+          'ASM-22’s documented <strong>0.25–0.75</strong>, &phi; swings ' +
+          '<strong>0.28 bp</strong> and ranks <strong>third</strong>, behind ' +
+          'take-up and the funnel. <strong>The ordering tells you where to look; ' +
+          'it is not a measure of relative likelihood.</strong></p>',
         why:
-          '<p><strong>Only assumptions about people matter here.</strong> Every ' +
-          'classical actuarial lever — the discount rate, mortality improvement, ' +
-          'salary growth — moves the answer far less than &phi; or the veteran ' +
-          'funnel does. The two workforce drivers move the payroll effect ' +
+          '<p><strong>Only assumptions about people matter here.</strong> The ' +
+          'classical actuarial levers this panel tests — the discount rate and ' +
+          'salary growth — move the answer far less than &phi; or the veteran ' +
+          'funnel does. (Mortality improvement is <em>not</em> one of this ' +
+          'panel’s eight bars; the fiscal model tests it separately at 0.00% and ' +
+          '1.25% and it moves the result by about 0.01 bp.) The two workforce ' +
+          'drivers move the payroll effect ' +
           'substantially and the pension impact exactly not at all, and they are ' +
           'shown faded rather than hidden so that nobody infers they were tested ' +
           'and found immaterial to the pension result. They were not tested ' +
@@ -553,7 +682,8 @@
           'compound case for the same reason: the high population funnel with ' +
           'φ = 0.25 and 30% take-up, together, reaches <strong>1.16 basis ' +
           'points</strong> and about <strong>$43.79M</strong>. You can reproduce ' +
-          'it in this tool, and step 9 does.</p>'
+          'it in this tool, and step 9 does.</p>' +
+          BP_FOOTNOTE
       },
 
       {
@@ -592,12 +722,23 @@
           'selective reading this tool exists to make visible.</p>' +
           '<p>There is also a <strong>Hybrid Variant</strong> preset, marked ' +
           '<em>not the bill</em>. The bill <strong>excludes</strong> hybrid plan ' +
-          'participants, which is nearly everyone first hired on or after ' +
-          'January 1, 2014. The variant prices the rejected alternative and the ' +
-          'consequence is immaterial before FY2038 — and modestly ' +
-          '<em>favourable</em> to the plan, because a hybrid purchaser pays ' +
-          'approximate normal cost against a 1.00% multiplier and so pays several ' +
-          'times the value conferred.</p>',
+          'participants, which is <strong>substantially</strong> everyone first ' +
+          'hired on or after January 1, 2014 — <strong>with named exceptions ' +
+          'still under review</strong>: four optional-retirement-plan routes ' +
+          '(§§ 51.1-126.1, 51.1-126.3, 51.1-126.4 and 51.1-126.7) leave a path ' +
+          'into the defined benefit plan open in <em>every</em> hire year, which ' +
+          'new clause B 1(v) closes by drafting pending VRS confirmation of ' +
+          'headcount and practice. Package version 1.4 withdrew the stronger ' +
+          'claim that the beneficiary class is simply closed; the accurate ' +
+          'statement is that it is <em>substantially closing</em>. The variant ' +
+          'prices ' +
+          'the rejected alternative and the consequence is immaterial before ' +
+          'FY2038 — and modestly <em>favourable</em> to the plan, because a ' +
+          'hybrid purchaser pays approximate normal cost against a 1.00% ' +
+          'multiplier and so pays several times the value conferred. One ' +
+          'disclosure on that variant: the calibration output carries no hybrid ' +
+          'contribution-rate fields, so <strong>contributions forgone are ' +
+          'computed at Plan 1 rates</strong> in it.</p>',
         significance:
           '<p><strong>Present a range, not a point.</strong> Across the four ' +
           'presets the modeled pension impact runs from about $929,000 to about ' +
@@ -607,11 +748,17 @@
           'take-up) reaches <strong>1.16 basis points</strong> and about ' +
           '<strong>$43.79M</strong>. Treat that as the top of the range, not the ' +
           '0.66 bp of the High Participation preset.</p>' +
-          '<p>Even the top of that range does not move any employer’s published ' +
-          'contribution rate when rounded to the nearest basis point. That is the ' +
-          'strongest honest claim available from this analysis, and it is ' +
-          'available <em>without</em> relying on any workforce offset, on the ' +
-          'low-cost corner, or on a favourable &phi;.</p>'
+          '<p><strong>On every single-driver excursion, and on the central ' +
+          'case, no employer’s published contribution rate changes when rounded ' +
+          'to the nearest basis point</strong> — and that claim holds ' +
+          '<em>without</em> relying on any workforce offset, on the low-cost ' +
+          'corner, or on a favourable &phi;. <strong>The compound-adverse case ' +
+          'is the exception, and the package discloses it: at 1.16 bp a plan’s ' +
+          'rate does change by one basis point.</strong> That is the number to ' +
+          'give a committee as the adverse tail. Anyone who states the ' +
+          'no-rate-change conclusion without that exception is overstating the ' +
+          'analysis, and the fiscal model says so in terms.</p>' +
+          BP_FOOTNOTE
       },
 
       {
@@ -649,8 +796,12 @@
           '<ol>' +
           '<li><strong>Re-run the fiscal model against the bill as ' +
           'introduced.</strong> It is complete for bill version 1.1; the ' +
-          'operative text is now version 1.3, and version 1.3 removes ' +
-          'populations the model counted.</li>' +
+          'operative text is now <strong>version 1.4</strong>, which removes ' +
+          'populations the model counted (clauses B 1(iv) and B 1(v)) and adds ' +
+          'the subdivision E 3 continuity requirement. The refresh must also ' +
+          'shift the modelled window from <strong>FY2029–FY2038 to ' +
+          'FY2030–FY2039</strong>, because DECISION 14 moved the effective date ' +
+          'to July 1, 2029.</li>' +
           '<li><strong>Complete the outstanding source verifications</strong> — ' +
           'including the enactment clauses of 2026 c. 563 and a Legislative ' +
           'Information System check that no comparable bill is already ' +
@@ -659,23 +810,32 @@
           'IRC § 415(n)(3)(A) may not reach a credit that buys no accrual, which ' +
           'raises § 415(c) exposure and removes 403(b)/457(b) ' +
           'trustee-to-trustee funding — and that decides who can afford the ' +
-          'purchase at all.</li>' +
+          'purchase at all. <strong>Four questions are drafted and none has been ' +
+          'sent.</strong></li>' +
           '<li><strong>Resolve or expressly defer the approved-leave ' +
           'question</strong> — whether a member on an approved leave of absence ' +
           'without pay counts as remaining in service under subdivision E 3. The ' +
-          'bill currently says yes, provisionally; reversing it is a one-clause ' +
+          'bill currently says yes, <strong>deliberately</strong>: version 1.3’s ' +
+          'continuity requirement would otherwise have created a new trap for a ' +
+          'member who took unpaid leave years before retiring, and E 3 also ' +
+          'protects receipt of benefits under §§ 51.1-1112 and 51.1-1123. This is ' +
+          'a considered member-protective choice, not a placeholder. It should be ' +
+          'ratified or expressly deferred; reversing it is a one-clause ' +
           'change.</li>' +
           '<li><strong>Obtain the VRS Board impact statement under ' +
           '§ 30-19.1:7</strong> at the appropriate stage. It is mandatory for ' +
           'every VRS bill and has not been requested. <strong>This model is not a ' +
           'substitute for it.</strong></li>' +
           '</ol>' +
-          '<p>Two further items are for the actuary and for the Division of ' +
-          'Legislative Services rather than for this tool: the applicable ' +
-          'approximate normal cost rate for eligible pre-2014 § 51.1-153 B 4 ' +
-          'public-safety members, <strong>which VRS must confirm and which this ' +
-          'tool currently prices at the ordinary non-hazardous rate</strong>; and ' +
-          'the § 51.1-155 effective-date question that moved the act to ' +
+          '<p><strong>Three items await VRS confirmation</strong>, and none of ' +
+          'them is for this tool: the applicable approximate normal cost rate for ' +
+          'eligible pre-2014 § 51.1-153 B 4 public-safety members, <strong>which ' +
+          'this tool currently prices at the ordinary non-hazardous rate</strong>; ' +
+          'whether subdivision B 4 operates as the bill reads it for that class; ' +
+          'and the characterisation of the federal Blended Retirement System and ' +
+          'its Thrift Savings Plan component for purposes of the military retired ' +
+          'pay bar. A fourth item is for the Division of Legislative Services: the ' +
+          '§ 51.1-155 effective-date question that moved the act to ' +
           '<strong>July 1, 2029</strong>. An <strong>introducible-form</strong> ' +
           'text setting out all nine sections at length, as Va. Const. art. IV, ' +
           '§ 12 requires, now exists alongside the working draft.</p>'
@@ -684,7 +844,7 @@
 
     /* ------------------------------------------------------------ checks
        Every figure the prose above quotes, paired with the settings that put
-       it on the screen. test/standalone.js group 20 applies each `params` to
+       it on the screen. test/standalone.js group 19 applies each `params` to
        the SHIPPED document and asserts each `tokens` string is actually
        rendered somewhere in the panels. So a model change that moved a number
        fails the harness instead of leaving the narration quietly wrong — the
@@ -770,9 +930,18 @@
           'increase. No allowance goes up by a dollar; what changes is when a ' +
           'veteran may draw it unreduced.',
         'The modeled pension cost is <strong>real but very small</strong> — ' +
-          'about 0.19 basis points centrally, 0.02 to 1.11 across the defensible ' +
-          'range. At no point in that range does any employer’s published ' +
-          'contribution rate move when rounded to the nearest basis point.',
+          'about 0.19 basis points centrally, and <strong>0.02 to 1.16</strong> ' +
+          'across the disclosed range including the published compound-adverse ' +
+          'case. On every single-driver excursion and on the central case, no ' +
+          'employer’s published contribution rate moves when rounded to the ' +
+          'nearest basis point; <strong>at the compound-adverse top of 1.16 bp a ' +
+          'plan’s rate does change by one basis point</strong>, and that is the ' +
+          'figure to give a committee as the adverse tail. Every basis-point ' +
+          'figure here is the modeled <em>retirement-plan</em> employer ' +
+          'contribution impact and <strong>excludes</strong> the separately funded ' +
+          'health insurance credit and COLA effects, including unquantified COLA ' +
+          'exposure; the fiscal model is complete for bill version 1.1 and needs a ' +
+          'refresh against the bill as introduced.',
         '<strong>A payroll effect is not a pension saving.</strong> The tool ' +
           'will not let the two mix, and you can verify that yourself in thirty ' +
           'seconds with the replacement slider.',
@@ -785,8 +954,13 @@
           'requested.</strong> Both belong in front of a committee before this ' +
           'proposal does.'
       ],
+      /* The version stamp is repeated here on purpose. The masthead carries it
+         too, but the masthead is hidden in print — so this footer is the one
+         place a printed or PDF-exported walk-through can be matched to the bill
+         it narrates. MOO-271 finding S-01. */
       footer:
-        'Illustrative policy-analysis model. Not an actuarial certification, not ' +
+        'Narrates bill version 1.4, package version 1.6. Illustrative ' +
+        'policy-analysis model. Not an actuarial certification, not ' +
         'the VRS Board impact statement required under Va. Code § 30-19.1:7, and ' +
         'not a General Assembly fiscal impact statement. Prepared by Policy ' +
         'Development Team using legal, policy, and financial analysis tools, ' +

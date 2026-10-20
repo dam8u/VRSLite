@@ -18,7 +18,7 @@
       <p class="sub">
         Military Service Retirement Bridge &mdash; Legislative Scenario Explorer
         &middot; proposed new <strong>Va. Code &sect; 51.1-142.4</strong>
-        &middot; bill version 1.4, package version 1.5
+        &middot; bill version 1.4, package version 1.6
       </p>
     </div>
     <div class="masthead-actions">
@@ -29,18 +29,26 @@
     </div>
   </div>
 
-  <div class="disclaimer">
-    <strong>This tool is an illustrative policy-analysis model. It is not an actuarial
-    certification, the VRS Board impact statement required under &sect; 30-19.1:7, or a
-    General Assembly fiscal impact statement.</strong>
-    It is not a savings calculator and does not advocate a result. Every figure is tagged
-    as a <span class="prov prov-fact"><span class="ic">&#9679;</span>Published&nbsp;Fact</span>,
-    a <span class="prov prov-derived"><span class="ic">&#9681;</span>Derived&nbsp;Estimate</span>,
-    or a <span class="prov prov-assumption"><span class="ic">&#9675;</span>Scenario&nbsp;Assumption</span>.
-    Prepared by Policy Development Team using legal, policy, and financial analysis tools,
-    pending review by veterans&rsquo; legal counsel.
-  </div>
 </header>
+
+<!-- Outside </header> deliberately, and marked print-required. @media print
+     hides .masthead, and display:block on a descendant of a display:none
+     ancestor restores no layout — so a disclaimer nested in the masthead
+     vanishes from every printed and PDF-exported copy. This page carried the
+     same defect MOO-271 found in walkthrough.html (S-01); it was not in that
+     review's scope and was caught by test/print-check.js. -->
+<div class="disclaimer print-required">
+  <strong>This tool is an illustrative policy-analysis model. It is not an actuarial
+  certification, the VRS Board impact statement required under &sect; 30-19.1:7, or a
+  General Assembly fiscal impact statement.</strong>
+  It is not a savings calculator and does not advocate a result. This page documents
+  <strong>bill version 1.4, package version 1.6</strong>. Every figure is tagged
+  as a <span class="prov prov-fact"><span class="ic">&#9679;</span>Published&nbsp;Fact</span>,
+  a <span class="prov prov-derived"><span class="ic">&#9681;</span>Derived&nbsp;Estimate</span>,
+  or a <span class="prov prov-assumption"><span class="ic">&#9675;</span>Scenario&nbsp;Assumption</span>.
+  Prepared by Policy Development Team using legal, policy, and financial analysis tools,
+  pending review by veterans&rsquo; legal counsel.
+</div>
 
 <div class="shell">
 
@@ -309,7 +317,7 @@
       must never widen, no Panel C control may move any pension figure &mdash; which hold
       regardless of what the engine says.</li>
   </ol>
-  <p>It runs <strong>2,064 checks</strong> in twenty groups and currently passes all of
+  <p>It runs <strong>2,086 checks</strong> in twenty-one groups and currently passes all of
   them, including an assertion that the inlined payloads are byte-identical to the current
   sources, so a stale <code>dist/</code> fails loudly rather than being tested in place of
   the real application. The one dependency is a locally installed Chrome or Chromium,
@@ -322,17 +330,63 @@
   &mdash; and prose is exactly the kind of thing that keeps its old numbers after a model
   changes. So every one of those figures is recorded in
   <code>js/walkthrough.js</code> alongside the <em>settings that produce it</em>, and
-  <strong>group 20</strong> of the harness drives the shipped document to those settings
+  <strong>group 19</strong> of the harness drives the shipped document to those settings
   and requires the figure to be rendered on the panels. The screen is read from the panels
   only, never from the walk-through drawer, so the check cannot pass by finding the
   sentence that makes the claim. A figure that drifted would fail the harness rather than
   quietly misinform a reader.</p>
-  <p>Group 20 also asserts the content&rsquo;s internal consistency: every step carries all
+  <p>Group 19 also asserts the content&rsquo;s internal consistency: every step carries all
   of its required fields, and a step that tells the reader to click a named preset must
   carry that preset&rsquo;s own parameters &mdash; so the instruction and the figures
   cannot disagree. It then drives the drawer as a user would: open it, step forward, press
   <em>Apply these settings</em>, and confirm the real sliders moved and the scenario chip
   changed, rather than only the model behind them.</p>
+
+  <h3>And a figure is checked for its qualifier, not only for its value</h3>
+  <p>Group 19 proves every quoted figure is one the model actually produces. It cannot
+  prove a figure is quoted <em>with</em> the qualifier this package requires &mdash; that
+  is a property of the prose, not of the panels. The independent review of the
+  walk-through found three instances of exactly that gap, including <strong>$341,065</strong>
+  travelling with none of its mandatory qualifier on a page where every component of a
+  tenfold error was available to the reader.</p>
+  <p>So <strong>group 20</strong> reads the walk-through content as text, section by
+  section, and enforces the package&rsquo;s own rules structurally:</p>
+  <ul>
+    <li>any section quoting a <strong>basis-point figure</strong> must also state that it
+      is the modeled retirement-plan employer contribution impact <em>excluding</em> the
+      separately funded health insurance credit and COLA effects;</li>
+    <li><strong>$341,065</strong> must appear with &ldquo;not a cost per veteran&rdquo;,
+      must be identified as the most favourable of the seven published profiles, and must
+      not be called a maximum &mdash; the cell grid reaches about $419,000;</li>
+    <li>the <strong>no-rate-change conclusion</strong> must be restricted to the central
+      case and the single-driver excursions, because the fiscal model states that at
+      1.16 bp a plan&rsquo;s rate does change to the nearest basis point;</li>
+    <li>four <strong>withdrawn</strong> labels and readings must not reappear &mdash;
+      &ldquo;frozen-service&rdquo; for that baseline, &ldquo;closed and shrinking&rdquo;,
+      the &sect; 51.1-142.2 B 3 pinpoint, and the inserted words &ldquo;State or
+      Federal&rdquo; in 10 U.S.C. &sect; 12736.</li>
+  </ul>
+  <p>The section is the unit of the test because a section is what the drawer shows at
+  once and what prints as a block: a qualifier two sections away does not travel with a
+  screenshot. <strong>This group found two live defects the moment it was written</strong>
+  &mdash; an unrestricted no-rate-change claim in step 1, which the review had located
+  only in step 9 and the closing, and a withdrawn phrase reintroduced in step 9.</p>
+
+  <h3>A third harness, because a stylesheet cannot be eyeballed</h3>
+  <p><code>node test/print-check.js</code> runs <strong>42 checks</strong> across all five
+  surfaces &mdash; the dashboard, the walk-through, the methodology page and the two
+  shipped single-file builds. It loads each page, emulates print media over the DevTools
+  protocol, and <em>measures the rendered box</em> of the disclaimer block. A zero-area
+  rectangle or a null <code>offsetParent</code> fails, however the computed style reads.
+  <code>@media print</code> hides the masthead, and <code>display: block !important</code>
+  on a descendant of a <code>display: none</code> ancestor restores nothing &mdash; so a
+  disclaimer nested inside the masthead vanishes from every printed and PDF-exported copy,
+  taking the version stamp, the provenance legend and the attribution line with it. The
+  walk-through carried that defect; so, it turned out, did this methodology page, and the
+  printed dashboard carried no version stamp at all. All three are fixed, and the harness
+  now asserts that the model disclaimer, the &sect; 30-19.1:7 disclaimer, the attribution
+  line and the bill and package version are all visible under print media on every
+  surface.</p>
 
   <p>Two implementation details exist only to make that reconciliation exact. Python&rsquo;s
   <code>round()</code> is banker&rsquo;s rounding and JavaScript&rsquo;s
@@ -1183,7 +1237,7 @@ HIC PV    = annual &times; PV factor &times; participants</code></pre>
         <td style="text-align:left">Share of veteran members in receipt of military retired pay,
           split regular vs. non-regular</td></tr>
       <tr><td>Prior-purchase share (ASM-18)</td>
-        <td style="text-align:left">Historic &sect; 51.1-142.2 B 3 purchase take-up in the 24-month
+        <td style="text-align:left">Historic &sect; 51.1-142.2 B purchase take-up in the 24-month
           window</td></tr>
       <tr><td>Take-up (ASM-19)</td>
         <td style="text-align:left">Observed take-up on a comparable optional purchase</td></tr>
@@ -1330,7 +1384,9 @@ node test/reconcile.js               # 156 checks, 8 groups
 
 # 3. Rebuild the single-file copies and test the one that actually ships
 python3 build_standalone.py          # writes dist/
-node test/standalone.js              # 2,064 checks through a real browser
+node test/standalone.js              # 2,086 checks through a real browser
+node test/print-check.js             # 42 checks: does the disclaimer survive printing?
+node test/probe-moo271.js            # re-derives the figures introduced by remediation
 
 # 4. Open the dashboard
 open index.html                      # no server, no build, no dependencies</code></pre>
@@ -1352,7 +1408,7 @@ open index.html                      # no server, no build, no dependencies</cod
   <h3>Where this sits in the package</h3>
   <div class="table-wrap">
   <table class="dt">
-    <caption>The Military Service Retirement Bridge package, version 1.5 &mdash;
+    <caption>The Military Service Retirement Bridge package, version 1.6 &mdash;
     Review Closeout.</caption>
     <thead><tr><th>Document</th><th style="text-align:left">What it is</th></tr></thead>
     <tbody>
@@ -1416,7 +1472,7 @@ open index.html                      # no server, no build, no dependencies</cod
 
   <p class="muted" style="margin-top:22px">Prepared by Policy Development Team using legal,
   policy, and financial analysis tools, pending review by veterans&rsquo; legal counsel.
-  &middot; Package version 1.5 &mdash; Review Closeout &middot; bill
+  &middot; Package version 1.6 &mdash; Walk-Through Review Closeout &middot; bill
   version 1.4.</p>
 </section>
 

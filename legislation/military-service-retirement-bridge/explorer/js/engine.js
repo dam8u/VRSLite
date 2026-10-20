@@ -967,7 +967,7 @@
                   'protected. § 12736 does not preempt the bill: it reaches ' +
                   'only service a plan otherwise properly credits, and ' +
                   'Virginia credits this service only on purchase' },
-        { label: 'Did not already purchase in the § 51.1-142.2 B 3 24-month window',
+        { label: 'Did not already purchase in the § 51.1-142.2 B 24-month window',
           value: afterBought, provenance: 'Scenario Assumption',
           source: 'ASM-18 — VRS does not publish purchase-of-prior-service take-up' },
         { label: 'Purchasable population; ASM-25 changes the amount each member ' +
