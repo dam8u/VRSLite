@@ -352,7 +352,8 @@
       'retirement-plan employer contribution impact. It excludes the separately ' +
       'funded health insurance credit and COLA effects, including unquantified ' +
       'COLA exposure.</strong> The fiscal model is complete for bill version 1.1; ' +
-      'a version 1.2 refresh is required before external use.</p>' +
+      'a refresh against the bill as introduced (operative text now at version 1.4) ' +
+      'is required before external use.</p>' +
       (same ? '<p>At these assumptions, <strong>to the nearest basis point no ' +
        'plan’s employer contribution rate changes</strong> — about ' +
        num(C.participants, 0) + ' purchasers against ' + usdM(C.aggregatePayroll) +
@@ -669,7 +670,9 @@
       'drivers are shown faded because they move the payroll effect only — by ' +
       'design they cannot touch the pension impact. Drivers are not independent ' +
       'and these one-at-a-time swings cannot be added; moving take-up and the ' +
-      'population funnel together spans approximately 0.02 to 1.11 basis points.',
+      'population funnel together spans approximately 0.02 to 1.11 basis points, ' +
+      'and the fiscal model’s own published compound-adverse case — high funnel ' +
+      'with φ = 0.25 and 30% take-up — reaches 1.16 basis points.',
       ['Driver', 'Low setting', 'Low', 'High setting', 'High',
        'Swing (pension)', 'Swing (' + L.payroll.toLowerCase() + ')'],
       rows.map(function (r) {
@@ -795,14 +798,14 @@
       '<code>fiscal-model/calibrate_explorer.py</code>. It cannot drift from the ' +
       'model that produced the numbers. The browser engine is verified against the ' +
       'model’s committed CSV tables by ' +
-      '<code>explorer/test/reconcile.js</code> — 98 assertions, including the ' +
+      '<code>explorer/test/reconcile.js</code> — 156 assertions, including the ' +
       'illustrative profile A’s central-case $341,065 net value (the most ' +
       'favorable of seven published profiles, not a cost per veteran or a ' +
       'model-wide maximum) and the central-case combined employer contribution-rate ' +
       'impact. That 0.19 bp figure is the modeled retirement-plan employer ' +
       'contribution impact, excluding separately funded HIC and COLA effects ' +
-      'including unquantified COLA exposure; it is complete for bill version 1.1 ' +
-      'with a version 1.2 refresh required.</p></div>';
+      'including unquantified COLA exposure; it is complete for bill version 1.1, ' +
+      'with a refresh against the bill as introduced required.</p></div>';
     $('reg-body').innerHTML = html;
   }
 
@@ -883,6 +886,15 @@
       $(s[1]).innerHTML = pct(vs[s[2]], 1);
     });
     state.veteranShare = vs;
+    /* The four numeric entries are part of "what the interface can express"
+       too. They were previously written only by the preset and reset
+       handlers, so a walk-through step that supplies participant counts could
+       otherwise have left the boxes empty while the model used the counts. */
+    [['i-p1n', 'p1Participants'], ['i-p2n', 'p2Participants'],
+     ['i-p1sal', 'p1Salary'], ['i-p2sal', 'p2Salary']].forEach(function (pair) {
+      var v = state[pair[1]];
+      $(pair[0]).value = (v === null || v === undefined) ? '' : v;
+    });
     setSeg('seg-participant-mode', state.participantMode);
     setSeg('seg-bridge-mode', state.bridgeYearsMode);
     setSeg('seg-salary-mode', state.salaryMode);
@@ -1086,7 +1098,8 @@
     'Every basis-point figure is the modeled retirement-plan employer contribution ' +
     'impact and excludes the separately funded health insurance credit and COLA ' +
     'effects, including unquantified COLA exposure. The fiscal model is complete for ' +
-    'bill version 1.1; a version 1.2 refresh is required before external use.';
+    'bill version 1.1; a refresh against the bill as introduced (operative text now ' +
+    'at version 1.4) is required before external use.';
 
   var BEHAVIOURAL_BASIS =
     'The behavioural assumption (phi) decides whether a purchaser is subsidised ' +
@@ -1129,8 +1142,8 @@
       'font-size:9.5pt;margin:10px 0}' +
       '@page{margin:0.6in}</style></head><body>' +
       '<h1>Military Service Retirement Bridge — scenario summary</h1>' +
-      '<p class="sub">Proposed new Va. Code § 51.1-142.4 &middot; bill version 1.2, ' +
-      'package version 1.3 &middot; ' + esc(presetLabel()) + ' &middot; generated ' +
+      '<p class="sub">Proposed new Va. Code § 51.1-142.4 &middot; bill version 1.4, ' +
+      'package version 1.5 &middot; ' + esc(presetLabel()) + ' &middot; generated ' +
       esc(when) + '</p>' +
       '<div class="warn"><strong>This is an illustrative policy-analysis model. It is ' +
       'not an actuarial certification, the VRS Board impact statement required under ' +
@@ -1150,8 +1163,9 @@
       'φ decides whether a purchaser is subsidised or overpays, and no published ' +
       'data bears on it. Reserve and Guard service: federal law protects qualifying ' +
       'service associated with non-regular Reserve-component retired pay under ' +
-      '10 U.S.C. ch. 1223, with § 12736 application to the bridge subject to ' +
-      'counsel confirmation.</div>' +
+      '10 U.S.C. ch. 1223. § 12736 does not preempt the bill — it reaches only ' +
+      'service a plan otherwise properly credits, and Virginia credits this ' +
+      'service only on purchase.</div>' +
       '<div class="note">Prepared by Policy Development Team using legal, policy, and ' +
       'financial analysis tools, pending review by veterans’ legal counsel.</div>' +
       '</body></html>';
@@ -1163,7 +1177,7 @@
     var out = [['Section', 'Item', 'Value']];
     out.push([q('Header'), q('Scenario'), q(presetLabel())]);
     out.push([q('Header'), q('Generated'), q(new Date().toISOString())]);
-    out.push([q('Header'), q('Bill / package version'), q('bill 1.2 / package 1.3')]);
+    out.push([q('Header'), q('Bill / package version'), q('bill 1.4 / package 1.5')]);
     out.push([q('Header'), q('Status'), q('Illustrative policy-analysis model. Not an ' +
       'actuarial certification, not the VRS Board statement under Sec. 30-19.1:7, not ' +
       'a General Assembly fiscal impact statement.')]);
@@ -1274,6 +1288,145 @@
     return null;
   }
 
+  /* ==================================================================== */
+  /*  GUIDED WALK-THROUGH — the drawer                                    */
+  /*                                                                      */
+  /*  The board asked for the walk-through to be reachable from the        */
+  /*  dashboard so a stakeholder does not need two windows open. So it is  */
+  /*  a drawer that sits beside the panels, and each step can APPLY its    */
+  /*  own settings — which makes it a guide you follow rather than a       */
+  /*  document you read and then try to reproduce by hand.                */
+  /*                                                                      */
+  /*  Content comes from js/walkthrough.js, shared byte for byte with the  */
+  /*  standalone walkthrough.html, so the version a stakeholder is sent    */
+  /*  and the version inside the tool cannot disagree.                     */
+  /* ==================================================================== */
+  var WT = window.VRS_WALKTHROUGH;
+  var wtSteps = [], wtAt = 0, wtSeen = {};
+
+  function wtBuildSteps() {
+    var intro = {
+      id: 'wt-0', intro: true,
+      title: WT.meta.subtitle,
+      body: WT.intro.map(function (p) { return '<p>' + p + '</p>'; }).join('') +
+        '<h4>' + esc(WT.orientation.title) + '</h4>' +
+        '<ol>' + WT.orientation.items.map(function (it) {
+          return '<li><strong>' + it[0] + '</strong> ' + it[1] + '</li>';
+        }).join('') + '</ol>' +
+        '<p class="muted" style="font-size:11.5px">' + esc(WT.meta.audience) +
+        ' &middot; about ' + WT.meta.minutes + ' minutes.</p>'
+    };
+    var closing = {
+      id: 'wt-end', intro: true,
+      title: WT.closing.title,
+      body: '<ol>' + WT.closing.items.map(function (s) {
+        return '<li>' + s + '</li>'; }).join('') + '</ol>' +
+        '<div class="note stop"><p>' + WT.closing.footer + '</p></div>' +
+        '<p style="margin-top:10px"><a href="walkthrough.html">Open the ' +
+        'walk-through as its own page</a> — the version to print, or to send ' +
+        'alongside the dashboard and methodology links.</p>'
+    };
+    wtSteps = [intro].concat(WT.steps).concat([closing]);
+  }
+
+  function wtStepHtml(s, i) {
+    if (s.intro) {
+      return '<span class="wt-step-n">' +
+        (i === 0 ? 'Start here' : 'Finish') + '</span>' +
+        '<h3>' + esc(s.title) + '</h3>' + s.body;
+    }
+    var h = '<span class="wt-step-n">Step ' + i + ' of ' + WT.steps.length +
+      '</span><h3>' + esc(s.title) + '</h3>';
+    h += '<div class="wt-set"><dl>' + s.choose.map(function (c) {
+      return '<dt>' + esc(c[0]) + '</dt><dd>' + c[1] + '</dd>';
+    }).join('') + '</dl>' +
+      '<button class="btn btn-primary wt-apply" type="button" data-wt-apply="' +
+      i + '">Apply these settings</button></div>';
+    h += '<p class="wt-look"><strong>Look at:</strong> ' + s.look + '</p>';
+    h += '<h4>What you are seeing</h4>' + s.seeing;
+    h += '<h4>Why it works that way</h4>' + s.why;
+    h += '<h4>Why it matters</h4>' + s.significance;
+    if (s.caution) h += '<div class="note warn"><p>' + s.caution + '</p></div>';
+    return h;
+  }
+
+  function wtRender() {
+    var s = wtSteps[wtAt];
+    wtSeen[wtAt] = true;
+    $('wt-body').innerHTML = wtStepHtml(s, wtAt);
+    $('wt-body').scrollTop = 0;
+    $('wt-count').textContent = s.intro
+      ? (wtAt === 0 ? 'Introduction' : 'Summary')
+      : 'Step ' + wtAt + ' / ' + WT.steps.length;
+    $('wt-prev').disabled = wtAt === 0;
+    $('wt-next').disabled = wtAt === wtSteps.length - 1;
+    $('wt-progress').querySelectorAll('button').forEach(function (b, j) {
+      b.setAttribute('aria-current', j === wtAt ? 'true' : 'false');
+      b.classList.toggle('seen', !!wtSeen[j]);
+    });
+    var btn = $('wt-body').querySelector('[data-wt-apply]');
+    if (btn) btn.addEventListener('click', function () { wtApply(wtAt); });
+  }
+
+  /* Apply a step's settings. Deliberately absolute rather than relative: a
+     step starts from the committed defaults and layers its own params on top,
+     so following the walk-through out of order still produces the screen the
+     step describes and the figures it quotes. */
+  function wtApply(i) {
+    var s = wtSteps[i];
+    if (!s || s.intro || !s.params) return;
+    state = Object.assign({}, E.defaults(), s.params);
+    pushStateToControls();
+    activePreset = matchPreset();
+    if (s.params.discount !== undefined || s.params.salaryGrowth !== undefined ||
+        s.params.improvement !== undefined || s.params.rule !== undefined) {
+      $('adv-panel').open = true;
+    }
+    renderAll(true);
+    var target = s.panel && document.getElementById(s.panel);
+    if (target) target.scrollIntoView({ block: 'start', behavior: 'smooth' });
+  }
+
+  function wtOpen(at) {
+    document.body.classList.add('wt-open');
+    $('wt-drawer').setAttribute('aria-hidden', 'false');
+    $('btn-walkthrough').setAttribute('aria-pressed', 'true');
+    if (at !== undefined) wtAt = at;
+    wtRender();
+    $('wt-body').focus();
+  }
+  function wtClose() {
+    document.body.classList.remove('wt-open');
+    $('wt-drawer').setAttribute('aria-hidden', 'true');
+    $('btn-walkthrough').setAttribute('aria-pressed', 'false');
+    $('btn-walkthrough').focus();
+  }
+
+  function wtWire() {
+    wtBuildSteps();
+    $('wt-progress').innerHTML = wtSteps.map(function (s, j) {
+      return '<button type="button" data-wt-go="' + j + '" aria-current="false" ' +
+        'title="' + esc(s.intro ? s.title : 'Step ' + j + ' — ' + s.title) +
+        '">' + (s.intro ? (j === 0 ? 'i' : '&#10003;') : j) + '</button>';
+    }).join('');
+    $('wt-progress').querySelectorAll('[data-wt-go]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        wtAt = +b.getAttribute('data-wt-go'); wtRender();
+      });
+    });
+    $('btn-walkthrough').addEventListener('click', function () {
+      if (document.body.classList.contains('wt-open')) wtClose(); else wtOpen();
+    });
+    $('wt-close').addEventListener('click', wtClose);
+    $('wt-prev').addEventListener('click', function () {
+      if (wtAt > 0) { wtAt--; wtRender(); } });
+    $('wt-next').addEventListener('click', function () {
+      if (wtAt < wtSteps.length - 1) { wtAt++; wtRender(); } });
+    document.addEventListener('keydown', function (ev) {
+      if (ev.key === 'Escape' && document.body.classList.contains('wt-open')) wtClose();
+    });
+  }
+
   /* ------------------------------------------------------------- startup */
   buildPresets();
   renderRegistry();
@@ -1281,5 +1434,6 @@
   syncOfficialSpec();
   pushStateToControls();
   wire();
+  wtWire();
   renderAll(true);
 })();

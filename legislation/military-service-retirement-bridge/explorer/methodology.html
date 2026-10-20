@@ -18,11 +18,12 @@
       <p class="sub">
         Military Service Retirement Bridge &mdash; Legislative Scenario Explorer
         &middot; proposed new <strong>Va. Code &sect; 51.1-142.4</strong>
-        &middot; bill version 1.2, package version 1.3
+        &middot; bill version 1.4, package version 1.5
       </p>
     </div>
     <div class="masthead-actions">
       <a class="btn btn-primary" href="index.html">&larr; Back to the dashboard</a>
+      <a class="btn" href="walkthrough.html">Guided walk-through</a>
       <button class="btn" id="btn-print" type="button">Print / save as PDF</button>
       <button class="btn" id="btn-theme" type="button" title="Switch between light and dark">Theme</button>
     </div>
@@ -97,6 +98,12 @@
   staff can check the arithmetic without reading JavaScript &mdash; and so that anyone who
   disagrees with a number can see exactly which assumption to argue with.</p>
 
+  <p>If you have not used the dashboard before, start with the
+  <a href="walkthrough.html"><strong>guided walk-through</strong></a> instead &mdash; it
+  names the settings to choose, in order, and says what each screen means. It is also
+  available inside the dashboard itself, in a panel beside the controls, so you do not
+  need two windows open. This page is the reference behind it.</p>
+
   <p>The model answers one question: <strong>if a stated number of Plan 1 and Plan 2
   veterans purchase eligibility credit under the proposed bridge, what is the modeled
   change in pension liability, in the employer contribution rate, and &mdash; separately
@@ -111,19 +118,35 @@
     official statement governs and this model is wrong.</p>
   </blockquote>
 
-  <h3>Bill version modelled</h3>
+  <h3>Bill version modelled &mdash; read this before quoting any figure</h3>
   <p>The eligibility, purchase-cap and scope mechanics in &sect;&sect; 5 and 6 below
   implement the <strong>bill version 1.2 operative text</strong>: partial purchase capped
   at the deficit (rule D4a), hybrid participants excluded, and the PLOP and COLA
   eligibility dates frozen. The <em>aggregate tables</em> this engine is calibrated
-  against were produced for bill version 1.1 &mdash;
-  <strong>complete for version 1.1; version 1.2 refresh required before external
-  use.</strong></p>
-  <p>Both version 1.2 decisions of October 20, 2026 move the modeled result
-  <strong>downward</strong>: the in-service-at-retirement condition closes an acceleration
-  path the model never priced, and clause B 1(iv) removes a population the model counted.
-  No figure here is therefore an understatement on their account. That is a direction, not
-  a quantification, and it is not a substitute for the refresh.</p>
+  against were produced for bill version 1.1 &mdash; <strong>complete for version 1.1; a
+  refresh against the bill as introduced is required before external use.</strong>
+  The operative bill text is now at <strong>version 1.4</strong>.</p>
+  <p>Three scope changes made after the calibration all move the modeled result
+  <strong>downward</strong>, so no figure here is an understatement on their account:</p>
+  <ul>
+    <li><strong>The in-service-at-retirement condition</strong> (subdivision E 3) closes
+      an acceleration path the model never priced. <strong>Version 1.3 correction:</strong>
+      the version 1.2 drafting did <em>not</em> in fact close that path &mdash; it tested
+      a status on one named day, and that status was purchasable. Version 1.3 attaches the
+      condition to <em>continuity of service</em> from the date of grant. On the version 1.2
+      text the aggregates <em>were</em> understatements on this account; on the version 1.3
+      text they are not.</li>
+    <li><strong>Clause B 1(iv)</strong> removes post-2013 &sect; 51.1-153 B 4
+      public-safety entrants, a population the model counted.</li>
+    <li><strong>Clause B 1(v)</strong>, added in version 1.3, removes persons who
+      participate in or are merely <em>eligible to participate in</em> the optional
+      retirement plans under &sect;&sect; 51.1-126.1, 51.1-126.3, 51.1-126.4 and
+      51.1-126.7. <strong>This model does not apply that screen</strong>, so its
+      population is overstated to that extent. The amount is expected to be immaterial
+      but has not been quantified.</li>
+  </ul>
+  <p>That is a direction, not a quantification, and it is not a substitute for the
+  refresh.</p>
 
   <h3>The one-sentence warning that matters most</h3>
   <p>The <strong>behavioural assumption &phi;</strong> (&sect; 9) decides the
@@ -194,11 +217,17 @@
       <tr><td><code>js/engine.js</code></td><td style="text-align:left">The model. A port of the
         committed Python fiscal model: <code>actuarial.py</code>,
         <code>price_vs_value.py</code>, <code>aggregate.py</code>,
-        <code>population.py</code>.</td><td>~1,100</td></tr>
+        <code>population.py</code>.</td><td>~1,165</td></tr>
       <tr><td><code>js/ui.js</code></td><td style="text-align:left">Presentation only: controls,
-        charts, tables, tooltips, downloads.</td><td>~1,150</td></tr>
+        charts, tables, tooltips, downloads, and the guided walk-through drawer.</td><td>~1,440</td></tr>
       <tr><td><code>js/registry.js</code></td><td style="text-align:left">Plain-language glossary
-        and the outstanding-confirmation list.</td><td>~225</td></tr>
+        and the outstanding-confirmation list.</td><td>~235</td></tr>
+      <tr><td><code>js/walkthrough.js</code></td><td style="text-align:left">The guided
+        walk-through: ten steps, each with the settings that produce the screen it
+        describes, plus the machine-checkable list of every figure it quotes.
+        <strong>One source</strong> for both the standalone
+        <code>walkthrough.html</code> and the dashboard drawer, so the two cannot
+        drift.</td><td>~785</td></tr>
       <tr><td><code>data/baseline.js</code></td><td style="text-align:left">Published inputs,
         actuarial tables, representative profiles, and the Python model&rsquo;s own answers
         for reconciliation. <strong>Generated</strong>, never hand-edited.</td><td>~1,045</td></tr>
@@ -209,10 +238,10 @@
         the committed Python model and writes the two generated files.</td><td>~480</td></tr>
       <tr><td><code>test/reconcile.js</code></td><td style="text-align:left">The regression
         harness. Loads the engine under Node and checks it against the Python
-        model&rsquo;s published tables.</td><td>~220</td></tr>
+        model&rsquo;s published tables.</td><td>~260</td></tr>
       <tr><td><code>test/standalone.js</code></td><td style="text-align:left">The
         output-accuracy harness. Drives the <em>shipped single file</em> through every
-        control in a real browser and checks each panel against the model.</td><td>~640</td></tr>
+        control in a real browser and checks each panel against the model.</td><td>~1,200</td></tr>
       <tr><td><code>test/chrome.js</code>, <code>test/inpage.js</code></td>
         <td style="text-align:left">DevTools-protocol driver and the in-page probe it
         injects. No npm dependency.</td><td>~370</td></tr>
@@ -222,7 +251,7 @@
 
   <h3>Verification is a reconciliation, not an assertion</h3>
   <p>The engine is not asserted to agree with the fiscal model; it is <em>checked</em>
-  against it. <code>node test/reconcile.js</code> runs <strong>98 checks</strong> in eight
+  against it. <code>node test/reconcile.js</code> runs <strong>156 checks</strong> in eight
   groups and currently passes all of them:</p>
 
   <div class="table-wrap">
@@ -280,12 +309,30 @@
       must never widen, no Panel C control may move any pension figure &mdash; which hold
       regardless of what the engine says.</li>
   </ol>
-  <p>It runs <strong>1,928 checks</strong> in nineteen groups and currently passes all of
+  <p>It runs <strong>2,064 checks</strong> in twenty groups and currently passes all of
   them, including an assertion that the inlined payloads are byte-identical to the current
   sources, so a stale <code>dist/</code> fails loudly rather than being tested in place of
   the real application. The one dependency is a locally installed Chrome or Chromium,
   reached over the DevTools protocol with Node&rsquo;s built-in WebSocket; no npm package
   is added.</p>
+
+  <h3>And the walk-through is checked against the model it narrates</h3>
+  <p>The <a href="walkthrough.html">guided walk-through</a> quotes about forty figures
+  &mdash; &ldquo;$7.15M&rdquo;, &ldquo;0.19 bp&rdquo;, &ldquo;$341,065&rdquo; and so on
+  &mdash; and prose is exactly the kind of thing that keeps its old numbers after a model
+  changes. So every one of those figures is recorded in
+  <code>js/walkthrough.js</code> alongside the <em>settings that produce it</em>, and
+  <strong>group 20</strong> of the harness drives the shipped document to those settings
+  and requires the figure to be rendered on the panels. The screen is read from the panels
+  only, never from the walk-through drawer, so the check cannot pass by finding the
+  sentence that makes the claim. A figure that drifted would fail the harness rather than
+  quietly misinform a reader.</p>
+  <p>Group 20 also asserts the content&rsquo;s internal consistency: every step carries all
+  of its required fields, and a step that tells the reader to click a named preset must
+  carry that preset&rsquo;s own parameters &mdash; so the instruction and the figures
+  cannot disagree. It then drives the drawer as a user would: open it, step forward, press
+  <em>Apply these settings</em>, and confirm the real sliders moved and the scenario chip
+  changed, rather than only the model behind them.</p>
 
   <p>Two implementation details exist only to make that reconciliation exact. Python&rsquo;s
   <code>round()</code> is banker&rsquo;s rounding and JavaScript&rsquo;s
@@ -339,9 +386,22 @@
       published retirement rates (SRC-23) and applying a flat 3.00% per annum for all other
       exits, with 2.00% and 5.00% as the sensitivity (ASM-13). No new entrants are added to
       either structure, because both are closed: Plan 1 on July 1, 2010 and Plan 2 on
-      January 1, 2014. <strong>The beneficiary class of this bill is closed and
-      shrinking</strong> &mdash; which is the single most useful fact the package has for
-      the money committees.</li>
+      January 1, 2014.
+      <blockquote style="margin:9px 0 0"><p><strong>Correction, package version 1.5.</strong>
+      Earlier versions of this page said the beneficiary class is &ldquo;closed and
+      shrinking&rdquo; and called that the single most useful fact the package had for the
+      money committees. <strong>That claim is withdrawn.</strong> It is not established on
+      the statutory text: the second sentence of &sect; 51.1-169 A makes persons who
+      participate in &mdash; or are merely <em>eligible to participate in</em> &mdash; the
+      optional retirement plans under &sect;&sect; 51.1-126.1, 51.1-126.3, 51.1-126.4 and
+      51.1-126.7 ineligible for the hybrid plan, and each of those sections leaves a
+      continuing route for a new hire into the VRS defined benefit plan in <em>every</em>
+      hire year. Version 1.3 of the bill closes that route by drafting (clause B 1(v)), but
+      the practical effect depends on administrative practice VRS has not confirmed. The
+      accurate statement is that the class is <strong>substantially closing, with named
+      exceptions under review</strong> &mdash; and <strong>this model does not apply the
+      B 1(v) screen at all</strong>, so its population is overstated to that extent.</p>
+      </blockquote></li>
     <li>Keep a cell only if it is <em>exposed to a purchase opportunity</em>: within four
       years or four Rule-of-90 points of an unreduced threshold, and
       <strong>not already eligible</strong>, because &sect; 51.1-142.4 B 5 bars a member
@@ -394,11 +454,12 @@ curve[PS]            = curve[ST] &times; 0.8394
         <td style="text-align:left">ASM-16 &mdash; at least 180 consecutive days, not dishonorably
           discharged. No VRS or Virginia data published.</td></tr>
       <tr><td>Excluded by the military retired pay bar</td><td>18%</td>
-        <td style="text-align:left">ASM-17 &mdash; &sect; 51.1-142.2 B, inherited by
-          &sect; 51.1-142.4 B 4 and H 5. Federal law protects qualifying service associated
-          with non-regular Reserve-component retired pay under 10 U.S.C. ch. 1223, with
-          <strong>&sect; 12736 application to the bridge subject to counsel
-          confirmation.</strong></td></tr>
+        <td style="text-align:left">ASM-17 &mdash; <strong>unsourced.</strong>
+          &sect; 51.1-142.2 B, inherited by &sect; 51.1-142.4 B 4 and H 5. Federal law
+          protects qualifying service associated with non-regular Reserve-component retired
+          pay under 10 U.S.C. ch. 1223. <strong>&sect; 12736 does not preempt this
+          bill</strong> (&sect; 19 item 10). This is the first number a committee will ask
+          for the basis of, and there is none.</td></tr>
       <tr><td>Did not already purchase in the 24-month window</td><td>70%</td>
         <td style="text-align:left">ASM-18 &mdash; VRS does not publish purchase-of-prior-service
           take-up.</td></tr>
@@ -867,8 +928,8 @@ basis points = 10,000 &times; ( &Delta;L / F(N) ) / covered payroll</code></pre>
     <p>The central-case figure of <strong>0.19 basis points</strong> is the
     <strong>modeled retirement-plan employer contribution impact</strong>. It
     <strong>excludes separately funded health insurance credit and COLA effects, including
-    unquantified COLA exposure.</strong> It is complete for bill version 1.1; a version 1.2
-    refresh is required before external use.</p>
+    unquantified COLA exposure.</strong> It is complete for bill version 1.1; a refresh
+    against the bill as introduced is required before external use.</p>
   </blockquote>
   <p>That qualifier travels with the figure everywhere it appears in this package &mdash;
   in the dashboard, in the downloadable handout, and here. A basis-point number quoted
@@ -898,6 +959,11 @@ employer DB differential    = the difference of those two
 
 payroll / workforce effect  = lower-paid diff + not replaced + vacancy
                             + employer DB differential</code></pre>
+  <p>One reading note, because the label is shorter than the quantity: the
+  <strong>&ldquo;Replacement payroll&rdquo;</strong> tile in Panel C reports
+  <code>replacement &minus; vacancy</code>, not <code>replacement</code> &mdash; what the
+  employer actually pays the replacement, net of the months the post sat empty. With the
+  vacancy slider at zero the two are identical, which is the default.</p>
 
   <h3>12.1 The guardrails, stated as the tests that enforce them</h3>
   <ol>
@@ -1036,7 +1102,12 @@ HIC PV    = annual &times; PV factor &times; participants</code></pre>
   tested and found not to matter.</p>
   <p><strong>The drivers are not independent and their swings cannot be added.</strong>
   Moving take-up and the population funnel together spans approximately 0.02 to 1.11 basis
-  points, outside every single bar. The &phi; control spans 0&ndash;1, beyond ASM-22&rsquo;s
+  points, outside every single bar. The fiscal model now publishes a compound case for the
+  same reason (<code>T5-sensitivity.csv</code>): the high population funnel with
+  <strong>&phi; = 0.25 and 30% take-up, together</strong>, reaches <strong>1.16 basis
+  points</strong> and about <strong>$43.79M</strong> &mdash; reproducible in this tool, and
+  the figure to treat as the top of the disclosed range rather than the 0.66 bp of the
+  High Participation preset. The &phi; control spans 0&ndash;1, beyond ASM-22&rsquo;s
   documented 0.25&ndash;0.75 band, and the aggregate changes sign near &phi; = 0.84.
   Purchaser counts are not re-estimated when &phi; moves.</p>
 </section>
@@ -1187,8 +1258,9 @@ HIC PV    = annual &times; PV factor &times; participants</code></pre>
     <li><strong>The approximate normal cost rate for eligible pre-2014 B 4 public-safety
       members is unconfirmed.</strong> They are priced at the ordinary non-hazardous rate
       (&sect; 6).</li>
-    <li><strong>The fiscal model is complete for bill version 1.1; a version 1.2 refresh is
-      required before external use</strong> (&sect; 1).</li>
+    <li><strong>The fiscal model is complete for bill version 1.1; a refresh against the
+      bill as introduced is required before external use</strong> (&sect; 1), and the
+      version 1.3 clause B 1(v) scope screen is not applied here at all.</li>
     <li><strong>The Plan 2 reduction factor table is a proxy</strong> (ASM-09). It does not
       bind for this population, but it is still a proxy.</li>
     <li><strong>Mortality improvement is a flat-rate proxy</strong> for a two-dimensional
@@ -1199,18 +1271,41 @@ HIC PV    = annual &times; PV factor &times; participants</code></pre>
       a ten-year cohort window, not a projection to the end of the liability.</li>
     <li><strong>Second-order workforce costs are excluded</strong>, not valued at zero
       (&sect; 12.1 item 6).</li>
+    <li><strong>The sensitivity panel is one-at-a-time, and the drivers are not
+      independent.</strong> Compounding them goes outside every bar on the chart: the
+      fiscal model&rsquo;s published compound-adverse case reaches <strong>1.16 basis
+      points</strong> (&sect; 15). A reader who adds the individual swings, or who reads
+      the widest single bar as the widest case, understates the range.</li>
     <li><strong>Federal tax treatment is unresolved.</strong> IRC &sect; 415(n)(3)(A) may
       not reach this credit <em>because</em> it buys no accrual, which raises
-      &sect; 415(c) exposure and removes 403(b)/457(b) trustee-to-trustee funding; and
-      10 U.S.C. &sect; 12736 bars excluding non-regular-retirement service &ldquo;in
-      determining his <em>eligibility</em>&rdquo; for a state benefit, which is this
-      bill&rsquo;s entire subject. Both belong in front of veterans&rsquo; legal counsel
-      with the text.</li>
-    <li><strong>One narrow policy question is open:</strong> how the
-      in-service-at-retirement requirement applies to a member on approved leave or
-      receiving long-term disability benefits at the moment of retirement. As drafted,
-      subdivision E 3 would disregard her credit. That is flagged for decision, not
-      resolved here.</li>
+      &sect; 415(c) exposure and removes 403(b)/457(b) trustee-to-trustee funding &mdash;
+      which decides who can afford the purchase at all. That belongs in front of
+      veterans&rsquo; legal counsel with the text.
+      <blockquote style="margin:9px 0 0"><p><strong>Correction, package version 1.5
+      &mdash; 10 U.S.C. &sect; 12736 is no longer an open item.</strong> Earlier versions
+      of this page said &sect; 12736 &ldquo;bars excluding non-regular-retirement service
+      in determining his <em>eligibility</em> for a state benefit, which is this
+      bill&rsquo;s entire subject.&rdquo; <strong>That quotation was wrong</strong> and the
+      conclusion drawn from it is withdrawn. The section contains no reference to State
+      law, and the earlier quotation omitted its closing proviso &mdash; &ldquo;<strong>if
+      that service is otherwise properly credited under it</strong>.&rdquo; &sect; 12736 is
+      an <strong>anti-exclusion rule, not a crediting mandate</strong>: it stops a plan
+      carving out chapter 1223 service the plan already properly credits. Virginia credits
+      prior active duty service for &sect; 51.1-153 B 2 and B 3 purposes <em>only on
+      purchase</em>, so there is nothing for &sect; 12736 to operate on. It
+      <strong>does not preempt this bill.</strong></p></blockquote></li>
+    <li><strong>One narrow policy question is open, and it is narrower than it was:</strong>
+      whether a member on an <strong>approved leave of absence without pay</strong> counts
+      as remaining in service under subdivision E 3. Version 1.3 answers <em>yes</em>
+      &mdash; a member is not deemed to have terminated service by reason of an approved
+      leave or of benefits under &sect; 51.1-1112 or &sect; 51.1-1123 &mdash; deliberately,
+      because version 1.3&rsquo;s continuity-of-service requirement would otherwise have
+      created a new trap for a member who took unpaid leave years before retiring. That is
+      the member-protective reading, it is a provisional position rather than a settled
+      one, and reversing it is a one-clause change. <strong>The long-term-disability half of
+      this question is withdrawn:</strong> &sect;&sect; 51.1-1110 H, 51.1-1117 C and
+      51.1-1117 A appear to answer it already, so it is now a one-line VRS confirmation
+      item. Nothing in this model turns on either answer.</li>
   </ol>
   <blockquote>
     <p><strong>All principal policy questions are settled.</strong> The seven decisions of
@@ -1231,11 +1326,11 @@ python3 calibrate_explorer.py        # writes out/explorer-baseline.json,
 
 # 2. Reconcile the browser engine against the Python model's published tables
 cd ../explorer
-node test/reconcile.js               # 98 checks, 8 groups
+node test/reconcile.js               # 156 checks, 8 groups
 
 # 3. Rebuild the single-file copies and test the one that actually ships
 python3 build_standalone.py          # writes dist/
-node test/standalone.js              # 1,928 checks through a real browser
+node test/standalone.js              # 2,064 checks through a real browser
 
 # 4. Open the dashboard
 open index.html                      # no server, no build, no dependencies</code></pre>
@@ -1257,14 +1352,24 @@ open index.html                      # no server, no build, no dependencies</cod
   <h3>Where this sits in the package</h3>
   <div class="table-wrap">
   <table class="dt">
-    <caption>The Military Service Retirement Bridge package, version 1.3.</caption>
+    <caption>The Military Service Retirement Bridge package, version 1.5 &mdash;
+    Review Closeout.</caption>
     <thead><tr><th>Document</th><th style="text-align:left">What it is</th></tr></thead>
     <tbody>
       <tr><td><code>01-bill-draft.docx</code></td><td style="text-align:left">The operative bill text,
-        version 1.2 &mdash; new &sect; 51.1-142.4, the &sect; 51.1-124.3 definitional
-        carve-out, six conforming amendments across five sections, the enacting clause plus
-        two further enactment clauses (a July 1, 2028 effective date and an eleven-item
-        Board reporting requirement), and drafting notes for DLS</td></tr>
+        <strong>version 1.4</strong> &mdash; new &sect; 51.1-142.4, the &sect; 51.1-124.3
+        definitional carve-out, <strong>five</strong> conforming amendments across five
+        sections plus two enabling amendments added in version 1.4, within a bill that
+        amends and reenacts eight sections and adds one; the enacting clause plus two
+        further enactment clauses (a <strong>July 1, 2029</strong> effective date and an
+        eleven-item Board reporting requirement due December 1, 2028), and drafting notes
+        for DLS</td></tr>
+      <tr><td><code>12-bill-introducible-form.docx</code></td><td style="text-align:left">
+        All nine sections set out <strong>at length</strong> as Va. Const. art. IV,
+        &sect; 12 requires, generated from the official text of each section. This closes
+        the earlier &ldquo;not in introducible form&rdquo; item</td></tr>
+      <tr><td><code>13-council-engagement-answers.docx</code></td><td style="text-align:left">
+        Answers to the stakeholder review&rsquo;s engagement findings</td></tr>
       <tr><td><code>02-legal-analysis-memo.docx</code></td><td style="text-align:left">Terminology
         discipline, statutory conflicts, the unintended-effects table, and the open
         items</td></tr>
@@ -1273,32 +1378,46 @@ open index.html                      # no server, no build, no dependencies</cod
       <tr><td><code>05-source-appendix.docx</code></td><td style="text-align:left">Sourced claims with
         pinpoint citations and retrieval dates &mdash; and an explicit list of what is
         <em>not</em> sourced</td></tr>
-      <tr><td><code>06-red-team-review.docx</code></td><td style="text-align:left">The internal
-        adversarial review. <strong>No independent reviewer was available</strong>; the
-        pass was run by the same team that drafted the package.</td></tr>
+      <tr><td><code>06-red-team-review.docx</code></td><td style="text-align:left">The
+        <strong>internal</strong> adversarial review of bill version 1.1, run by the same
+        team that drafted the package because no independent reviewer was then available.
+        A historical record; its findings are closed</td></tr>
       <tr><td><code>07-precedent-and-stakeholder-scan.docx</code></td><td style="text-align:left">
         Precedent and stakeholder analysis</td></tr>
       <tr><td><code>08-fiscal-model-memo.docx</code></td><td style="text-align:left">The cost
-        model&rsquo;s own memorandum &mdash; complete for version 1.1, version 1.2 refresh
-        required before external use</td></tr>
-      <tr><td><code>explorer/</code></td><td style="text-align:left">This tool</td></tr>
-      <tr><td><code>10-counsel-review-explorer.md</code></td><td style="text-align:left">
-        Independent adversarial review of the explorer</td></tr>
+        model&rsquo;s own memorandum &mdash; complete for version 1.1; refresh against the
+        bill as introduced required before external use</td></tr>
+      <tr><td><code>09-counsel-review-bill.docx</code></td><td style="text-align:left">
+        <strong>Independent</strong> counsel review of bill version 1.2 by a reviewer who
+        did not draft it: 3 blockers, 15 material, 12 minor. All three blockers fixed in
+        version 1.3</td></tr>
+      <tr><td><code>10-counsel-review-explorer.docx</code></td><td style="text-align:left">
+        <strong>Independent</strong> review of this tool: 26 findings, 4 blockers, all
+        remediated</td></tr>
+      <tr><td><code>11-stakeholder-review.docx</code></td><td style="text-align:left">
+        <strong>Independent</strong> stakeholder and political-viability review: 2
+        blockers, 23 findings</td></tr>
+      <tr><td><code>explorer/</code></td><td style="text-align:left">This tool, its
+        methodology page and its guided walk-through</td></tr>
     </tbody>
   </table>
   </div>
 
   <blockquote>
     <p><strong>Before external or patron use</strong>, the package requires: the fiscal
-    model rerun against bill version 1.2; completion of outstanding source verifications;
-    federal tax review by veterans&rsquo; legal counsel; resolution or explicit deferral of
-    the approved-leave / long-term-disability question; and the VRS impact statement under
-    &sect; 30-19.1:7 at the appropriate stage.</p>
+    model rerun against the bill as introduced; completion of outstanding source
+    verifications &mdash; including the enactment clauses of 2026 c. 563 and an LIS check
+    that no comparable bill is already filed; federal tax review by veterans&rsquo; legal
+    counsel on IRC &sect;&sect; 415(n) and 415(c); resolution or explicit deferral of the
+    approved-leave question; VRS confirmation of the approximate normal cost rate for
+    eligible pre-2014 &sect; 51.1-153 B 4 public-safety members; and the VRS impact
+    statement under &sect; 30-19.1:7 at the appropriate stage.</p>
   </blockquote>
 
   <p class="muted" style="margin-top:22px">Prepared by Policy Development Team using legal,
   policy, and financial analysis tools, pending review by veterans&rsquo; legal counsel.
-  &middot; Package version 1.3 &mdash; External-Review Cleanup &middot; bill version 1.2.</p>
+  &middot; Package version 1.5 &mdash; Review Closeout &middot; bill
+  version 1.4.</p>
 </section>
 
 </main>

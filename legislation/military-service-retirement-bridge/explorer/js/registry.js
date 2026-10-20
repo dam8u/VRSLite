@@ -67,8 +67,9 @@ window.VRS_REGISTRY = {
         'retirement-plan employer contribution impact ' +
         'and excludes the separately funded health insurance credit and COLA ' +
         'effects, including unquantified COLA exposure; the fiscal model is ' +
-        'complete for bill version 1.1 and a version 1.2 refresh is required ' +
-        'before external use.'
+        'complete for bill version 1.1 and a refresh against the bill as ' +
+        'introduced (operative text now at version 1.4) is required before ' +
+        'external use.'
     },
     'pension liability': {
       short: 'What the plan owes, measured today.',

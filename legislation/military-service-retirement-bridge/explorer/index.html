@@ -16,12 +16,14 @@
     <div>
       <h1>Military Service Retirement Bridge — Legislative Scenario Explorer</h1>
       <p class="sub">
-        Proposed new <strong>Va. Code § 51.1-142.4</strong> &middot; bill version 1.2,
-        package version 1.3 &middot; built on the FY2029&ndash;FY2038 cohort fiscal model
+        Proposed new <strong>Va. Code § 51.1-142.4</strong> &middot; bill version 1.4,
+        package version 1.5 &middot; built on the FY2029&ndash;FY2038 cohort fiscal model
         &middot; <span id="scenario-chip" class="pill live">Central case</span>
       </p>
     </div>
     <div class="masthead-actions">
+      <button class="btn btn-primary" id="btn-walkthrough" type="button"
+        title="Open the guided walk-through in a panel beside the dashboard — no second window">Guided walk-through</button>
       <button class="btn" id="btn-reset" type="button" title="Return every input to the committed fiscal model's central case">Reset to Baseline</button>
       <button class="btn" id="btn-handout" type="button">Download scenario summary</button>
       <button class="btn" id="btn-csv" type="button">CSV</button>
@@ -285,9 +287,12 @@
       </div>
       <input type="range" id="i-bar" min="0" max="50" step="1" value="18">
       <p class="ctrl-note">Federal law protects qualifying service associated with
-        non-regular Reserve-component retired pay under 10 U.S.C. ch. 1223, with
-        &sect;&nbsp;12736 application to the bridge <strong>subject to counsel
-        confirmation</strong>.</p>
+        non-regular Reserve-component retired pay under 10 U.S.C. ch. 1223.
+        <strong>&sect;&nbsp;12736 does not preempt this bill</strong> &mdash; it is an
+        anti-exclusion rule reaching only service a plan &ldquo;otherwise properly
+        credits,&rdquo; and Virginia credits this service only on purchase (package
+        version 1.5). This share is still an <strong>unsourced</strong> scenario
+        assumption.</p>
     </div>
     <div class="ctrl">
       <div class="ctrl-label">
@@ -424,11 +429,35 @@
 </main>
 </div>
 
+<!-- ======================================================= WALK-THROUGH
+     The guided walk-through lives in a drawer beside the dashboard rather
+     than in a second window, so a stakeholder can follow it and drive the
+     controls at the same time. Each step applies its own settings. The same
+     ten steps are also a standalone document at walkthrough.html, rendered
+     from the same js/walkthrough.js so the two cannot drift apart. -->
+<aside class="wt-drawer" id="wt-drawer" aria-hidden="true"
+       aria-labelledby="wt-title" role="region">
+  <div class="wt-head">
+    <div class="wt-head-row">
+      <h2 id="wt-title">Guided walk-through</h2>
+      <button class="btn" id="wt-close" type="button" aria-label="Close the walk-through">Close</button>
+    </div>
+    <div class="wt-progress" id="wt-progress" role="group" aria-label="Walk-through steps"></div>
+  </div>
+  <div class="wt-body" id="wt-body" tabindex="-1"></div>
+  <div class="wt-foot">
+    <button class="btn" id="wt-prev" type="button">&larr; Back</button>
+    <span class="pill" id="wt-count"></span>
+    <button class="btn btn-primary" id="wt-next" type="button">Next &rarr;</button>
+  </div>
+</aside>
+
 <div class="tooltip" id="tooltip" role="status" aria-live="polite"></div>
 
 <script src="data/baseline.js"></script>
 <script src="data/cells.js"></script>
 <script src="js/registry.js"></script>
+<script src="js/walkthrough.js"></script>
 <script src="js/engine.js"></script>
 <script src="js/ui.js"></script>
 </body>

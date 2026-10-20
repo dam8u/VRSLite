@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guided walk-through — Military Service Retirement Bridge Scenario Explorer</title>
+<meta name="description" content="A guided walk-through of the Military Service Retirement
+ Bridge Legislative Scenario Explorer: what to choose in the dashboard, in order, and what
+ each screen means. Illustrative; not an actuarial certification.">
+<link rel="stylesheet" href="css/explorer.css">
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-row">
+    <div>
+      <h1>Guided walk-through</h1>
+      <p class="sub">
+        Military Service Retirement Bridge &mdash; Legislative Scenario Explorer
+        &middot; proposed new <strong>Va. Code &sect; 51.1-142.4</strong>
+        &middot; bill version 1.4, package version 1.5
+      </p>
+    </div>
+    <div class="masthead-actions">
+      <a class="btn btn-primary" href="index.html">Open the dashboard &rarr;</a>
+      <a class="btn" href="methodology.html">Methodology</a>
+      <button class="btn" id="btn-print" type="button">Print / save as PDF</button>
+      <button class="btn" id="btn-theme" type="button" title="Switch between light and dark">Theme</button>
+    </div>
+  </div>
+
+  <div class="disclaimer print-required">
+    <strong>This tool is an illustrative policy-analysis model. It is not an actuarial
+    certification, the VRS Board impact statement required under &sect; 30-19.1:7, or a
+    General Assembly fiscal impact statement.</strong>
+    It is not a savings calculator and does not advocate a result. Every figure is tagged
+    as a <span class="prov prov-fact"><span class="ic">&#9679;</span>Published&nbsp;Fact</span>,
+    a <span class="prov prov-derived"><span class="ic">&#9681;</span>Derived&nbsp;Estimate</span>,
+    or a <span class="prov prov-assumption"><span class="ic">&#9675;</span>Scenario&nbsp;Assumption</span>.
+    Prepared by Policy Development Team using legal, policy, and financial analysis tools,
+    pending review by veterans&rsquo; legal counsel.
+  </div>
+</header>
+
+<div class="shell">
+
+<aside class="controls" aria-label="Contents">
+  <div class="ctrl-group">
+    <p class="gh">The ten steps</p>
+    <nav class="preset-grid" id="toc"></nav>
+  </div>
+  <div class="ctrl-group">
+    <p class="gh">You do not need two windows</p>
+    <p class="ctrl-note">These same ten steps are built into the dashboard, in a panel
+      beside the controls, where each step can <strong>apply its own settings</strong>
+      with one click. Open the dashboard and press
+      <strong>Guided walk-through</strong>.</p>
+    <p style="margin-top:9px"><a class="btn btn-primary" href="index.html"
+      style="width:100%;justify-content:center">Open the dashboard &rarr;</a></p>
+  </div>
+  <div class="ctrl-group">
+    <p class="gh">The reference behind this</p>
+    <p class="ctrl-note">Every formula, with its statutory provision or published source,
+      is on the <a href="methodology.html">methodology page</a>. This walk-through cites
+      it rather than repeating it.</p>
+  </div>
+</aside>
+
+<main class="panels" id="wt-main">
+  <!-- rendered from js/walkthrough.js, the same content the dashboard drawer uses -->
+</main>
+</div>
+
+<script src="js/walkthrough.js"></script>
+<script>
+(function () {
+  'use strict';
+  var WT = window.VRS_WALKTHROUGH;
+
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+
+  /* ------------------------------------------------------------- render */
+  var html = '';
+
+  html += '<section class="card prose" id="wt-intro">' +
+    '<h2 style="margin-top:0">' + esc(WT.meta.subtitle) + '</h2>' +
+    WT.intro.map(function (p) { return '<p>' + p + '</p>'; }).join('') +
+    '<h3>' + esc(WT.orientation.title) + '</h3><ol>' +
+    WT.orientation.items.map(function (it) {
+      return '<li><strong>' + it[0] + '</strong> ' + it[1] + '</li>';
+    }).join('') + '</ol>' +
+    '<blockquote><p><strong>How to use this document.</strong> Each step below names ' +
+    'the settings to choose, says where to look, and then explains what you are ' +
+    'seeing, why the tool works that way, and why it matters for a decision. You can ' +
+    'set each one by hand &mdash; or open the dashboard and press ' +
+    '<strong>Guided walk-through</strong>, where the same ten steps appear beside the ' +
+    'panels and each one applies its own settings with a single click.</p></blockquote>' +
+    '<p class="muted">' + esc(WT.meta.audience) + ' &middot; about ' +
+    WT.meta.minutes + ' minutes.</p>' +
+    '</section>';
+
+  WT.steps.forEach(function (s, i) {
+    html += '<section class="card prose wt-page-step" id="' + esc(s.id) + '">' +
+      '<h2 style="margin-top:0"><span class="muted">Step ' + (i + 1) + '</span> &middot; ' +
+      esc(s.title) + '</h2>' +
+      '<div class="wt-set"><dl>' + s.choose.map(function (c) {
+        return '<dt>' + esc(c[0]) + '</dt><dd>' + c[1] + '</dd>';
+      }).join('') + '</dl></div>' +
+      '<p class="wt-look"><strong>Look at:</strong> ' + s.look + '</p>' +
+      '<h4>What you are seeing</h4>' + s.seeing +
+      '<h4>Why it works that way</h4>' + s.why +
+      '<h4>Why it matters</h4>' + s.significance +
+      (s.caution ? '<div class="note warn"><p>' + s.caution + '</p></div>' : '') +
+      '</section>';
+  });
+
+  html += '<section class="card prose" id="wt-closing">' +
+    '<h2 style="margin-top:0">' + esc(WT.closing.title) + '</h2><ol>' +
+    WT.closing.items.map(function (s) { return '<li>' + s + '</li>'; }).join('') +
+    '</ol>' +
+    '<div class="note stop"><p>' + WT.closing.footer + '</p></div>' +
+    '<p style="margin-top:14px"><a class="btn btn-primary" href="index.html">Open the ' +
+    'dashboard &rarr;</a> &nbsp; <a class="btn" href="methodology.html">Read the ' +
+    'methodology</a></p>' +
+    '</section>';
+
+  document.getElementById('wt-main').innerHTML = html;
+
+  /* contents list, built from what was actually rendered */
+  var toc = '<a class="btn" href="#wt-intro">Start here</a>' +
+    WT.steps.map(function (s, i) {
+      return '<a class="btn" href="#' + esc(s.id) + '">' + (i + 1) + ' &middot; ' +
+        esc(s.title) + '</a>';
+    }).join('') +
+    '<a class="btn" href="#wt-closing">' + esc(WT.closing.title) + '</a>';
+  document.getElementById('toc').innerHTML = toc;
+
+  /* ------------------------------------------------- theme, print, scrollspy */
+  var KEY = 'vrs-explorer-theme';
+  try {
+    var saved = localStorage.getItem(KEY);
+    if (saved) document.documentElement.setAttribute('data-theme', saved);
+  } catch (e) { /* storage unavailable; system preference applies */ }
+
+  var tb = document.getElementById('btn-theme');
+  if (tb) tb.addEventListener('click', function () {
+    var el = document.documentElement, cur = el.getAttribute('data-theme');
+    /* the same dark -> light -> follow-the-system cycle as the dashboard */
+    var next = cur === 'dark' ? 'light' : cur === 'light' ? '' : 'dark';
+    el.setAttribute('data-theme', next);
+    try { localStorage.setItem(KEY, next); } catch (e2) { /* no storage */ }
+  });
+
+  var pb = document.getElementById('btn-print');
+  if (pb) pb.addEventListener('click', function () { window.print(); });
+
+  var links = Array.prototype.slice.call(document.querySelectorAll('#toc a'));
+  var targets = links.map(function (a) {
+    return document.getElementById(a.getAttribute('href').slice(1));
+  });
+  if (links.length) links[0].classList.add('btn-primary');
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        var i = targets.indexOf(en.target);
+        if (i < 0) return;
+        links.forEach(function (a, j) { a.classList.toggle('btn-primary', j === i); });
+      });
+    }, { rootMargin: '-140px 0px -70% 0px' });
+    targets.forEach(function (t) { if (t) io.observe(t); });
+  }
+})();
+</script>
+</body>
+</html>

@@ -86,9 +86,19 @@ function groupBuildFidelity() {
   check('dist/explorer-standalone.html exists and is non-trivial',
     dist.length > 100000, `${dist.length} bytes`);
 
+  /* build_standalone.py rewrites cross-page links AFTER inlining, so a source
+     file that contains one — js/ui.js emits the walk-through drawer's
+     "open as its own page" link — is legitimately not byte-identical in the
+     build. Apply the same rewrite here so the staleness check still means
+     what it says rather than being loosened to a substring. */
+  const xlink = (t) => t
+    .replace(/href="index\.html"/g, 'href="#" data-xpage="index.html"')
+    .replace(/href="methodology\.html"/g, 'href="#" data-xpage="methodology.html"')
+    .replace(/href="walkthrough\.html"/g, 'href="#" data-xpage="walkthrough.html"');
+
   for (const src of ['css/explorer.css', 'data/baseline.js', 'data/cells.js',
-    'js/engine.js', 'js/registry.js', 'js/ui.js']) {
-    const want = guard(fs.readFileSync(path.join(ROOT, src), 'utf8'));
+    'js/engine.js', 'js/registry.js', 'js/walkthrough.js', 'js/ui.js']) {
+    const want = xlink(guard(fs.readFileSync(path.join(ROOT, src), 'utf8')));
     check(`inlined payload matches ${src}`, dist.includes(want),
       'the standalone build is stale — re-run build_standalone.py');
   }
@@ -115,8 +125,25 @@ function groupBuildFidelity() {
   }
   check('print-required disclaimer sits outside the hidden masthead',
     /<\/header>\s*<div class="disclaimer print-required">/.test(dist));
-  check('the standalone Methodology link is embedded, not a relative dead link',
-    /href="data:text\/html;charset=utf-8;base64,/.test(dist));
+
+  /* Cross-page navigation in a single file. Each sibling page is carried once
+     as a base64 payload and resolved to a Blob URL at click time; browsers
+     block top-level navigation to a data: URL, so a substituted data: href
+     would have been a link that silently did nothing. */
+  for (const key of ['methodology.html', 'walkthrough.html']) {
+    check(`the standalone ${key} link is an embedded payload, not a dead link`,
+      dist.includes(`data-xpage="${key}"`) &&
+      new RegExp('"' + key.replace('.', '\\.') + '":\\{b64:"').test(dist));
+  }
+  check('no top-level data: href survives (browsers block navigating to one)',
+    !/href="data:text\/html/.test(dist));
+  /* Each payload appears exactly once, however many links point at it. */
+  for (const key of ['methodology.html', 'walkthrough.html']) {
+    const n = (dist.match(new RegExp('"' + key.replace('.', '\\.') + '":\\{b64:"', 'g')) || []).length;
+    check(`${key} payload is carried once, not once per link`, n === 1, `found ${n}`);
+  }
+  check('the guided walk-through drawer ships in the dashboard',
+    dist.includes('id="wt-drawer"') && dist.includes('id="btn-walkthrough"'));
 }
 
 /* ============================================================ GROUP 2 */
@@ -889,9 +916,17 @@ async function main() {
         `looking for ${live.model.combined.bp.toFixed(2)} bp`);
       check('scenario summary carries the preparation attribution',
         /Policy Development Team/.test(hand.text));
+      /* The qualifier must survive export, because an exported file travels
+         without the page around it. Pinned to the substance rather than to a
+         version number so a later version bump does not look like a passing
+         test of a missing qualifier. */
       check('scenario summary carries the complete basis-point qualifier',
-        /version 1\.2 refresh is required/i.test(hand.text)
-        && /unquantified COLA exposure/i.test(hand.text));
+        /complete for bill version 1\.1/i.test(hand.text)
+        && /refresh against the bill as introduced/i.test(hand.text)
+        && /unquantified COLA exposure/i.test(hand.text)
+        && /modeled retirement-plan employer contribution impact/i.test(hand.text));
+      check('scenario summary states the current bill and package version',
+        /bill version 1\.4/i.test(hand.text) && /package version 1\.5/i.test(hand.text));
     }
     await page.evaluate("window.__T.setRange('i-phi',90); return 1");
     await sleep(90); /* main render done; the 220ms chart debounce is intentionally pending */
@@ -982,6 +1017,160 @@ async function main() {
         "financial analysis tools, pending review by veterans' legal counsel"));
     check('the illustrative-model disclaimer is visible on the rendered page',
       /not an actuarial certification/i.test(seen) && seen.includes('30-19.1:7'));
+
+    /* ---------------------------------------------------------------- */
+    /* The walk-through is the document a stakeholder is actually handed, so
+       its claims are tested the same way every other output is: drive the
+       settings it tells the reader to choose, then require the figure it
+       quotes to be ON SCREEN. Prose is read from js/walkthrough.js and the
+       screen is read from the panels only — never from the drawer — so the
+       check cannot pass by finding the sentence that makes the claim. */
+    startGroup('20. The guided walk-through, and every figure it quotes');
+    await page.evaluate("window.__T.click('btn-reset'); return 1");
+    await settle(page, true);
+
+    const wt = await page.evaluate('return JSON.stringify({' +
+      'steps: window.VRS_WALKTHROUGH.steps.length,' +
+      'checks: window.VRS_WALKTHROUGH.checks.length,' +
+      'hidden: document.getElementById("wt-drawer").getAttribute("aria-hidden"),' +
+      'open: document.body.classList.contains("wt-open")})')
+      .then(JSON.parse);
+    check('walk-through content module ships ten steps', wt.steps === 10, String(wt.steps));
+    check('the drawer starts closed', wt.hidden === 'true' && wt.open === false);
+
+    /* The content module's own internal consistency. A step that tells the
+       reader to click a named preset must carry that preset's parameters, or
+       the instruction and the figures disagree. */
+    const wtShape = await page.evaluate(
+      'var W = window.VRS_WALKTHROUGH, E = window.VRSEngine, pr = E.presets();' +
+      'var out = { incomplete: [], presetMismatch: [], rawTags: [] };' +
+      'W.steps.forEach(function (s, i) {' +
+      '  ["id","title","panel","params","choose","look","seeing","why","significance"]' +
+      '    .forEach(function (k) { if (!s[k]) out.incomplete.push(s.id + ":" + k); });' +
+      '  if (s.preset) {' +
+      '    var want = pr[s.preset] ? pr[s.preset].params : null;' +
+      '    if (!want) out.presetMismatch.push(s.id + ": no preset " + s.preset);' +
+      '    else {' +
+      '      var a = Object.assign({}, E.defaults(), want);' +
+      '      var b = Object.assign({}, E.defaults(), s.params);' +
+      '      Object.keys(a).forEach(function (k) {' +
+      '        if (JSON.stringify(a[k]) !== JSON.stringify(b[k]))' +
+      '          out.presetMismatch.push(s.id + ":" + k);' +
+      '      });' +
+      '    }' +
+      '  }' +
+      '  ["seeing","why","significance"].forEach(function (k) {' +
+      '    if (/&lt;strong|&amp;lt;/.test(s[k])) out.rawTags.push(s.id + ":" + k);' +
+      '  });' +
+      '});' +
+      'return JSON.stringify(out);').then(JSON.parse);
+    check('every step carries all of its required fields',
+      wtShape.incomplete.length === 0, wtShape.incomplete.join(', '));
+    check('a step that names a preset carries that preset’s parameters',
+      wtShape.presetMismatch.length === 0, wtShape.presetMismatch.join(', '));
+    check('no step has double-escaped markup', wtShape.rawTags.length === 0,
+      wtShape.rawTags.join(', '));
+
+    /* Drawer behaviour: open, step, apply, close. */
+    await page.evaluate("window.__T.click('btn-walkthrough'); return 1");
+    await settle(page, false);
+    const wtOpen = await page.evaluate('return JSON.stringify({' +
+      'open: document.body.classList.contains("wt-open"),' +
+      'hidden: document.getElementById("wt-drawer").getAttribute("aria-hidden"),' +
+      'dots: document.querySelectorAll("#wt-progress button").length,' +
+      'count: document.getElementById("wt-count").textContent,' +
+      'heading: (document.querySelector("#wt-body h3")||{}).textContent || ""})')
+      .then(JSON.parse);
+    check('the walk-through button opens the drawer beside the dashboard',
+      wtOpen.open === true && wtOpen.hidden === 'false');
+    check('the drawer offers an introduction, ten steps and a summary',
+      wtOpen.dots === 12, String(wtOpen.dots));
+    check('the drawer opens on the introduction',
+      wtOpen.count === 'Introduction' && wtOpen.heading.length > 10,
+      `${wtOpen.count} / ${wtOpen.heading}`);
+
+    await page.evaluate("window.__T.click('wt-next'); return 1");
+    await settle(page, false);
+    const wtStep1 = await page.evaluate('return JSON.stringify({' +
+      'count: document.getElementById("wt-count").textContent,' +
+      'apply: !!document.querySelector("#wt-body [data-wt-apply]"),' +
+      'set: document.querySelectorAll("#wt-body .wt-set dt").length})')
+      .then(JSON.parse);
+    check('Next reaches step 1 of 10', wtStep1.count === 'Step 1 / 10', wtStep1.count);
+    check('a step names the settings to choose and offers to apply them',
+      wtStep1.apply === true && wtStep1.set >= 2, JSON.stringify(wtStep1));
+
+    /* Applying a step drives the dashboard, which is the whole point of
+       putting the walk-through beside the panels rather than in a second
+       window. Step 1 is the No Workforce Savings corner. */
+    await page.evaluate(
+      "document.querySelector('#wt-body [data-wt-apply]').click(); return 1");
+    await settle(page, true);
+    const applied = await page.evaluate('return JSON.stringify({' +
+      'chip: document.getElementById("scenario-chip").textContent,' +
+      'repl: document.getElementById("i-repl").value,' +
+      'notrepl: document.getElementById("i-notrepl").value,' +
+      'vac: document.getElementById("i-vac").value})').then(JSON.parse);
+    check('applying step 1 sets the dashboard to No Workforce Savings',
+      applied.chip === 'No Workforce Savings case', applied.chip);
+    check('applying a step moves the real controls, not just the model',
+      applied.repl === '100' && applied.notrepl === '0' && applied.vac === '0',
+      JSON.stringify(applied));
+
+    await page.evaluate("window.__T.click('wt-close'); return 1");
+    await settle(page, false);
+    check('the drawer closes and releases the dashboard layout',
+      (await page.evaluate(
+        'return document.body.classList.contains("wt-open") ? "open" : "closed"')) === 'closed');
+
+    /* Every quoted figure, against the panels. */
+    const SLIDER_OF = {
+      replacementPct: ['i-repl', 100], notReplacedPct: ['i-notrepl', 100],
+      vacancyMonths: ['i-vac', 1], phi: ['i-phi', 100], takeUp: ['i-takeup', 100],
+      qualifyingShare: ['i-qual', 100], retiredPayBar: ['i-bar', 100],
+      notAlreadyBought: ['i-notbought', 100], salaryGrowth: ['i-growth', 100],
+      discount: ['i-disc', 100], improvement: ['i-impr', 100],
+      p1BridgeYears: ['i-p1y', 1], p2BridgeYears: ['i-p2y', 1]
+    };
+    const VET_OF = { ST: 'i-vst', TC: 'i-vtc', PS: 'i-vps' };
+
+    function actionsFor(params) {
+      const acts = [];
+      for (const [k, v] of Object.entries(params)) {
+        if (SLIDER_OF[k]) { acts.push(['setRange', SLIDER_OF[k][0], v * SLIDER_OF[k][1]]); }
+        else if (k === 'veteranShare') {
+          for (const [e, share] of Object.entries(v)) {
+            acts.push(['setRange', VET_OF[e], +(share * 100).toFixed(4)]);
+          }
+        } else if (k === 'participantMode') { acts.push(['clickSeg', 'seg-participant-mode', v]); }
+        else if (k === 'p1Participants') { acts.push(['setNum', 'i-p1n', v]); }
+        else if (k === 'p2Participants') { acts.push(['setNum', 'i-p2n', v]); }
+        else if (k === 'bridgeYearsMode') { acts.push(['clickSeg', 'seg-bridge-mode', v]); }
+        else { throw new Error('group 20 cannot drive parameter: ' + k); }
+      }
+      return acts;
+    }
+
+    const wtChecks = await page.evaluate(
+      'return JSON.stringify(window.VRS_WALKTHROUGH.checks)').then(JSON.parse);
+    for (const c of wtChecks) {
+      await page.evaluate("window.__T.click('btn-reset'); return 1");
+      await settle(page, false);
+      await drive(page, actionsFor(c.params), { tornado: true });
+      /* Panels only. Reading document.body would include the drawer, and the
+         drawer contains the sentence making the claim. */
+      const shown = await page.evaluate(
+        "return document.querySelector('.panels').innerText");
+      for (const t of c.tokens) {
+        check(`${c.step} (${c.note}): "${t}" is shown on the panels`,
+          shown.includes(t),
+          'the walk-through quotes this figure at these settings but the ' +
+          'dashboard does not display it — the narration has drifted from the model');
+      }
+    }
+
+    await page.evaluate("window.__T.click('btn-reset'); return 1");
+    await settle(page, true);
 
     /* ---------------------------------------------------------------- */
     startGroup('19. No page errors across the whole sweep');

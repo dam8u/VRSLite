@@ -504,3 +504,106 @@ abbr.tipped { text-decoration: none; }
   .card { break-inside: avoid; border: 1px solid #999; }
   body { background: #fff; }
 }
+
+/* ============================================================ walk-through
+   The guided walk-through appears twice: as its own document
+   (walkthrough.html) and as a drawer beside the dashboard. The board asked
+   for the second so a stakeholder does not have to keep two windows open, so
+   the drawer sits ALONGSIDE the panels on a wide screen — `.shell` is given
+   room on the right rather than being covered — and becomes a full-width
+   overlay only below 1080px, where there is no room to sit beside anything.
+   -------------------------------------------------------------------- */
+.wt-drawer {
+  position: fixed; top: 0; right: 0; bottom: 0; width: 432px; z-index: 60;
+  background: var(--surface-1); border-left: 1px solid var(--border-strong);
+  box-shadow: -8px 0 28px rgba(0, 0, 0, 0.13);
+  display: flex; flex-direction: column;
+  transform: translateX(100%); transition: transform 180ms ease;
+}
+.wt-drawer[aria-hidden="false"] { transform: translateX(0); }
+body.wt-open .shell,
+body.wt-open .masthead-row,
+body.wt-open .disclaimer { padding-right: 452px; }
+@media (max-width: 1080px) {
+  .wt-drawer { width: 100%; border-left: 0; }
+  body.wt-open .shell,
+  body.wt-open .masthead-row,
+  body.wt-open .disclaimer { padding-right: 20px; }
+}
+@media print { .wt-drawer { display: none !important; } }
+
+.wt-head {
+  padding: 12px 14px 10px; border-bottom: 1px solid var(--border);
+  display: flex; flex-direction: column; gap: 8px; flex: none;
+}
+.wt-head-row { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.wt-head h2 {
+  font-size: 13px; font-weight: 650; text-transform: uppercase;
+  letter-spacing: 0.055em; color: var(--text-secondary); margin: 0;
+}
+.wt-progress { display: flex; gap: 3px; flex-wrap: wrap; }
+.wt-progress button {
+  width: 23px; height: 23px; font: inherit; font-size: 11px; font-weight: 600;
+  border: 1px solid var(--border-strong); background: var(--surface-1);
+  color: var(--text-secondary); border-radius: var(--radius-sm); cursor: pointer;
+  padding: 0;
+}
+.wt-progress button:hover { background: var(--surface-2); color: var(--text-primary); }
+.wt-progress button[aria-current="true"] {
+  background: var(--series-1); border-color: var(--series-1); color: #fff;
+}
+.wt-progress button.seen:not([aria-current="true"]) {
+  border-color: color-mix(in srgb, var(--series-1) 55%, transparent);
+  color: color-mix(in srgb, var(--series-1) 72%, var(--text-primary));
+}
+
+.wt-body { overflow-y: auto; padding: 14px; flex: 1 1 auto; }
+.wt-body h3 {
+  font-size: 15px; font-weight: 650; margin: 0 0 3px; line-height: 1.3;
+  letter-spacing: -0.01em; color: var(--text-primary);
+}
+.wt-step-n { font-size: 11px; font-weight: 650; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 0.06em; }
+.wt-body h4 {
+  font-size: 11px; font-weight: 650; text-transform: uppercase;
+  letter-spacing: 0.055em; color: var(--text-secondary); margin: 15px 0 5px;
+}
+.wt-body p, .wt-body li { font-size: 13px; line-height: 1.56; }
+.wt-body p { margin: 0 0 8px; }
+.wt-body ol, .wt-body ul { margin: 0 0 8px; padding-left: 20px; }
+.wt-body li { margin-bottom: 4px; }
+.wt-body table.dt { margin: 4px 0 10px; font-size: 11.5px; }
+.wt-body table.dt th:first-child,
+.wt-body table.dt td:first-child { min-width: 0; }
+.wt-body code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11.5px; background: var(--surface-2); padding: 1px 4px; border-radius: 3px; }
+
+/* "Choose this" — the settings list, which is the operative part of a step */
+.wt-set {
+  background: color-mix(in srgb, var(--series-1) 7%, var(--surface-1));
+  border: 1px solid color-mix(in srgb, var(--series-1) 32%, transparent);
+  border-radius: var(--radius-sm); padding: 9px 11px; margin: 0 0 10px;
+}
+.wt-set dl { margin: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 3px 10px; }
+.wt-set dt { font-size: 11.5px; color: var(--text-secondary); }
+.wt-set dd { font-size: 11.5px; margin: 0; color: var(--text-primary); }
+.wt-apply { margin-top: 9px; width: 100%; justify-content: center; }
+.wt-look {
+  font-size: 11.5px; color: var(--text-secondary); margin: 0 0 10px;
+  padding-left: 9px; border-left: 2px solid var(--series-2);
+}
+
+.wt-foot {
+  flex: none; border-top: 1px solid var(--border); padding: 10px 14px;
+  display: flex; gap: 7px; align-items: center; justify-content: space-between;
+}
+.wt-foot .btn { flex: 1 1 auto; justify-content: center; }
+
+/* The standalone walk-through page reuses the same step cards. */
+.wt-page-step { border-left: 3px solid var(--series-1); }
+.wt-page-step .wt-set dl { grid-template-columns: 210px minmax(0, 1fr); }
+.wt-page-step .wt-set dt, .wt-page-step .wt-set dd { font-size: 13px; }
+.wt-page-step h4 {
+  font-size: 11px; font-weight: 650; text-transform: uppercase;
+  letter-spacing: 0.055em; color: var(--text-secondary); margin: 18px 0 6px;
+}

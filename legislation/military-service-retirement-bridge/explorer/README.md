@@ -12,35 +12,40 @@ reviewers and policy staff.
 > Prepared by Policy Development Team using legal, policy, and financial analysis tools,
 > pending review by veterans' legal counsel.
 
-Bill version **1.2** operative text · package version **1.3**. The fiscal model is
-**complete for bill version 1.1; a version 1.2 refresh is required before external use.**
+Bill version **1.4** operative text · package version **1.5**. The fiscal model is
+**complete for bill version 1.1; a refresh against the bill as introduced is required
+before external use.**
 
 ## Open it
 
-Two ways, both with no server, no build step and no dependencies.
+No server, no build step, no dependencies.
 
 | | |
 |---|---|
-| **Working copy** | open `index.html` in any browser |
-| **Email it to someone** | send `dist/explorer-standalone.html` — one self-contained file, nothing else needed |
+| **Start here if you are new to it** | open `walkthrough.html` — ten steps naming what to choose and what each screen means |
+| **The dashboard** | open `index.html`, then press **Guided walk-through** for the same ten steps in a panel beside the controls |
+| **Email it to someone** | send any one of the three files in `dist/` — each is self-contained, and each carries the other two inside it |
 
-`dist/methodology-standalone.html` is the matching single-file methodology page. Both
-standalone files are generated; edit the sources, not `dist/`.
+The three single-file builds are `dist/explorer-standalone.html`,
+`dist/walkthrough-standalone.html` and `dist/methodology-standalone.html`. They are
+generated; edit the sources, not `dist/`.
 
 ## What is where
 
 | Path | Role |
 |---|---|
-| `index.html` | The dashboard — Panels A–G, HIC & COLA, and the source registry |
+| `index.html` | The dashboard — Panels A–G, HIC & COLA, the source registry, and the walk-through drawer |
+| `walkthrough.html` | The **guided walk-through**: what to choose, in order, and why each screen matters |
 | `methodology.html` | **Every formula**, with its statutory or published source |
 | `js/engine.js` | The calculation engine. No DOM reference; loadable under Node |
 | `js/ui.js` | Presentation only. Contains no formula |
 | `js/registry.js` | Plain-language glossary and the outstanding-confirmation list |
+| `js/walkthrough.js` | The walk-through's ten steps and the checkable list of every figure they quote. **One source** for both the page and the drawer |
 | `css/explorer.css` | Light and dark, each defined explicitly |
 | `data/baseline.js` | Published inputs, actuarial tables, profiles. **Generated** |
 | `data/cells.js` | The age × service × fiscal-year exposure grid. **Generated** |
-| `test/reconcile.js` | 98-check regression harness: the **engine** against the Python model |
-| `test/standalone.js` | 1,928-check output-accuracy harness: the **shipped single file**, driven through every control in a real browser |
+| `test/reconcile.js` | 156-check regression harness: the **engine** against the Python model |
+| `test/standalone.js` | 2,064-check output-accuracy harness: the **shipped single file**, driven through every control in a real browser |
 | `test/chrome.js`, `test/inpage.js` | DevTools-protocol driver and the probe it injects. No npm dependency |
 | `build_standalone.py` | Packaging only — inlines everything into `dist/` |
 
@@ -58,13 +63,13 @@ python3 calibrate_explorer.py      # writes out/explorer-baseline.json,
 
 # 2. Reconcile the browser engine against the Python model
 cd ../explorer
-node test/reconcile.js             # 98 checks in 8 groups
+node test/reconcile.js             # 156 checks in 8 groups
 
 # 3. Rebuild the single-file copies
 python3 build_standalone.py        # writes dist/
 
 # 4. Test the file that actually ships (needs a local Chrome; CHROME_PATH to override)
-node test/standalone.js            # 1,928 checks in 19 groups
+node test/standalone.js            # 2,064 checks in 20 groups
 node test/standalone.js --quick    # fewer settings per slider
 ```
 
@@ -92,6 +97,13 @@ select, mode segment and preset, checks that
 
 It also asserts the inlined payloads are byte-identical to the current sources, so a stale
 `dist/` fails loudly instead of being tested in place of the real application.
+
+**Group 20 tests the walk-through against the model it narrates.** Prose keeps its old
+numbers after a model changes, so every figure the walk-through quotes is recorded in
+`js/walkthrough.js` next to the settings that produce it; group 20 drives the shipped
+document to those settings and requires the figure to be rendered **on the panels**. The
+screen is read from the panels only, never from the drawer, so the check cannot pass by
+finding the sentence that makes the claim.
 
 ## Guardrails, enforced by test rather than by convention
 
@@ -123,6 +135,8 @@ these, so they cannot be lost in a later edit:
 - **Nothing is ever labelled "Savings."** The permitted labels are *Modeled pension
   impact*, *Modeled payroll effect*, *Modeled workforce effect* and *Combined scenario
   effect*.
+- **Every figure the walk-through quotes is on screen at the settings it names.** Group 20
+  drives each claim and fails if the dashboard does not display it.
 
 ## The two things to read first
 

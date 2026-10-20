@@ -962,10 +962,11 @@
         { label: 'Not barred by the military retired pay rule ' +
                  '(§ 51.1-142.2 B, inherited by § 51.1-142.4 B 4, H 5)',
           value: afterBar, provenance: 'Scenario Assumption',
-          source: 'ASM-17 — federal aggregates only; 10 U.S.C. ch. 1223 ' +
-                  'non-regular reserve-component retired pay is protected, ' +
-                  'with § 12736 application to the bridge subject to counsel ' +
-                  'confirmation' },
+          source: 'ASM-17 — unsourced; federal aggregates only. 10 U.S.C. ' +
+                  'ch. 1223 non-regular reserve-component retired pay is ' +
+                  'protected. § 12736 does not preempt the bill: it reaches ' +
+                  'only service a plan otherwise properly credits, and ' +
+                  'Virginia credits this service only on purchase' },
         { label: 'Did not already purchase in the § 51.1-142.2 B 3 24-month window',
           value: afterBought, provenance: 'Scenario Assumption',
           source: 'ASM-18 — VRS does not publish purchase-of-prior-service take-up' },
