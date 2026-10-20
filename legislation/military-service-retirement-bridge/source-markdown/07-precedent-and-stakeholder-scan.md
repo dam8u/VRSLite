@@ -263,6 +263,30 @@ et seq.; its powers and duties are in § 2.2-2682. It comprises 27 gubernatorial
 appointees representing veterans service organizations, and it prepares an annual list
 of legislative proposals distributed to all General Assembly members.
 
+**§ 2.2-2682 C — the fit objection in the statute, quoted (added October 20, 2026;
+stakeholder review finding S-06).** This scan originally cited § 2.2-2682 for the
+Council's powers and duties without quoting subsection C, which is where the objection
+lives. Reproduced in RD986 Appendix J (p.73):
+
+> "C. The Council may apply for funds from the Veterans Services Foundation to enable it
+> to better carry out its objectives. **The Council shall not impose unreasonable burdens
+> or costs in connection with requests of agencies.**"
+
+Read against §2.4 of this scan — which expects a **six-figure VRS implementation
+appropriation**, on the analogue of SB 419's $374,500 FY2027 system-change estimate —
+an opponent on the eight-member Legislative Committee has a clean statutory line: the
+Council is directed by statute not to impose unreasonable costs on agencies, and this
+item asks the Council to impose a six-figure build on VRS for a credit VRS gains nothing
+from administering. **Subsection A does not soften it.** It authorises advice on "methods
+of providing support for ongoing veterans services and programs," recommendations on
+issues that "may potentially impact veterans," and promotion of "new efficient and
+effective **administrative** initiatives that enhance existing veterans' services and
+programs." A defined-benefit pension amendment is a poor fit for every one of those
+verbs. **This is the strongest available version of the fit objection in §4, and it is in
+the statute this scan already cited.** The answer to give, and the Chairman's-letter
+fallback if the Council will not carry an agency-cost item, are at
+`13-council-engagement-answers.docx` §3.
+
 **The Council's current adopted agenda contains no retirement or pension item.** Per the
 DVS Commissioner's 2025 Annual Report (RD986), the JLC's priority proposals for the
 2025–2026 legislative session are:
@@ -314,6 +338,47 @@ retrieval date. The 2026 initiative list was corroborated in search results but 
 page hosting it returns HTTP 403 to automated retrieval (Akamai bot block), so the
 authoritative source used here is RD986. The 2027 package should be confirmed directly
 with DVS or the Council before the brief asserts anything about fit.
+
+---
+
+## 4A. Venue and patron — the follow-up this scan did not do
+
+*Added October 20, 2026. Stakeholder review findings **S-07** and **S-08** established that
+this scan assembled the right table in §1.1 and §1.2 and never crossed it against current
+committee membership. That is done here. The full shortlist with qualifications, and the
+disciplines that go with it, are at `13-council-engagement-answers.docx` §4.*
+
+**The decision point is a subcommittee, and this scan's own closest analogue died in one.**
+In the House the bill goes to the **Committee on Appropriations** and from there to its
+**Compensation and Retirement Subcommittee**, whose stated remit is "State Employee
+Compensation Retirement Worker's Compensation State Health Insurance Plan" and which
+"advise[s] the Committee on matters related to public employee compensation, benefits and
+retirement." As of the 2026 session: chair **Alex Askew (95th)**; members Askew, C. E. Cliff
+Hayes (91st), Rodney Willett (58th), Kathy Tran (18th), Shelly Simonds (70th), M. Keith
+Hodges (68th), Scott Wyatt (60th). It met four times in the 2026 session and handled HB 204,
+HB 205, HB 987 and HB 1107, all VRS bills. **HB 1867 (2023)** — the closest analogue in §3 of
+this scan — was recommended for the table there **8-Y 0-N** without a recorded floor vote. In
+the Senate the bill goes to **Finance and Appropriations**, which continued SB 419 to 2027 by
+14-Y 0-N and will hear SB 419 again.
+
+**Crossing §1.1 and §1.2 against that roster produces one name.** Only three bills in LIS
+history contain the phrase "approximate normal cost" (§1.2), the pricing mechanism this bill
+reopens. Two of the three — **HB 1830 (2025)**, which passed and was vetoed, and **HB 139
+(2026)**, Chapter 563 — were patroned by **Delegate Shelly Simonds (70th, Newport News)**, who
+**sits on the Compensation and Retirement Subcommittee**. Her district covers Newport News,
+with Newport News Shipbuilding, and Fort Eustis and Langley nearby. She is, on the record this
+scan itself assembled, the only sitting legislator with both the pricing-mechanism history and
+a seat at the decision point.
+
+**Three qualifications, none of them optional.** (i) A patron whose prior
+approximate-normal-cost bill was **vetoed** is not an unalloyed asset, and HB 139's subject
+(employee-association educational leave) is unrelated to veterans — the relevance is to the
+mechanism and the venue, not the policy. (ii) The patronage facts rest on **this scan's own
+direct LIS retrieval**, which the independent stakeholder reviewer could not re-verify;
+confirm both bills in LIS before the name is used in a conversation. (iii) The roster above is
+the **2026 session**, and the bill is drafted for 2028 — **re-confirm committee assignments
+before anyone is approached.** No one has been contacted, and the approach is the Policy
+Director's to make or decline.
 
 ---
 
@@ -409,8 +474,12 @@ Carried forward or newly raised by this scan:
    General Assembly should partially reverse a reform it adopted unanimously for
    cost-neutrality. A prepared answer is required. *(New — raised by § 1.2.)*
 4. **Administrative lead time and appropriation.** Expect a six-figure VRS
-   implementation ask. The July 1, 2028 placeholder effective date should be validated
-   against VRS's separate-accounting build estimate.
+   implementation ask. **Version 1.4 of the bill moves the effective date from July 1, 2028
+   to July 1, 2029** (DECISION 14, resolving the § 51.1-155 sunset collision), which as a
+   by-product converts a nominal four-month lead time on a 2028-session bill into a full
+   year. That date should still be validated against VRS's separate-accounting build
+   estimate. The six-figure ask is also what makes **§ 2.2-2682 C** available as an
+   objection inside the Council — see §4 above.
 5. **JLCVSO 2027 package.** Confirm contents and whether the Council will carry a pension
    item at all, directly with DVS or the Council.
 6. **Offsetting-appropriation precedent.** Whether any money committee has advanced a VRS

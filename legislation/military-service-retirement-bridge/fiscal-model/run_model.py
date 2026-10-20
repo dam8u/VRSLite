@@ -266,6 +266,17 @@ sens = [
      "contributions", dict(take_up="M", refill=False)),
     ("Hybrid inclusion (DECISION 2)", "hybrid participants included",
      dict(take_up="M", include_hybrid=True)),
+    # --- Compound adverse case. Every row above this one varies ONE driver.
+    # MOO-264 finding M-13: take-up (ASM-19) and the behavioural mix phi
+    # (ASM-22) are inversely correlated by this model's own logic, because a
+    # member who would have worked on to unreduced eligibility overpays and is
+    # therefore less likely to purchase. Varying them separately suppresses the
+    # adverse tail by construction. This row stacks the three drivers that
+    # actually move the answer. It is the adverse tail, NOT a prediction: no
+    # evidence says the three co-occur.
+    ("COMPOUND ADVERSE (not one-at-a-time)",
+     "high population funnel + phi=0.25 + 30% take-up, together",
+     dict(take_up="H", pop_case="high", phi=AG.PHI["low"])),
 ]
 for driver, variant, kw in sens:
     r = get(**kw)
